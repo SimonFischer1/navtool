@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NavTool Weather</title>
+<style>
+:root{--bg:#020807;--panel:#071210;--text:#eef7f5;--muted:#91aaa6;--line:rgba(160,220,211,.16);--teal:#00e0c0}
+*{box-sizing:border-box;margin:0;padding:0}
+body{min-height:100vh;background:#000;color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;overflow-x:hidden}
+body:before{content:"";position:fixed;inset:0;z-index:-2;background:radial-gradient(circle at 50% 25%,rgba(0,224,192,.08),transparent 42%),#020706}
+body:after{content:"";position:fixed;inset:0;pointer-events:none;z-index:20;opacity:.07;background:repeating-linear-gradient(to bottom,transparent 0,transparent 3px,rgba(255,255,255,.08) 4px)}
+.shell{width:min(1450px,calc(100% - 36px));margin:18px auto;border:1px solid rgba(160,220,211,.24);border-radius:26px;background:rgba(3,11,10,.93);overflow:hidden;box-shadow:0 30px 100px rgba(0,0,0,.65)}
+header{margin:18px;border:1px solid var(--line);border-radius:20px;padding:13px 20px;display:flex;align-items:center;justify-content:space-between;background:rgba(5,14,13,.9);position:sticky;top:18px;z-index:5;backdrop-filter:blur(16px)}
+.brand{display:flex;align-items:center;gap:12px;color:var(--text);text-decoration:none}.mark{width:40px;height:40px;border:1px solid rgba(0,224,192,.55);border-radius:12px;display:grid;place-items:center;color:var(--teal);font-weight:800}.brand b{font-size:14px;letter-spacing:2px}
+nav{display:flex;gap:25px}nav a{color:#8da6a2;text-decoration:none;font-size:13px;letter-spacing:1.3px;font-weight:700}nav a:hover{color:var(--teal)}
+.hero{text-align:center;padding:80px 20px 55px}.kicker{color:var(--teal);font-size:11px;letter-spacing:3px;font-weight:800}.hero h1{font-size:clamp(55px,9vw,110px);line-height:.9;letter-spacing:-5px;margin:25px 0 20px}.hero h1 span{color:var(--teal)}.hero p{color:var(--muted);font-size:19px}
+.search{max-width:850px;margin:0 auto 35px;display:flex;border:1px solid var(--line);border-radius:16px;overflow:hidden;background:#07110f}.search input{flex:1;padding:18px;border:0;outline:0;background:transparent;color:var(--text);font-size:17px}.search button{width:65px;border:0;background:var(--teal);cursor:pointer;font-size:22px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;padding:0 30px 35px}.card{border:1px solid var(--line);border-radius:20px;overflow:hidden;background:linear-gradient(145deg,rgba(10,25,22,.9),rgba(3,12,11,.95));transition:.25s}.card:hover{transform:translateY(-4px);border-color:rgba(0,224,192,.45)}.card h2{text-align:center;padding:17px;font-size:20px}.card iframe{display:block;width:100%;height:520px;border:0}
+.info{margin:0 30px 18px;padding:30px;border:1px solid var(--line);border-radius:20px;text-align:center;background:rgba(7,18,16,.8)}.info h2{font-size:26px;margin-bottom:10px}.info p{color:var(--muted);margin-bottom:18px}.btn{display:inline-block;padding:14px 22px;border:1px solid rgba(0,224,192,.35);border-radius:13px;color:var(--text);text-decoration:none;margin:5px;background:transparent}.btn:hover{background:var(--teal);color:#00110d}
+.links{display:grid;grid-template-columns:repeat(3,1fr);gap:15px;padding:0 30px 45px}.link{padding:18px;text-align:center;border:1px solid var(--line);border-radius:16px;color:var(--text);text-decoration:none;background:rgba(7,18,16,.8);font-weight:700}.link:hover{background:var(--teal);color:#00110d}
+footer{text-align:center;padding:45px 20px;border-top:1px solid rgba(160,220,211,.08);color:#66817c}footer a{color:var(--text);text-decoration:none}footer a:hover{color:var(--teal)}
+@media(max-width:1000px){.grid{grid-template-columns:1fr}.links{grid-template-columns:1fr 1fr}.card iframe{height:430px}}
+@media(max-width:650px){.shell{width:calc(100% - 18px);margin:9px;border-radius:18px}header{margin:9px;top:9px;flex-direction:column;gap:10px}nav{gap:13px;flex-wrap:wrap;justify-content:center}.hero{padding:60px 18px 40px}.hero h1{letter-spacing:-3px}.grid{padding:0 15px 20px}.card iframe{height:320px}.info{margin:0 15px 15px}.links{grid-template-columns:1fr;padding:0 15px 30px}.search{margin-left:15px;margin-right:15px}}
+</style>
+</head>
+<body>
+<div class="shell">
+<header>
+<a class="brand" href="../"><span class="mark">SF</span><b>NAVTOOL · WEATHER</b></a>
+<nav><a href="../">HUB</a><a href="./">WEATHER</a><a href="../calc/">CALCULATION</a></nav>
+</header>
+
+<section class="hero">
+<div class="kicker">NAVTOOL · WEATHER · MARITIME TOOLS</div>
+<h1>WEATHER <span>TOOLS</span></h1>
+<p>Wetter, Wind, Druck und maritime Informationen — kompakt an einem Ort.</p>
+</section>
+
+<div class="search"><input id="toolSearch" placeholder="Wettertools suchen ..."><button>→</button></div>
+
+<section class="grid" id="weatherGrid">
+<article class="card" data-search="regen radar regenradar wetter">
+<h2>🌧 Regenradar</h2>
+<iframe src="https://embed.windy.com/embed2.html?lat=53.14&lon=8.46&zoom=6&level=surface&overlay=radar&menu=true&message=true&marker=true&calendar=now" loading="lazy"></iframe>
+</article>
+<article class="card" data-search="wind windkarte">
+<h2>💨 Windkarte</h2>
+<iframe src="https://embed.windy.com/embed2.html?lat=53.14&lon=8.46&zoom=6&level=surface&overlay=wind&menu=true&message=true&marker=true&calendar=now" loading="lazy"></iframe>
+</article>
+<article class="card" data-search="druck isobaren hoch tief luftdruck">
+<h2>🌀 Hochs, Tiefs & Isobaren</h2>
+<iframe src="https://embed.windy.com/embed2.html?lat=53.14&lon=8.46&zoom=5&level=surface&overlay=pressure&menu=true&message=true&marker=true" loading="lazy"></iframe>
+</article>
+</section>
+
+<section class="info">
+<h2>🇩🇪 Deutscher Wetterdienst</h2><p>Aktuelle Bodenwetterkarten und Wetteranalysen des DWD.</p>
+<a class="btn" href="https://www.dwd.de/DE/leistungen/hobbymet_wk_europa/hobbyeuropakarten.html" target="_blank">DWD öffnen ↗</a>
+</section>
+
+<section class="info">
+<h2>🚢 AIS Schiffsverkehr</h2><p>Live-Schiffsverkehr und AIS-Daten.</p>
+<a class="btn" href="https://www.marinetraffic.com" target="_blank">MarineTraffic ↗</a>
+<a class="btn" href="https://www.vesselfinder.com" target="_blank">VesselFinder ↗</a>
+</section>
+
+<div class="kicker" style="text-align:center;margin:45px 0 18px">QUICKLINKS</div>
+<section class="links">
+<a class="link" href="https://www.canada.ca/en/environment-climate-change/services/ice-forecasts-observations/latest-conditions/canadian-sea-concentration-map.html" target="_blank">🇨🇦 Canada Ice Conditions</a>
+<a class="link" href="https://map.openseamap.org" target="_blank">⚓ OpenSeaMap</a>
+<a class="link" href="https://www.dwd.de" target="_blank">🌍 Deutscher Wetterdienst</a>
+<a class="link" href="https://www.windy.com" target="_blank">💨 Windy</a>
+<a class="link" href="https://www.marinetraffic.com" target="_blank">🚢 MarineTraffic</a>
+<a class="link" href="https://www.vesselfinder.com" target="_blank">🛰️ VesselFinder</a>
+</section>
+
+<footer>Made with ❤️ by <a href="https://www.instagram.com/thesimonfischer" target="_blank">Simon Fischer</a><br><small>© 2026 NavTool</small></footer>
+</div>
+<script>
+const input=document.getElementById("toolSearch");
+input.addEventListener("input",()=>{
+ const q=input.value.toLowerCase().trim();
+ document.querySelectorAll("#weatherGrid .card").forEach(card=>{
+   card.style.display=card.dataset.search.includes(q)?"block":"none";
+ });
+});
+</script>
+</body>
+</html>

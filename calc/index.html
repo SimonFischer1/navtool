@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NavTool Calculation</title>
+<style>
+:root{--bg:#020807;--panel:#071210;--text:#eef7f5;--muted:#91aaa6;--line:rgba(160,220,211,.16);--teal:#00e0c0;--red:#ff5364}
+*{box-sizing:border-box;margin:0;padding:0}
+body{min-height:100vh;background:#000;color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;overflow-x:hidden}
+body:before{content:"";position:fixed;inset:0;z-index:-2;background:radial-gradient(circle at 50% 25%,rgba(0,224,192,.08),transparent 42%),#020706}
+body:after{content:"";position:fixed;inset:0;pointer-events:none;z-index:20;opacity:.07;background:repeating-linear-gradient(to bottom,transparent 0,transparent 3px,rgba(255,255,255,.08) 4px)}
+.shell{width:min(1450px,calc(100% - 36px));margin:18px auto;border:1px solid rgba(160,220,211,.24);border-radius:26px;background:rgba(3,11,10,.94);overflow:hidden;box-shadow:0 30px 100px rgba(0,0,0,.65)}
+header{margin:18px;border:1px solid var(--line);border-radius:20px;padding:13px 20px;display:flex;align-items:center;justify-content:space-between;background:rgba(5,14,13,.9);position:sticky;top:18px;z-index:5;backdrop-filter:blur(16px)}
+.brand{display:flex;align-items:center;gap:12px;color:var(--text);text-decoration:none}.mark{width:40px;height:40px;border:1px solid rgba(0,224,192,.55);border-radius:12px;display:grid;place-items:center;color:var(--teal);font-weight:800}.brand b{font-size:14px;letter-spacing:2px}
+nav{display:flex;gap:25px}nav a{color:#8da6a2;text-decoration:none;font-size:13px;letter-spacing:1.3px;font-weight:700}nav a:hover{color:var(--teal)}
+.hero{text-align:center;padding:70px 20px 40px}.kicker{color:var(--teal);font-size:11px;letter-spacing:3px;font-weight:800}.hero h1{font-size:clamp(50px,8vw,95px);line-height:.9;letter-spacing:-4px;margin:22px 0 15px}.hero h1 span{color:var(--teal)}.hero p{color:var(--muted);font-size:18px}
+.search{max-width:850px;margin:0 auto 35px;display:flex;border:1px solid var(--line);border-radius:16px;overflow:hidden;background:#07110f}.search input{flex:1;padding:17px;border:0;outline:0;background:transparent;color:var(--text);font-size:17px}.search button{width:65px;border:0;background:var(--teal);cursor:pointer;font-size:22px}
+.menu{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;padding:0 30px 50px}.tool-card{min-height:175px;padding:25px;border:1px solid var(--line);border-radius:20px;background:linear-gradient(145deg,rgba(10,25,22,.9),rgba(3,12,11,.95));cursor:pointer;transition:.25s}.tool-card:hover{transform:translateY(-4px);border-color:rgba(0,224,192,.5)}.icon{font-size:34px;margin-bottom:22px}.tool-card h2{font-size:20px;margin-bottom:8px}.tool-card p{color:var(--muted);font-size:14px;line-height:1.4}
+.page{display:none;margin:0 30px 50px;padding:30px;border:1px solid var(--line);border-radius:22px;background:linear-gradient(145deg,rgba(8,21,18,.94),rgba(3,12,11,.96))}
+.page.active{display:block}.page h2{font-size:32px;margin-bottom:24px}.back{display:inline-block;margin-bottom:24px;padding:11px 16px;border:1px solid var(--line);border-radius:12px;color:var(--text);background:transparent;cursor:pointer}.back:hover{background:var(--teal);color:#00110d}
+.form-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}.field label{display:block;color:#b5c8c4;font-size:13px;font-weight:700;margin-bottom:7px}.field input,.field select{width:100%;padding:13px;border:1px solid var(--line);border-radius:12px;background:#07110f;color:var(--text);outline:none}.field input:focus,.field select:focus{border-color:var(--teal)}
+.actions{margin-top:20px}.calculate{padding:13px 20px;border:1px solid rgba(0,224,192,.4);border-radius:12px;background:transparent;color:var(--text);cursor:pointer;font-weight:800}.calculate:hover{background:var(--teal);color:#00110d}
+.result{margin-top:20px;padding:20px;border:1px solid var(--line);border-radius:15px;background:rgba(0,224,192,.035);line-height:1.8;color:#d9e8e5}.result b{color:var(--teal)}
+footer{text-align:center;padding:45px 20px;border-top:1px solid rgba(160,220,211,.08);color:#66817c}footer a{color:var(--text);text-decoration:none}footer a:hover{color:var(--teal)}
+@media(max-width:1050px){.menu{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:700px){.shell{width:calc(100% - 18px);margin:9px;border-radius:18px}header{margin:9px;top:9px;flex-direction:column;gap:10px}nav{gap:13px;flex-wrap:wrap;justify-content:center}.hero{padding:55px 18px 35px}.hero h1{letter-spacing:-3px}.menu{grid-template-columns:1fr;padding:0 15px 35px}.page{margin:0 15px 35px;padding:20px}.form-grid{grid-template-columns:1fr}.page h2{font-size:27px}.search{margin-left:15px;margin-right:15px}}
+</style>
+</head>
+<body>
+<div class="shell">
+<header>
+<a class="brand" href="../"><span class="mark">SF</span><b>NAVTOOL · CALCULATION</b></a>
+<nav><a href="../">HUB</a><a href="../weather/">WEATHER</a><a href="./">CALCULATION</a></nav>
+</header>
+
+<section class="hero">
+<div class="kicker">NAVTOOL · CALCULATION · NAVIGATION TOOLS</div>
+<h1>CALCULATION <span>MODE</span></h1>
+<p>Praktische nautische Berechnungen — direkt im Browser und ohne externe Software.</p>
+</section>
+
+<div class="search"><input id="toolSearch" placeholder="Rechner suchen ..."><button>→</button></div>
+
+<section class="menu" id="menu">
+<div class="tool-card" data-search="besteck mittelbreite vergrößerte breite" onclick="showPage('besteck')"><div class="icon">🧭</div><h2>Besteckrechnung</h2><p>Mittelbreite & Distanz</p></div>
+<div class="tool-card" data-search="grosskreis großkreis navigation" onclick="showPage('grosskreis')"><div class="icon">🌍</div><h2>Großkreisnavigation</h2><p>Distanz & Anfangskurs</p></div>
+<div class="tool-card" data-search="strom stromdreieck kdw fdw" onclick="showPage('strom')"><div class="icon">🌊</div><h2>Stromdreiecke</h2><p>KÜG & FÜG</p></div>
+<div class="tool-card" data-search="koppeln eta fahrt weg zeit" onclick="showPage('koppeln')"><div class="icon">⏱️</div><h2>Koppelnavigation</h2><p>Fahrt · Weg · ETA</p></div>
+<div class="tool-card" data-search="utc uhrzeit zeitzone zeit" onclick="showPage('utc')"><div class="icon">🌐</div><h2>UTC Rechner</h2><p>Ortszeit → UTC</p></div>
+<div class="tool-card" data-search="feuer kimm sichtweite" onclick="showPage('feuer')"><div class="icon">🔥</div><h2>Feuer in der Kimm</h2><p>Sichtweite berechnen</p></div>
+<div class="tool-card" data-search="gezeiten tide zwölftel wasserstand" onclick="showPage('gezeiten')"><div class="icon">🌊</div><h2>Gezeiten</h2><p>Zwölftelregel</p></div>
+<div class="tool-card" data-search="radar radarhorizont antenne" onclick="showPage('radar')"><div class="icon">📡</div><h2>Radar</h2><p>Radarhorizont</p></div>
+</section>
+
+<div id="besteck" class="page">
+<button class="back" onclick="goHome()">← Zurück</button><h2>🧭 Besteckrechnung</h2>
+<div class="form-grid">
+<div class="field"><label>Breite A – Grad</label><input id="latAGrad" type="number" step="any"></div><div class="field"><label>Breite A – Minuten</label><input id="latAMin" type="number" step="any"></div>
+<div class="field"><label>Breite A – Richtung</label><select id="latADir"><option>N</option><option>S</option></select></div>
+<div class="field"><label>Länge A – Grad</label><input id="lonAGrad" type="number" step="any"></div>
+<div class="field"><label>Länge A – Minuten</label><input id="lonAMin" type="number" step="any"></div><div class="field"><label>Länge A – Richtung</label><select id="lonADir"><option>E</option><option>W</option></select></div>
+<div class="field"><label>Breite B – Grad</label><input id="latBGrad" type="number" step="any"></div><div class="field"><label>Breite B – Minuten</label><input id="latBMin" type="number" step="any"></div>
+<div class="field"><label>Breite B – Richtung</label><select id="latBDir"><option>N</option><option>S</option></select></div><div class="field"><label>Länge B – Grad</label><input id="lonBGrad" type="number" step="any"></div>
+<div class="field"><label>Länge B – Minuten</label><input id="lonBMin" type="number" step="any"></div><div class="field"><label>Länge B – Richtung</label><select id="lonBDir"><option>E</option><option>W</option></select></div>
+</div><div class="actions"><button class="calculate" onclick="calcBesteck()">Berechnen</button></div><div class="result" id="besteckResult">Ergebnis erscheint hier.</div>
+</div>
+
+<div id="grosskreis" class="page">
+<button class="back" onclick="goHome()">← Zurück</button><h2>🌍 Großkreisnavigation</h2>
+<div class="form-grid">
+<div class="field"><label>Breite Position A (°)</label><input id="gcLatA" type="number" step="any"></div><div class="field"><label>Länge Position A (°)</label><input id="gcLonA" type="number" step="any"></div>
+<div class="field"><label>Breite Position B (°)</label><input id="gcLatB" type="number" step="any"></div><div class="field"><label>Länge Position B (°)</label><input id="gcLonB" type="number" step="any"></div>
+</div><div class="actions"><button class="calculate" onclick="calcGrosskreis()">Berechnen</button></div><div class="result" id="grosskreisResult">Ergebnis erscheint hier.</div>
+</div>
+
+<div id="strom" class="page">
+<button class="back" onclick="goHome()">← Zurück</button><h2>🌊 Stromdreieck</h2>
+<div class="form-grid">
+<div class="field"><label>Kurs durchs Wasser (KDW °)</label><input id="kdw" type="number" step="any"></div><div class="field"><label>Fahrt durchs Wasser (FDW kn)</label><input id="fdw" type="number" step="any"></div>
+<div class="field"><label>Stromkurs (StK °)</label><input id="stk" type="number" step="any"></div><div class="field"><label>Stromgeschwindigkeit (StG kn)</label><input id="stg" type="number" step="any"></div>
+</div><div class="actions"><button class="calculate" onclick="calcStrom()">Berechnen</button></div><div class="result" id="stromResult">Ergebnis erscheint hier.</div>
+</div>
+
+<div id="koppeln" class="page">
+<button class="back" onclick="goHome()">← Zurück</button><h2>⏱️ Koppelnavigation & ETA</h2>
+<div class="form-grid">
+<div class="field"><label>Distanz (sm)</label><input id="distanz" type="number" step="any"></div><div class="field"><label>Geschwindigkeit (kn)</label><input id="speed" type="number" step="any"></div>
+<div class="field"><label>Startzeit</label><input id="starttime" type="time"></div>
+</div><div class="actions"><button class="calculate" onclick="calcKoppeln()">Berechnen</button></div><div class="result" id="koppelnResult">Ergebnis erscheint hier.</div>
+</div>
+
+<div id="utc" class="page">
+<button class="back" onclick="goHome()">← Zurück</button><h2>🌐 UTC Rechner</h2>
+<div class="form-grid">
+<div class="field"><label>Datum & Uhrzeit (Ortszeit)</label><input id="localTime" type="datetime-local"></div>
+<div class="field"><label>Zeitzonenabweichung zu UTC (z. B. +2)</label><input id="utcOffset" type="number" step="0.25" value="2"></div>
+</div><div class="actions"><button class="calculate" onclick="calcUTC()">UTC berechnen</button></div><div class="result" id="utcResult">Ergebnis erscheint hier.</div>
+</div>
+
+<div id="feuer" class="page">
+<button class="back" onclick="goHome()">← Zurück</button><h2>🔥 Feuer in der Kimm</h2>
+<div class="form-grid"><div class="field"><label>Feuerhöhe (m)</label><input id="fh" type="number" step="any"></div><div class="field"><label>Augeshöhe (m)</label><input id="ah" type="number" step="any"></div></div>
+<div class="actions"><button class="calculate" onclick="calcFeuer()">Berechnen</button></div><div class="result" id="feuerResult">Ergebnis erscheint hier.</div>
+</div>
+
+<div id="gezeiten" class="page">
+<button class="back" onclick="goHome()">← Zurück</button><h2>🌊 Gezeiten – Zwölftelregel</h2>
+<div class="form-grid">
+<div class="field"><label>Hochwasserhöhe (m)</label><input id="hw" type="number" step="0.1"></div><div class="field"><label>Niedrigwasserhöhe (m)</label><input id="lw" type="number" step="0.1"></div>
+<div class="field"><label>Stunden seit Hochwasser (1–6)</label><input id="hoursSinceHW" type="number" min="1" max="6" step="1"></div>
+</div><div class="actions"><button class="calculate" onclick="calcGezeiten()">Berechnen</button></div><div class="result" id="gezeitenResult">Ergebnis erscheint hier.</div>
+</div>
+
+<div id="radar" class="page">
+<button class="back" onclick="goHome()">← Zurück</button><h2>📡 Radarhorizont</h2>
+<div class="form-grid"><div class="field"><label>Antennenhöhe (m)</label><input id="antHeight" type="number" step="any"></div></div>
+<div class="actions"><button class="calculate" onclick="calcRadar()">Berechnen</button></div><div class="result" id="radarResult">Ergebnis erscheint hier.</div>
+</div>
+
+<footer>Made with ❤️ by <a href="https://www.instagram.com/thesimonfischer" target="_blank">Simon Fischer</a><br><small>© 2026 NavTool</small></footer>
+</div>
+
+<script>
+const $=id=>document.getElementById(id);
+function showPage(id){$("menu").style.display="none";document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));$(id).classList.add("active");window.scrollTo({top:0,behavior:"smooth"});}
+function goHome(){document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));$("menu").style.display="grid";window.scrollTo({top:0,behavior:"smooth"});}
+$("toolSearch").addEventListener("input",e=>{const q=e.target.value.toLowerCase().trim();document.querySelectorAll(".tool-card").forEach(c=>c.style.display=c.dataset.search.includes(q)?"block":"none")});
+function num(v){return parseFloat(v)}
+function pos(g,m,d){let x=num(g)+num(m)/60;return (d==="S"||d==="W")?-x:x}
+function calcBesteck(){
+ const latA=pos($("latAGrad").value,$("latAMin").value,$("latADir").value),lonA=pos($("lonAGrad").value,$("lonAMin").value,$("lonADir").value);
+ const latB=pos($("latBGrad").value,$("latBMin").value,$("latBDir").value),lonB=pos($("lonBGrad").value,$("lonBMin").value,$("lonBDir").value);
+ if([latA,lonA,latB,lonB].some(isNaN)){ $("besteckResult").innerHTML="Bitte alle Felder ausfüllen.";return;}
+ const dPhi=(latB-latA)*60,dLam=(lonB-lonA)*60,mid=(latA+latB)/2;
+ const departure=dLam*Math.cos(mid*Math.PI/180),dist=Math.hypot(dPhi,departure),rwK=(Math.atan2(departure,dPhi)*180/Math.PI+360)%360;
+ $("besteckResult").innerHTML=`<b>Δφ:</b> ${dPhi.toFixed(2)}'<br><b>Δλ:</b> ${dLam.toFixed(2)}'<br><b>Abfahrt:</b> ${departure.toFixed(2)}'<br><b>Distanz:</b> ${dist.toFixed(2)} sm<br><b>rwK:</b> ${rwK.toFixed(1)}°`;
+}
+function calcGrosskreis(){
+ const lat1=num($("gcLatA").value),lon1=num($("gcLonA").value),lat2=num($("gcLatB").value),lon2=num($("gcLonB").value);
+ if([lat1,lon1,lat2,lon2].some(isNaN)){ $("grosskreisResult").innerHTML="Bitte alle Felder ausfüllen.";return;}
+ const R=3440.065,p1=lat1*Math.PI/180,p2=lat2*Math.PI/180,dp=(lat2-lat1)*Math.PI/180,dl=(lon2-lon1)*Math.PI/180;
+ const a=Math.sin(dp/2)**2+Math.cos(p1)*Math.cos(p2)*Math.sin(dl/2)**2,c=2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a)),dist=R*c;
+ const y=Math.sin(dl)*Math.cos(p2),x=Math.cos(p1)*Math.sin(p2)-Math.sin(p1)*Math.cos(p2)*Math.cos(dl),course=(Math.atan2(y,x)*180/Math.PI+360)%360;
+ $("grosskreisResult").innerHTML=`<b>Großkreisdistanz:</b> ${dist.toFixed(1)} sm<br><b>Anfangskurs:</b> ${course.toFixed(1)}°`;
+}
+function calcStrom(){
+ const kdw=num($("kdw").value),fdw=num($("fdw").value),stk=num($("stk").value),stg=num($("stg").value);
+ if([kdw,fdw,stk,stg].some(isNaN)){ $("stromResult").innerHTML="Bitte alle Werte ausfüllen.";return;}
+ const a=kdw*Math.PI/180,b=stk*Math.PI/180,vx=fdw*Math.sin(a)+stg*Math.sin(b),vy=fdw*Math.cos(a)+stg*Math.cos(b),f=Math.hypot(vx,vy),k=(Math.atan2(vx,vy)*180/Math.PI+360)%360;
+ $("stromResult").innerHTML=`<b>Kurs über Grund (KÜG):</b> ${k.toFixed(1)}°<br><b>Fahrt über Grund (FÜG):</b> ${f.toFixed(2)} kn`;
+}
+function calcKoppeln(){
+ const d=num($("distanz").value),v=num($("speed").value),start=$("starttime").value;
+ if(!isFinite(d)||!isFinite(v)||v<=0||!start){$("koppelnResult").innerHTML="Bitte Distanz, Geschwindigkeit und Startzeit korrekt eingeben.";return;}
+ const total=Math.round(d/v*60),h=Math.floor(total/60),m=total%60,[sh,sm]=start.split(":").map(Number),eta=(sh*60+sm+total)%(24*60);
+ $("koppelnResult").innerHTML=`<b>Fahrzeit:</b> ${h} h ${m} min<br><b>ETA:</b> ${String(Math.floor(eta/60)).padStart(2,"0")}:${String(eta%60).padStart(2,"0")} Uhr`;
+}
+function calcUTC(){
+ const value=$("localTime").value,offset=num($("utcOffset").value);
+ if(!value||!isFinite(offset)){ $("utcResult").innerHTML="Bitte Datum, Uhrzeit und UTC-Abweichung eingeben.";return;}
+ const [datePart,timePart]=value.split("T"),[y,mo,d]=datePart.split("-").map(Number),[h,mi]=timePart.split(":").map(Number);
+ const utcMs=Date.UTC(y,mo-1,d,h,mi)-offset*3600000,utc=new Date(utcMs);
+ $("utcResult").innerHTML=`<b>UTC:</b> ${utc.toUTCString()}<br><b>ISO:</b> ${utc.toISOString()}<br><b>Hinweis:</b> ${offset>=0?"+":""}${offset} h gegenüber UTC wurden berücksichtigt.`;
+}
+function calcFeuer(){
+ const fh=num($("fh").value),ah=num($("ah").value);
+ if(!(fh>0&&ah>=0)){ $("feuerResult").innerHTML="Bitte gültige Höhen eingeben.";return;}
+ const sm=2.08*(Math.sqrt(fh)+Math.sqrt(ah));$("feuerResult").innerHTML=`<b>Sichtweite:</b> ${sm.toFixed(2)} sm<br><b>Sichtweite:</b> ${(sm*1.852).toFixed(2)} km`;
+}
+function calcGezeiten(){
+ const hw=num($("hw").value),lw=num($("lw").value),h=num($("hoursSinceHW").value);
+ if(!isFinite(hw)||!isFinite(lw)||!Number.isInteger(h)||h<1||h>6){$("gezeitenResult").innerHTML="Bitte gültige Werte eingeben (Stunde 1–6).";return;}
+ const tw=[1,2,3,3,2,1],hub=hw-lw,anteil=tw.slice(0,h).reduce((a,b)=>a+b,0),water=hw-hub*anteil/12;
+ $("gezeitenResult").innerHTML=`<b>Tidenhub:</b> ${hub.toFixed(2)} m<br><b>Wasserstand:</b> ${water.toFixed(2)} m`;
+}
+function calcRadar(){
+ const h=num($("antHeight").value);
+ if(!(h>0)){ $("radarResult").innerHTML="Bitte eine positive Antennenhöhe eingeben.";return;}
+ const km=3.57*Math.sqrt(h);$("radarResult").innerHTML=`<b>Radarhorizont:</b> ${km.toFixed(2)} km<br><b>Radarhorizont:</b> ${(km/1.852).toFixed(2)} sm`;
+}
+</script>
+</body>
+</html>

@@ -74,7 +74,11 @@ h1 span{display:block;color:var(--teal)}
   background:linear-gradient(145deg,rgba(10,25,22,.9),rgba(3,12,11,.9));
   text-decoration:none;color:var(--text);transition:.25s;position:relative;overflow:hidden
 }
-.card:before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 80% 20%,rgba(0,224,192,.12),transparent 35%);opacity:0;transition:.25s}
+.card:before{
+  content:"";position:absolute;inset:0;
+  background:radial-gradient(circle at 80% 20%,rgba(0,224,192,.12),transparent 35%);
+  opacity:0;transition:.25s
+}
 .card:hover{transform:translateY(-5px);border-color:rgba(0,224,192,.5)}
 .card:hover:before{opacity:1}
 .icon{font-size:38px;margin-bottom:35px}
@@ -84,93 +88,294 @@ h1 span{display:block;color:var(--teal)}
   display:flex;max-width:850px;margin:0 auto 40px;border:1px solid var(--line);
   border-radius:16px;overflow:hidden;background:#07110f
 }
-.search input{flex:1;padding:18px;border:0;outline:0;background:transparent;color:var(--text);font-size:17px}
-.search button{width:65px;border:0;background:var(--teal);color:#00110d;font-size:22px;cursor:pointer}
-.time-card{max-width:650px;margin:0 auto;padding:25px;border:1px solid var(--line);border-radius:20px;text-align:center;background:rgba(7,18,16,.7)}
-.clock{font-size:54px;font-weight:900;letter-spacing:2px}.date,.utc{color:var(--muted);margin-top:7px}
+.search input{
+  flex:1;padding:18px;border:0;outline:0;background:transparent;
+  color:var(--text);font-size:17px
+}
+.search button{
+  width:65px;border:0;background:var(--teal);
+  color:#00110d;font-size:22px;cursor:pointer
+}
+.time-card{
+  max-width:650px;margin:0 auto;padding:25px;border:1px solid var(--line);
+  border-radius:20px;text-align:center;background:rgba(7,18,16,.7)
+}
+.clock{font-size:54px;font-weight:900;letter-spacing:2px}
+.date,.utc{color:var(--muted);margin-top:7px}
 .quick{grid-template-columns:repeat(4,1fr)}
-.quick .card{min-height:150px;text-align:center;padding:22px}.quick .icon{margin-bottom:18px;font-size:30px}
-footer{text-align:center;padding:55px 20px;color:#66817c;border-top:1px solid rgba(160,220,211,.08)}
-footer a{color:var(--text);text-decoration:none}footer a:hover{color:var(--teal)}
-@media(max-width:900px){nav{gap:14px}.grid{grid-template-columns:1fr 1fr}.quick{grid-template-columns:1fr 1fr}h1{letter-spacing:-4px}}
+.quick .card{min-height:150px;text-align:center;padding:22px}
+.quick .icon{margin-bottom:18px;font-size:30px}
+footer{
+  text-align:center;padding:55px 20px;color:#66817c;
+  border-top:1px solid rgba(160,220,211,.08)
+}
+footer a{color:var(--text);text-decoration:none}
+footer a:hover{color:var(--teal)}
+
+@media(max-width:900px){
+  nav{gap:14px}
+  .grid{grid-template-columns:1fr 1fr}
+  .quick{grid-template-columns:1fr 1fr}
+  h1{letter-spacing:-4px}
+}
+
 @media(max-width:650px){
-  .shell{width:calc(100% - 18px);margin:9px auto;border-radius:18px}
-  header{margin:9px;top:9px;padding:10px 13px;flex-direction:column;gap:10px}
-  nav{gap:13px;flex-wrap:wrap;justify-content:center}.brand-name{font-size:13px}
-  .hero{min-height:650px;padding:70px 18px}.hero p{font-size:18px}h1{font-size:70px;letter-spacing:-3px;margin:40px 0 28px}
-  .section{padding:50px 18px}.section h2{font-size:32px}.section-head{display:block}
-  .grid,.quick{grid-template-columns:1fr}.card{min-height:175px}
+  .shell{
+    width:calc(100% - 18px);
+    margin:9px auto;
+    border-radius:18px
+  }
+  header{
+    margin:9px;
+    top:9px;
+    padding:10px 13px;
+    flex-direction:column;
+    gap:10px
+  }
+  nav{
+    gap:13px;
+    flex-wrap:wrap;
+    justify-content:center
+  }
+  .brand-name{font-size:13px}
+  .hero{
+    min-height:650px;
+    padding:70px 18px
+  }
+  .hero p{font-size:18px}
+  h1{
+    font-size:70px;
+    letter-spacing:-3px;
+    margin:40px 0 28px
+  }
+  .section{padding:50px 18px}
+  .section h2{font-size:32px}
+  .section-head{display:block}
+  .grid,.quick{grid-template-columns:1fr}
+  .card{min-height:175px}
 }
 </style>
 </head>
+
 <body>
+
 <div class="shell">
+
 <header>
   <a class="brand" href="./">
-    <span class="brand-mark">SF</span><span class="brand-name">NAVTOOL HUB</span>
+    <span class="brand-mark">SF</span>
+    <span class="brand-name">NAVTOOL HUB</span>
   </a>
+
   <nav>
-    <a href="#projekte">PROJEKTE</a><a href="#quicklinks">QUICKLINKS</a><a href="#zeit">ZEIT</a><a href="http://me.navtool.de/">PORTFOLIO</a>
+    <a href="#projekte">PROJEKTE</a>
+    <a href="#quicklinks">QUICKLINKS</a>
+    <a href="#zeit">ZEIT</a>
+
+    <!-- Portfolio liegt in einem anderen Repository -->
+    <a href="https://me.navtool.de">PORTFOLIO</a>
   </nav>
 </header>
 
 <main>
+
 <section class="hero">
-  <div class="eyebrow"><span class="dot">●</span>NAVTOOL · HUB · DIGITAL WORKSPACE</div>
-  <h1>NAVTOOL<span>HUB</span></h1>
-  <p>Dein zentraler Einstiegspunkt für <strong>Navigation, Wetter, Berechnungen</strong> und meine wichtigsten digitalen Werkzeuge.</p>
-  <p style="margin-top:34px">Schnellzugriff auf Projekte, Webseiten und Services — alles an einem Ort.</p>
+  <div class="eyebrow">
+    <span class="dot">●</span>NAVTOOL · HUB · DIGITAL WORKSPACE
+  </div>
+
+  <h1>
+    NAVTOOL
+    <span>HUB</span>
+  </h1>
+
+  <p>
+    Dein zentraler Einstiegspunkt für
+    <strong>Navigation, Wetter, Berechnungen</strong>
+    und meine wichtigsten digitalen Werkzeuge.
+  </p>
+
+  <p style="margin-top:34px">
+    Schnellzugriff auf Projekte, Webseiten und Services — alles an einem Ort.
+  </p>
+
   <div class="scroll">SCROLL ↓↓↓</div>
 </section>
 
+
 <section class="section" id="projekte">
-  <div class="section-head"><div><div class="kicker">01 · PROJECTS</div><h2>Meine Projekte</h2></div></div>
+
+  <div class="section-head">
+    <div>
+      <div class="kicker">01 · PROJECTS</div>
+      <h2>Meine Projekte</h2>
+    </div>
+  </div>
+
   <div class="grid">
-    <a class="card" href="./weather/"><div class="icon">🌦️</div><h3>Weather</h3><p>Wetterkarten, Regenradar, Wind, Druck und maritime Wettertools.</p></a>
-    <a class="card" href="./calc/"><div class="icon">⚓</div><h3>Calculation</h3><p>Navigationsrechner für Besteck, Großkreis, Strom, ETA, UTC und mehr.</p></a>
-    <a class="card" href="#"><div class="icon">🚧</div><h3>Coming Soon</h3><p>Weitere NavTool-Projekte sind bereits in Planung.</p></a>
+
+    <!-- Bleibt relativ, weil Weather im selben Repository liegt -->
+    <a class="card" href="./weather/">
+      <div class="icon">🌦️</div>
+      <h3>Weather</h3>
+      <p>
+        Wetterkarten, Regenradar, Wind, Druck und maritime Wettertools.
+      </p>
+    </a>
+
+    <!-- Bleibt relativ, weil Calculation im selben Repository liegt -->
+    <a class="card" href="./calc/">
+      <div class="icon">⚓</div>
+      <h3>Calculation</h3>
+      <p>
+        Navigationsrechner für Besteck, Großkreis, Strom, ETA, UTC und mehr.
+      </p>
+    </a>
+
+    <a class="card" href="#">
+      <div class="icon">🚧</div>
+      <h3>Coming Soon</h3>
+      <p>
+        Weitere NavTool-Projekte sind bereits in Planung.
+      </p>
+    </a>
+
   </div>
 </section>
+
 
 <section class="section" id="quicklinks">
-  <div class="section-head"><div><div class="kicker">02 · SHORTCUTS</div><h2>Quicklinks</h2></div></div>
-  <div class="search"><input id="search" placeholder="Moin, was möchtest du suchen?"><button id="searchBtn">→</button></div>
+
+  <div class="section-head">
+    <div>
+      <div class="kicker">02 · SHORTCUTS</div>
+      <h2>Quicklinks</h2>
+    </div>
+  </div>
+
+  <div class="search">
+    <input id="search" placeholder="Moin, was möchtest du suchen?">
+    <button id="searchBtn">→</button>
+  </div>
+
   <div class="grid quick">
-    <a class="card" href="https://ecampus.jade-hs.de" target="_blank"><div class="icon">🎓</div><h3>E-Campus</h3></a>
-    <a class="card" href="https://jadeconnect.sharepoint.com/sites/StudierendeFBSeefahrtundLogistik" target="_blank"><div class="icon">📚</div><h3>Jade Connect</h3></a>
-    <a class="card" href="https://map.openseamap.org" target="_blank"><div class="icon">⚓</div><h3>OpenSeaMap</h3></a>
-    <a class="card" href="https://www.studierendenwerk-oldenburg.de/essen/speiseplaene-mensen/speiseplan-elsfleth" target="_blank"><div class="icon">🍝</div><h3>Mensa</h3></a>
-    <a class="card" href="https://moodle.jade-hs.de/moodle/login/index.php" target="_blank"><div class="icon">💻</div><h3>Moodle</h3></a>
-    <a class="card" href="#"><div class="icon">🗺️</div><h3>Coming Soon</h3></a>
-    <a class="card" href="#"><div class="icon">📷</div><h3>Coming Soon</h3></a>
-    <a class="card" href="#"><div class="icon">🌍</div><h3>Coming Soon</h3></a>
+
+    <a class="card" href="https://ecampus.jade-hs.de" target="_blank">
+      <div class="icon">🎓</div>
+      <h3>E-Campus</h3>
+    </a>
+
+    <a class="card" href="https://jadeconnect.sharepoint.com/sites/StudierendeFBSeefahrtundLogistik" target="_blank">
+      <div class="icon">📚</div>
+      <h3>Jade Connect</h3>
+    </a>
+
+    <a class="card" href="https://map.openseamap.org" target="_blank">
+      <div class="icon">⚓</div>
+      <h3>OpenSeaMap</h3>
+    </a>
+
+    <a class="card" href="https://www.studierendenwerk-oldenburg.de/essen/speiseplaene-mensen/speiseplan-elsfleth" target="_blank">
+      <div class="icon">🍝</div>
+      <h3>Mensa</h3>
+    </a>
+
+    <a class="card" href="https://moodle.jade-hs.de/moodle/login/index.php" target="_blank">
+      <div class="icon">💻</div>
+      <h3>Moodle</h3>
+    </a>
+
+    <a class="card" href="#">
+      <div class="icon">🗺️</div>
+      <h3>Coming Soon</h3>
+    </a>
+
+    <a class="card" href="#">
+      <div class="icon">📷</div>
+      <h3>Coming Soon</h3>
+    </a>
+
+    <a class="card" href="#">
+      <div class="icon">🌍</div>
+      <h3>Coming Soon</h3>
+    </a>
+
   </div>
 </section>
 
+
 <section class="section" id="zeit">
-  <div class="section-head"><div><div class="kicker">03 · TIME</div><h2>Zeit</h2></div></div>
-  <div class="time-card"><div id="clock" class="clock"></div><div id="utc" class="utc"></div><div id="date" class="date"></div></div>
+
+  <div class="section-head">
+    <div>
+      <div class="kicker">03 · TIME</div>
+      <h2>Zeit</h2>
+    </div>
+  </div>
+
+  <div class="time-card">
+    <div id="clock" class="clock"></div>
+    <div id="utc" class="utc"></div>
+    <div id="date" class="date"></div>
+  </div>
+
 </section>
+
 </main>
 
-<footer>Made with ❤️ by <a href="https://www.instagram.com/thesimonfischer" target="_blank">Simon Fischer</a></footer>
+
+<footer>
+  Made with ❤️ by
+  <a href="https://www.instagram.com/thesimonfischer" target="_blank">
+    Simon Fischer
+  </a>
+</footer>
+
 </div>
+
 
 <script>
 function updateTime(){
   const now=new Date();
-  document.getElementById("clock").textContent=now.toLocaleTimeString("de-DE");
-  document.getElementById("utc").textContent="UTC: "+now.toUTCString().split(" ")[4];
-  document.getElementById("date").textContent=now.toLocaleDateString("de-DE",{weekday:"long",day:"numeric",month:"long",year:"numeric"});
+
+  document.getElementById("clock").textContent =
+    now.toLocaleTimeString("de-DE");
+
+  document.getElementById("utc").textContent =
+    "UTC: "+now.toUTCString().split(" ")[4];
+
+  document.getElementById("date").textContent =
+    now.toLocaleDateString("de-DE",{
+      weekday:"long",
+      day:"numeric",
+      month:"long",
+      year:"numeric"
+    });
 }
-setInterval(updateTime,1000); updateTime();
+
+setInterval(updateTime,1000);
+updateTime();
+
 
 function searchEcosia(){
   const q=document.getElementById("search").value.trim();
-  if(q) window.open("https://www.ecosia.org/search?q="+encodeURIComponent(q),"_blank");
+
+  if(q){
+    window.open(
+      "https://www.ecosia.org/search?q="+encodeURIComponent(q),
+      "_blank"
+    );
+  }
 }
-document.getElementById("searchBtn").addEventListener("click",searchEcosia);
-document.getElementById("search").addEventListener("keydown",e=>{if(e.key==="Enter")searchEcosia()});
+
+document.getElementById("searchBtn")
+  .addEventListener("click",searchEcosia);
+
+document.getElementById("search")
+  .addEventListener("keydown",e=>{
+    if(e.key==="Enter") searchEcosia();
+  });
 </script>
+
 </body>
 </html>

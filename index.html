@@ -4,47 +4,43 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>NavTool — Maritime Digital Workspace</title>
+<title>NAVTOOL — Maritime Navigation Workspace</title>
 
 <meta
   name="description"
-  content="NavTool — Maritime Navigation, Karten, Berechnungen, Wetter und digitale Werkzeuge."
+  content="NAVTOOL — Maritime Navigation Workspace für Map, Routing, NAVTEXT, COLREG, Weather und nautische Berechnungen."
 >
 
-<meta name="theme-color" content="#020807">
+<meta name="theme-color" content="#05090c">
 
 <style>
 
 /* =========================================================
-   NAVTOOL HUB
-   MAIN DESIGN SYSTEM
+   NAVTOOL — MAIN HUB
    ========================================================= */
 
-:root{
-  --bg:#020706;
-  --bg2:#030d0b;
+:root {
+  --bg: #05090c;
+  --bg2: #071116;
+  --panel: rgba(10, 21, 27, .82);
+  --panel2: rgba(13, 27, 34, .9);
 
-  --panel:#071210;
-  --panel2:#0a1714;
-  --panel3:#0d1d19;
+  --text: #ecfbf9;
+  --muted: #7e9697;
+  --muted2: #587071;
 
-  --text:#eef8f6;
-  --muted:#8da7a2;
-  --muted2:#5f7772;
+  --teal: #55e5d1;
+  --teal2: #1eb9a8;
+  --cyan: #67dfff;
 
-  --teal:#00e0c0;
-  --teal2:#00b99f;
-  --cyan:#5deee0;
+  --line: rgba(85, 229, 209, .13);
+  --line2: rgba(85, 229, 209, .3);
 
-  --line:rgba(160,220,211,.15);
-  --line-strong:rgba(0,224,192,.42);
+  --danger: #ff7070;
+  --yellow: #ffd166;
 
-  --danger:#ff5364;
-  --warning:#ffc857;
-
-  --shadow:0 30px 100px rgba(0,0,0,.65);
-
-  --radius:22px;
+  --radius: 18px;
+  --max: 1280px;
 }
 
 
@@ -52,133 +48,162 @@
    RESET
    ========================================================= */
 
-*{
-  box-sizing:border-box;
-  margin:0;
-  padding:0;
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
-html{
-  scroll-behavior:smooth;
+html {
+  scroll-behavior: smooth;
 }
 
-body{
-  min-height:100vh;
+body {
+  min-height: 100vh;
+  overflow-x: hidden;
+
+  color: var(--text);
 
   background:
     radial-gradient(
-      circle at 50% 0%,
-      rgba(0,224,192,.055),
-      transparent 35%
+      circle at 15% 10%,
+      rgba(30,185,168,.09),
+      transparent 30%
     ),
-    linear-gradient(
-      180deg,
-      #020807 0%,
-      #000 100%
-    );
-
-  color:var(--text);
+    radial-gradient(
+      circle at 85% 25%,
+      rgba(103,223,255,.05),
+      transparent 28%
+    ),
+    var(--bg);
 
   font-family:
     Inter,
+    ui-sans-serif,
+    system-ui,
     -apple-system,
     BlinkMacSystemFont,
     "Segoe UI",
-    Arial,
     sans-serif;
-
-  overflow-x:hidden;
 }
 
+body::before {
+  content: "";
 
-/* =========================================================
-   BACKGROUND GRID
-   ========================================================= */
+  position: fixed;
+  inset: 0;
 
-body::before{
-  content:"";
-
-  position:fixed;
-  inset:0;
-
-  pointer-events:none;
-  z-index:-5;
+  z-index: -3;
+  pointer-events: none;
 
   background-image:
     linear-gradient(
-      rgba(0,224,192,.025) 1px,
+      rgba(85,229,209,.025) 1px,
       transparent 1px
     ),
     linear-gradient(
       90deg,
-      rgba(0,224,192,.025) 1px,
+      rgba(85,229,209,.025) 1px,
       transparent 1px
     );
 
-  background-size:55px 55px;
+  background-size: 44px 44px;
+}
 
-  mask-image:
+body::after {
+  content: "";
+
+  position: fixed;
+  inset: 0;
+
+  z-index: -2;
+  pointer-events: none;
+
+  background:
     linear-gradient(
-      to bottom,
-      black,
-      transparent 85%
+      180deg,
+      transparent,
+      rgba(85,229,209,.025),
+      transparent
     );
+
+  animation: scanline 9s linear infinite;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+input {
+  font: inherit;
 }
 
 
 /* =========================================================
-   SCANLINE EFFECT
+   GLOBAL
    ========================================================= */
 
-body::after{
-  content:"";
+.container {
+  width: min(
+    var(--max),
+    calc(100% - 40px)
+  );
 
-  position:fixed;
-  inset:0;
-
-  pointer-events:none;
-  z-index:100;
-
-  opacity:.045;
-
-  background:
-    repeating-linear-gradient(
-      to bottom,
-      transparent 0,
-      transparent 3px,
-      rgba(255,255,255,.08) 4px
-    );
+  margin-inline: auto;
 }
 
+.section {
+  padding: 110px 0;
+}
 
-/* =========================================================
-   PAGE SHELL
-   ========================================================= */
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
 
-.shell{
-  width:min(1420px,calc(100% - 32px));
+  color: var(--teal);
 
-  margin:16px auto;
+  font-size: 10px;
+  font-weight: 900;
 
-  min-height:calc(100vh - 32px);
+  letter-spacing: .2em;
+  text-transform: uppercase;
+}
 
-  border:
-    1px solid rgba(160,220,211,.18);
+.eyebrow::before {
+  content: "";
 
-  border-radius:28px;
+  width: 25px;
+  height: 1px;
 
-  overflow:hidden;
-
-  background:
-    linear-gradient(
-      145deg,
-      rgba(5,15,13,.96),
-      rgba(1,7,6,.96)
-    );
+  background: var(--teal);
 
   box-shadow:
-    var(--shadow),
-    inset 0 0 100px rgba(0,224,192,.025);
+    0 0 10px rgba(85,229,209,.5);
+}
+
+.section-title {
+  margin-top: 13px;
+
+  font-size:
+    clamp(38px, 5vw, 64px);
+
+  line-height: .95;
+
+  letter-spacing: -.055em;
+}
+
+.section-description {
+  max-width: 680px;
+
+  margin-top: 20px;
+
+  color: var(--muted);
+
+  font-size: 14px;
+  line-height: 1.8;
 }
 
 
@@ -186,210 +211,146 @@ body::after{
    HEADER
    ========================================================= */
 
-header{
-  position:sticky;
-  top:14px;
+.site-header {
+  position: sticky;
+  top: 0;
 
-  z-index:50;
+  z-index: 100;
 
-  margin:14px;
-
-  min-height:70px;
-
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-
-  padding:0 22px;
-
-  border:1px solid var(--line);
-
-  border-radius:19px;
+  border-bottom: 1px solid var(--line);
 
   background:
-    rgba(5,15,13,.86);
+    rgba(5,9,12,.82);
 
-  backdrop-filter:blur(18px);
-  -webkit-backdrop-filter:blur(18px);
-
-  box-shadow:
-    0 12px 40px rgba(0,0,0,.35);
+  backdrop-filter: blur(22px);
 }
 
+.navbar {
+  height: 76px;
 
-/* BRAND */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 
-.brand{
-  display:flex;
-  align-items:center;
-  gap:12px;
-
-  color:var(--text);
-
-  text-decoration:none;
+  gap: 20px;
 }
 
-.brand-mark{
-  position:relative;
+.brand {
+  display: flex;
+  align-items: center;
 
-  width:42px;
-  height:42px;
+  gap: 12px;
 
-  display:grid;
-  place-items:center;
+  flex-shrink: 0;
+}
 
-  border:
-    1px solid rgba(0,224,192,.5);
+.brand-mark {
+  width: 38px;
+  height: 38px;
 
-  border-radius:12px;
+  display: grid;
+  place-items: center;
 
-  color:var(--teal);
+  border: 1px solid var(--line2);
+  border-radius: 10px;
 
-  font-size:13px;
-  font-weight:900;
-  letter-spacing:1px;
+  color: var(--teal);
 
   background:
     linear-gradient(
-      145deg,
-      rgba(0,224,192,.13),
-      rgba(0,224,192,.025)
+      135deg,
+      rgba(85,229,209,.12),
+      rgba(85,229,209,.02)
     );
 
   box-shadow:
-    0 0 25px rgba(0,224,192,.08);
+    0 0 25px rgba(85,229,209,.07);
 }
 
-.brand-mark::after{
-  content:"";
+.brand-mark::before {
+  content: "N";
 
-  position:absolute;
+  font-size: 17px;
+  font-weight: 950;
 
-  width:6px;
-  height:6px;
-
-  right:5px;
-  top:5px;
-
-  border-radius:50%;
-
-  background:var(--teal);
-
-  box-shadow:
-    0 0 10px var(--teal);
+  letter-spacing: -.1em;
 }
 
-.brand-name{
-  font-size:14px;
-  font-weight:850;
+.brand-name {
+  font-size: 14px;
+  font-weight: 950;
 
-  letter-spacing:2.2px;
+  letter-spacing: .12em;
 }
 
+.brand-sub {
+  margin-top: 2px;
 
-/* NAVIGATION */
+  color: var(--muted2);
 
-nav{
-  display:flex;
-  align-items:center;
-  gap:7px;
+  font-size: 8px;
+  font-weight: 800;
+
+  letter-spacing: .18em;
+  text-transform: uppercase;
 }
 
-nav a{
-  position:relative;
+.nav-links {
+  display: flex;
+  align-items: center;
 
-  padding:10px 12px;
-
-  color:#8da6a2;
-
-  text-decoration:none;
-
-  font-size:11px;
-  font-weight:800;
-
-  letter-spacing:1.7px;
-
-  border-radius:9px;
-
-  transition:
-    color .25s ease,
-    background .25s ease;
+  gap: 3px;
 }
 
-nav a:hover{
-  color:var(--teal);
+.nav-links a {
+  padding: 9px 11px;
+
+  border: 1px solid transparent;
+  border-radius: 8px;
+
+  color: #9ab1b1;
+
+  font-size: 10px;
+  font-weight: 900;
+
+  letter-spacing: .1em;
+}
+
+.nav-links a:hover {
+  color: var(--teal);
+
+  border-color: var(--line);
 
   background:
-    rgba(0,224,192,.055);
+    rgba(85,229,209,.04);
 }
 
-nav a::after{
-  content:"";
+.nav-status {
+  display: flex;
+  align-items: center;
 
-  position:absolute;
+  gap: 8px;
 
-  left:12px;
-  right:12px;
-  bottom:4px;
+  color: var(--muted);
 
-  height:1px;
+  font-size: 9px;
+  font-weight: 900;
 
-  background:var(--teal);
-
-  transform:scaleX(0);
-
-  transform-origin:left;
-
-  transition:transform .25s ease;
+  letter-spacing: .1em;
 }
 
-nav a:hover::after{
-  transform:scaleX(1);
-}
+.status-dot {
+  width: 7px;
+  height: 7px;
 
+  border-radius: 50%;
 
-/* STATUS */
-
-.header-status{
-  display:flex;
-  align-items:center;
-  gap:8px;
-
-  margin-left:12px;
-
-  color:var(--muted2);
-
-  font-size:9px;
-  font-weight:800;
-
-  letter-spacing:1.5px;
-}
-
-.status-dot{
-  width:7px;
-  height:7px;
-
-  border-radius:50%;
-
-  background:var(--teal);
+  background: var(--teal);
 
   box-shadow:
-    0 0 12px var(--teal);
+    0 0 13px var(--teal);
 
-  animation:
-    pulse 2s infinite;
-}
-
-@keyframes pulse{
-  0%,100%{
-    opacity:1;
-    box-shadow:0 0 12px var(--teal);
-  }
-
-  50%{
-    opacity:.45;
-    box-shadow:0 0 4px var(--teal);
-  }
+  animation: pulse 2s infinite;
 }
 
 
@@ -397,234 +358,118 @@ nav a:hover::after{
    HERO
    ========================================================= */
 
-.hero{
-  position:relative;
+.hero {
+  min-height:
+    calc(100vh - 76px);
 
-  min-height:790px;
+  display: flex;
+  align-items: center;
 
-  display:flex;
-  flex-direction:column;
+  padding: 95px 0 110px;
 
-  align-items:center;
-  justify-content:center;
-
-  text-align:center;
-
-  padding:
-    110px 30px
-    100px;
-
-  overflow:hidden;
+  overflow: hidden;
 }
 
+.hero-grid {
+  display: grid;
 
-/* RADIAL GLOW */
+  grid-template-columns:
+    minmax(0, 1.15fr)
+    minmax(360px, .85fr);
 
-.hero::before{
-  content:"";
+  align-items: center;
 
-  position:absolute;
+  gap: 70px;
+}
 
-  width:800px;
-  height:800px;
+.hero-content {
+  position: relative;
+  z-index: 3;
+}
 
-  top:50%;
-  left:50%;
+.hero-kicker {
+  display: flex;
+  align-items: center;
 
-  transform:
-    translate(-50%,-50%);
+  gap: 10px;
 
-  border-radius:50%;
+  margin-bottom: 27px;
+
+  color: var(--teal);
+
+  font-size: 10px;
+  font-weight: 900;
+
+  letter-spacing: .2em;
+}
+
+.hero-kicker span {
+  padding: 6px 10px;
+
+  border: 1px solid var(--line2);
+  border-radius: 100px;
 
   background:
-    radial-gradient(
-      circle,
-      rgba(0,224,192,.075),
-      rgba(0,224,192,.02) 35%,
-      transparent 70%
-    );
-
-  pointer-events:none;
+    rgba(85,229,209,.045);
 }
 
+.hero-title {
+  font-size:
+    clamp(70px, 11vw, 155px);
 
-/* CROSSHAIR */
+  line-height: .8;
 
-.hero::after{
-  content:"";
+  font-weight: 950;
 
-  position:absolute;
-
-  width:620px;
-  height:620px;
-
-  top:50%;
-  left:50%;
-
-  transform:
-    translate(-50%,-50%);
-
-  border:
-    1px solid rgba(0,224,192,.05);
-
-  border-radius:50%;
-
-  box-shadow:
-    0 0 0 90px rgba(0,224,192,.012),
-    0 0 0 180px rgba(0,224,192,.008);
-
-  pointer-events:none;
+  letter-spacing: -.085em;
 }
 
-
-/* EYEBROW */
-
-.eyebrow{
-  position:relative;
-  z-index:2;
-
-  display:flex;
-  align-items:center;
-
-  gap:9px;
-
-  padding:10px 17px;
-
-  border:
-    1px solid var(--line);
-
-  border-radius:999px;
-
-  background:
-    rgba(7,18,16,.75);
-
-  color:#91aaa6;
-
-  font-size:10px;
-  font-weight:800;
-
-  letter-spacing:3px;
-
-  animation:
-    fadeUp .8s ease both;
-}
-
-.dot{
-  color:var(--teal);
+.hero-title span {
+  color: var(--teal);
 
   text-shadow:
-    0 0 10px var(--teal);
+    0 0 45px rgba(85,229,209,.12);
 }
 
+.hero-description {
+  max-width: 690px;
 
-/* HERO TITLE */
+  margin-top: 32px;
 
-.hero h1{
-  position:relative;
-  z-index:2;
+  color: #91aaaa;
 
-  margin:
-    55px 0
-    38px;
+  font-size: 16px;
 
-  font-size:
-    clamp(70px,12vw,170px);
-
-  line-height:.8;
-
-  letter-spacing:-8px;
-
-  font-weight:950;
-
-  animation:
-    heroTitle 1s cubic-bezier(.2,.8,.2,1) both;
+  line-height: 1.85;
 }
 
-.hero h1 span{
-  display:block;
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
 
-  color:var(--teal);
+  gap: 10px;
 
-  text-shadow:
-    0 0 50px rgba(0,224,192,.16);
+  margin-top: 32px;
 }
 
-@keyframes heroTitle{
-  from{
-    opacity:0;
-    transform:
-      translateY(40px)
-      scale(.96);
-    filter:blur(10px);
-  }
+.btn {
+  min-height: 48px;
 
-  to{
-    opacity:1;
-    transform:
-      translateY(0)
-      scale(1);
-    filter:blur(0);
-  }
-}
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 
+  gap: 9px;
 
-.hero-description{
-  position:relative;
-  z-index:2;
+  padding: 0 19px;
 
-  max-width:850px;
+  border: 1px solid var(--line2);
+  border-radius: 10px;
 
-  color:#91aaa6;
+  font-size: 10px;
+  font-weight: 900;
 
-  font-size:
-    clamp(17px,2vw,24px);
-
-  line-height:1.65;
-
-  animation:
-    fadeUp 1s .15s ease both;
-}
-
-.hero-description strong{
-  color:#eef8f6;
-}
-
-
-/* HERO BUTTONS */
-
-.hero-actions{
-  position:relative;
-  z-index:2;
-
-  display:flex;
-  gap:12px;
-
-  margin-top:42px;
-
-  animation:
-    fadeUp 1s .3s ease both;
-}
-
-.btn{
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  gap:9px;
-
-  min-height:48px;
-
-  padding:0 20px;
-
-  border-radius:12px;
-
-  text-decoration:none;
-
-  font-size:11px;
-  font-weight:900;
-
-  letter-spacing:1.6px;
-
-  cursor:pointer;
+  letter-spacing: .13em;
 
   transition:
     transform .25s ease,
@@ -633,464 +478,38 @@ nav a:hover::after{
     box-shadow .25s ease;
 }
 
-.btn-primary{
-  color:#00100d;
+.btn:hover {
+  transform: translateY(-3px);
+}
 
-  background:var(--teal);
+.btn-primary {
+  color: #03100e;
 
-  border:
-    1px solid var(--teal);
+  border-color: var(--teal);
+
+  background: var(--teal);
 
   box-shadow:
-    0 0 25px rgba(0,224,192,.1);
+    0 12px 35px rgba(85,229,209,.12);
 }
 
-.btn-primary:hover{
-  transform:translateY(-3px);
-
+.btn-primary:hover {
   box-shadow:
-    0 10px 35px rgba(0,224,192,.18);
+    0 17px 50px rgba(85,229,209,.2);
 }
 
-.btn-secondary{
-  color:var(--text);
+.btn-secondary {
+  background:
+    rgba(255,255,255,.02);
+}
+
+.btn-secondary:hover {
+  color: var(--teal);
+
+  border-color: var(--teal);
 
   background:
-    rgba(10,25,22,.75);
-
-  border:
-    1px solid var(--line);
-}
-
-.btn-secondary:hover{
-  transform:translateY(-3px);
-
-  color:var(--teal);
-
-  border-color:
-    var(--line-strong);
-
-  background:
-    rgba(0,224,192,.045);
-}
-
-
-/* SCROLL INDICATOR */
-
-.scroll-indicator{
-  position:absolute;
-
-  bottom:30px;
-
-  display:flex;
-  flex-direction:column;
-
-  align-items:center;
-
-  gap:10px;
-
-  color:#35534e;
-
-  font-size:8px;
-  font-weight:900;
-
-  letter-spacing:5px;
-}
-
-.scroll-line{
-  width:1px;
-  height:48px;
-
-  background:
-    linear-gradient(
-      to bottom,
-      transparent,
-      var(--teal),
-      transparent
-    );
-
-  animation:
-    scrollLine 2s infinite;
-}
-
-@keyframes scrollLine{
-  0%,100%{
-    opacity:.3;
-    transform:scaleY(.65);
-  }
-
-  50%{
-    opacity:1;
-    transform:scaleY(1);
-  }
-}
-
-
-/* =========================================================
-   SECTIONS
-   ========================================================= */
-
-.section{
-  position:relative;
-
-  padding:
-    90px 7%;
-
-  border-top:
-    1px solid rgba(160,220,211,.07);
-}
-
-.section-head{
-  display:flex;
-  align-items:flex-end;
-  justify-content:space-between;
-
-  gap:30px;
-
-  margin-bottom:30px;
-}
-
-.kicker{
-  color:var(--teal);
-
-  font-size:9px;
-  font-weight:900;
-
-  letter-spacing:3px;
-}
-
-.section h2{
-  margin-top:8px;
-
-  font-size:
-    clamp(30px,4vw,45px);
-
-  line-height:1;
-
-  letter-spacing:-1.5px;
-}
-
-.section-intro{
-  max-width:530px;
-
-  color:var(--muted);
-
-  font-size:13px;
-
-  line-height:1.65;
-}
-
-
-/* =========================================================
-   SYSTEM CARDS
-   ========================================================= */
-
-.system-grid{
-  display:grid;
-
-  grid-template-columns:
-    repeat(4,1fr);
-
-  gap:15px;
-}
-
-.system-card{
-  position:relative;
-
-  min-height:245px;
-
-  display:flex;
-  flex-direction:column;
-
-  padding:25px;
-
-  overflow:hidden;
-
-  border:
-    1px solid var(--line);
-
-  border-radius:20px;
-
-  background:
-    linear-gradient(
-      145deg,
-      rgba(10,25,22,.92),
-      rgba(3,12,11,.95)
-    );
-
-  color:var(--text);
-
-  text-decoration:none;
-
-  transition:
-    transform .3s ease,
-    border-color .3s ease,
-    box-shadow .3s ease;
-}
-
-.system-card::before{
-  content:"";
-
-  position:absolute;
-  inset:0;
-
-  background:
-    radial-gradient(
-      circle at 80% 10%,
-      rgba(0,224,192,.15),
-      transparent 38%
-    );
-
-  opacity:0;
-
-  transition:opacity .3s ease;
-}
-
-.system-card:hover{
-  transform:translateY(-7px);
-
-  border-color:
-    rgba(0,224,192,.5);
-
-  box-shadow:
-    0 18px 50px rgba(0,0,0,.35),
-    0 0 30px rgba(0,224,192,.045);
-}
-
-.system-card:hover::before{
-  opacity:1;
-}
-
-.system-number{
-  position:absolute;
-
-  top:18px;
-  right:20px;
-
-  color:#28423e;
-
-  font-size:9px;
-  font-weight:900;
-
-  letter-spacing:2px;
-}
-
-.system-icon{
-  position:relative;
-  z-index:1;
-
-  width:48px;
-  height:48px;
-
-  display:grid;
-  place-items:center;
-
-  margin-bottom:30px;
-
-  border:
-    1px solid rgba(0,224,192,.2);
-
-  border-radius:14px;
-
-  background:
-    rgba(0,224,192,.045);
-
-  color:var(--teal);
-
-  font-size:23px;
-
-  transition:
-    transform .3s ease,
-    background .3s ease;
-}
-
-.system-card:hover .system-icon{
-  transform:
-    translateY(-3px)
-    rotate(-3deg);
-
-  background:
-    rgba(0,224,192,.09);
-}
-
-.system-card h3{
-  position:relative;
-  z-index:1;
-
-  margin-bottom:9px;
-
-  font-size:20px;
-}
-
-.system-card p{
-  position:relative;
-  z-index:1;
-
-  color:var(--muted);
-
-  font-size:12px;
-
-  line-height:1.55;
-}
-
-.card-arrow{
-  position:relative;
-  z-index:1;
-
-  margin-top:auto;
-
-  padding-top:22px;
-
-  color:var(--teal);
-
-  font-size:10px;
-  font-weight:900;
-
-  letter-spacing:2px;
-}
-
-
-/* =========================================================
-   FEATURE PANEL
-   ========================================================= */
-
-.feature-panel{
-  display:grid;
-
-  grid-template-columns:
-    1.15fr .85fr;
-
-  gap:15px;
-}
-
-.feature-main,
-.feature-side{
-  border:
-    1px solid var(--line);
-
-  border-radius:22px;
-
-  background:
-    linear-gradient(
-      145deg,
-      rgba(8,21,18,.95),
-      rgba(3,11,10,.96)
-    );
-
-  overflow:hidden;
-}
-
-.feature-main{
-  min-height:390px;
-
-  padding:32px;
-
-  position:relative;
-}
-
-.feature-main::before{
-  content:"";
-
-  position:absolute;
-
-  width:500px;
-  height:500px;
-
-  right:-180px;
-  top:-180px;
-
-  border-radius:50%;
-
-  border:
-    1px solid rgba(0,224,192,.06);
-
-  box-shadow:
-    0 0 0 60px rgba(0,224,192,.015),
-    0 0 0 120px rgba(0,224,192,.01);
-}
-
-.feature-label{
-  color:var(--teal);
-
-  font-size:9px;
-  font-weight:900;
-
-  letter-spacing:3px;
-}
-
-.feature-main h3{
-  max-width:650px;
-
-  margin-top:18px;
-
-  font-size:
-    clamp(30px,4vw,54px);
-
-  line-height:1;
-
-  letter-spacing:-2px;
-}
-
-.feature-main p{
-  max-width:610px;
-
-  margin-top:20px;
-
-  color:var(--muted);
-
-  line-height:1.65;
-}
-
-.feature-actions{
-  display:flex;
-
-  gap:10px;
-
-  margin-top:30px;
-}
-
-.feature-side{
-  display:grid;
-
-  grid-template-rows:
-    repeat(3,1fr);
-}
-
-.metric{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-
-  gap:20px;
-
-  padding:25px;
-
-  border-bottom:
-    1px solid var(--line);
-}
-
-.metric:last-child{
-  border-bottom:0;
-}
-
-.metric-label{
-  color:var(--muted);
-
-  font-size:10px;
-  font-weight:800;
-
-  letter-spacing:1.5px;
-}
-
-.metric-value{
-  color:var(--text);
-
-  font-size:23px;
-  font-weight:900;
-}
-
-.metric-value.teal{
-  color:var(--teal);
+    rgba(85,229,209,.04);
 }
 
 
@@ -1098,399 +517,748 @@ nav a:hover::after{
    SEARCH
    ========================================================= */
 
-.search-wrap{
-  max-width:900px;
+.search-wrapper {
+  position: relative;
 
-  margin:
-    0 auto
-    32px;
+  max-width: 760px;
+
+  margin-top: 40px;
 }
 
-.search-box{
-  position:relative;
+.search-box {
+  min-height: 64px;
 
-  display:flex;
+  display: flex;
+  align-items: center;
 
-  border:
-    1px solid var(--line);
-
-  border-radius:17px;
-
-  overflow:hidden;
+  border: 1px solid var(--line2);
+  border-radius: 15px;
 
   background:
-    rgba(6,17,15,.9);
+    rgba(7,15,19,.94);
 
   box-shadow:
-    0 15px 50px rgba(0,0,0,.2);
+    0 20px 70px rgba(0,0,0,.25);
 
   transition:
     border-color .25s ease,
     box-shadow .25s ease;
 }
 
-.search-box:focus-within{
+.search-box:focus-within {
   border-color:
-    rgba(0,224,192,.48);
+    rgba(85,229,209,.65);
 
   box-shadow:
-    0 0 0 4px rgba(0,224,192,.035),
-    0 15px 50px rgba(0,0,0,.25);
+    0 0 0 4px rgba(85,229,209,.045),
+    0 25px 80px rgba(0,0,0,.35);
 }
 
-.search-icon{
-  width:55px;
+.search-icon {
+  width: 58px;
 
-  display:grid;
-  place-items:center;
+  display: grid;
+  place-items: center;
 
-  color:var(--teal);
+  color: var(--teal);
 
-  font-size:18px;
+  font-size: 22px;
 }
 
-.search-box input{
-  flex:1;
+#globalSearch {
+  width: 100%;
 
-  min-width:0;
+  border: 0;
+  outline: 0;
 
-  height:58px;
+  color: var(--text);
 
-  border:0;
-  outline:0;
+  background: transparent;
 
-  background:transparent;
-
-  color:var(--text);
-
-  font-size:15px;
+  font-size: 14px;
 }
 
-.search-box input::placeholder{
-  color:#58716c;
+#globalSearch::placeholder {
+  color: #5e7778;
 }
 
-.search-button{
-  width:65px;
+.search-shortcut {
+  margin-right: 12px;
 
-  border:0;
+  padding: 6px 9px;
 
-  cursor:pointer;
+  border: 1px solid var(--line);
+  border-radius: 5px;
 
-  background:var(--teal);
+  color: var(--muted2);
 
-  color:#00110d;
+  font-size: 8px;
+  font-weight: 900;
 
-  font-size:20px;
-  font-weight:900;
-
-  transition:
-    background .2s ease;
+  letter-spacing: .1em;
 }
 
-.search-button:hover{
-  background:var(--cyan);
-}
+.search-results {
+  position: absolute;
 
+  left: 0;
+  right: 0;
+  top: calc(100% + 8px);
 
-/* SEARCH RESULTS */
+  display: none;
 
-.search-results{
-  display:none;
+  overflow: hidden;
 
-  margin-top:8px;
-
-  padding:7px;
-
-  border:
-    1px solid var(--line);
-
-  border-radius:14px;
+  border: 1px solid var(--line2);
+  border-radius: 14px;
 
   background:
-    rgba(5,15,13,.97);
+    rgba(6,13,17,.98);
 
   box-shadow:
-    0 20px 60px rgba(0,0,0,.45);
+    0 30px 90px rgba(0,0,0,.55);
 
-  text-align:left;
+  z-index: 50;
 }
 
-.search-results.visible{
-  display:block;
+.search-results.visible {
+  display: block;
 }
 
-.search-result{
-  display:flex;
-  align-items:center;
-  gap:13px;
+.search-result {
+  width: 100%;
 
-  width:100%;
+  display: flex;
+  align-items: center;
 
-  padding:13px;
+  gap: 14px;
 
-  border:0;
+  padding: 15px;
 
-  border-radius:9px;
+  border: 0;
+  border-bottom: 1px solid var(--line);
 
-  background:transparent;
+  color: var(--text);
 
-  color:var(--text);
+  background: transparent;
 
-  text-decoration:none;
+  text-align: left;
 
-  cursor:pointer;
-
-  text-align:left;
-
-  transition:
-    background .2s ease,
-    color .2s ease;
+  cursor: pointer;
 }
 
-.search-result:hover{
+.search-result:last-child {
+  border-bottom: 0;
+}
+
+.search-result:hover,
+.search-result.active {
   background:
-    rgba(0,224,192,.06);
-
-  color:var(--teal);
+    rgba(85,229,209,.055);
 }
 
-.result-icon{
-  width:34px;
-  height:34px;
+.result-icon {
+  width: 38px;
+  height: 38px;
 
-  display:grid;
-  place-items:center;
+  display: grid;
+  place-items: center;
 
-  border:
-    1px solid var(--line);
+  flex-shrink: 0;
 
-  border-radius:9px;
+  border: 1px solid var(--line2);
+  border-radius: 9px;
 
-  color:var(--teal);
+  color: var(--teal);
 
-  background:
-    rgba(0,224,192,.035);
+  font-size: 13px;
 }
 
-.result-text{
-  display:flex;
-  flex-direction:column;
+.result-title {
+  font-size: 11px;
+  font-weight: 900;
 
-  gap:3px;
+  letter-spacing: .07em;
 }
 
-.result-text strong{
-  font-size:12px;
+.result-description {
+  margin-top: 4px;
+
+  color: var(--muted);
+
+  font-size: 10px;
 }
 
-.result-text span{
-  color:var(--muted2);
+.result-arrow {
+  margin-left: auto;
 
-  font-size:10px;
+  color: var(--teal);
+
+  font-size: 18px;
 }
 
 
 /* =========================================================
-   QUICKLINKS
+   RADAR
    ========================================================= */
 
-.quick-grid{
-  display:grid;
+.hero-visual {
+  min-height: 470px;
 
-  grid-template-columns:
-    repeat(4,1fr);
+  display: grid;
+  place-items: center;
 
-  gap:12px;
+  perspective: 900px;
 }
 
-.quick-card{
-  display:flex;
-  align-items:center;
+.radar {
+  position: relative;
 
-  gap:14px;
+  width: min(440px, 78vw);
+  aspect-ratio: 1;
 
-  min-height:90px;
-
-  padding:18px;
-
-  border:
-    1px solid var(--line);
-
-  border-radius:16px;
+  border: 1px solid var(--line2);
+  border-radius: 50%;
 
   background:
-    rgba(7,18,16,.75);
+    radial-gradient(
+      circle,
+      rgba(85,229,209,.075),
+      transparent 58%
+    );
 
-  color:var(--text);
-
-  text-decoration:none;
+  box-shadow:
+    inset 0 0 90px rgba(85,229,209,.035),
+    0 0 100px rgba(85,229,209,.04);
 
   transition:
-    transform .25s ease,
-    border-color .25s ease,
-    background .25s ease;
+    transform .2s ease;
 }
 
-.quick-card:hover{
-  transform:translateY(-4px);
+.radar::before,
+.radar::after {
+  content: "";
 
-  border-color:
-    rgba(0,224,192,.4);
+  position: absolute;
+
+  border: 1px solid var(--line);
+
+  border-radius: 50%;
+}
+
+.radar::before {
+  inset: 14%;
+}
+
+.radar::after {
+  inset: 29%;
+}
+
+.radar-x,
+.radar-y {
+  position: absolute;
+
+  background: var(--line);
+}
+
+.radar-x {
+  left: 5%;
+  right: 5%;
+
+  top: 50%;
+
+  height: 1px;
+}
+
+.radar-y {
+  top: 5%;
+  bottom: 5%;
+
+  left: 50%;
+
+  width: 1px;
+}
+
+.radar-sweep {
+  position: absolute;
+
+  left: 50%;
+  top: 50%;
+
+  width: 48%;
+  height: 2px;
+
+  transform-origin: left center;
 
   background:
-    rgba(0,224,192,.045);
+    linear-gradient(
+      90deg,
+      var(--teal),
+      transparent
+    );
+
+  filter:
+    drop-shadow(0 0 8px var(--teal));
+
+  animation:
+    radarSweep 4s linear infinite;
 }
 
-.quick-icon{
-  width:42px;
-  height:42px;
+.radar-dot {
+  position: absolute;
 
-  flex-shrink:0;
+  width: 8px;
+  height: 8px;
 
-  display:grid;
-  place-items:center;
+  border-radius: 50%;
 
-  border:
-    1px solid var(--line);
+  background: var(--teal);
 
-  border-radius:12px;
-
-  font-size:19px;
+  box-shadow:
+    0 0 18px var(--teal);
 }
 
-.quick-text strong{
-  display:block;
-
-  margin-bottom:4px;
-
-  font-size:12px;
+.dot-a {
+  left: 65%;
+  top: 27%;
 }
 
-.quick-text span{
-  color:var(--muted2);
+.dot-b {
+  left: 28%;
+  top: 60%;
+}
 
-  font-size:9px;
+.dot-c {
+  left: 68%;
+  top: 73%;
+}
+
+.ship-marker {
+  position: absolute;
+
+  left: 50%;
+  top: 50%;
+
+  width: 70px;
+  height: 70px;
+
+  display: grid;
+  place-items: center;
+
+  transform:
+    translate(-50%, -50%);
+
+  border: 1px solid var(--teal);
+  border-radius: 50%;
+
+  color: var(--teal);
+
+  background:
+    rgba(85,229,209,.07);
+
+  box-shadow:
+    0 0 45px rgba(85,229,209,.13);
+}
+
+.ship-marker::before {
+  content: "▲";
+
+  font-size: 24px;
+
+  filter:
+    drop-shadow(
+      0 0 8px
+      rgba(85,229,209,.5)
+    );
+}
+
+.radar-label {
+  position: absolute;
+
+  padding: 6px 8px;
+
+  border: 1px solid var(--line);
+  border-radius: 5px;
+
+  color: #688383;
+
+  background:
+    rgba(5,9,12,.8);
+
+  font-size: 8px;
+  font-weight: 900;
+
+  letter-spacing: .1em;
+}
+
+.label-n {
+  top: 5%;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.label-s {
+  bottom: 5%;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.label-w {
+  left: 3%;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.label-e {
+  right: 3%;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 
 /* =========================================================
-   TIME
+   SYSTEM STATUS
    ========================================================= */
 
-.time-grid{
-  display:grid;
+.system-bar {
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
 
-  grid-template-columns:
-    1fr 1fr;
-
-  gap:15px;
+  background:
+    rgba(255,255,255,.012);
 }
 
-.time-card{
-  padding:30px;
+.system-grid {
+  display: grid;
 
-  border:
-    1px solid var(--line);
+  grid-template-columns:
+    repeat(4, 1fr);
+}
 
-  border-radius:21px;
+.system-item {
+  min-height: 98px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  padding: 18px 24px;
+
+  border-right: 1px solid var(--line);
+}
+
+.system-item:last-child {
+  border-right: 0;
+}
+
+.system-label {
+  color: var(--muted2);
+
+  font-size: 8px;
+  font-weight: 900;
+
+  letter-spacing: .16em;
+  text-transform: uppercase;
+}
+
+.system-value {
+  margin-top: 8px;
+
+  font-size: 13px;
+  font-weight: 850;
+}
+
+.system-online {
+  color: var(--teal);
+}
+
+
+/* =========================================================
+   TOOLS
+   ========================================================= */
+
+.tools-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(2, 1fr);
+
+  gap: 15px;
+}
+
+.tool-card {
+  position: relative;
+
+  min-height: 275px;
+
+  display: flex;
+  flex-direction: column;
+
+  padding: 28px;
+
+  overflow: hidden;
+
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
 
   background:
     linear-gradient(
       145deg,
-      rgba(8,21,18,.9),
-      rgba(3,11,10,.9)
+      rgba(12,25,31,.9),
+      rgba(6,13,17,.92)
     );
 
-  text-align:center;
+  transition:
+    transform .3s ease,
+    border-color .3s ease,
+    box-shadow .3s ease;
 }
 
-.time-label{
-  margin-bottom:14px;
+.tool-card::before {
+  content: "";
 
-  color:var(--teal);
+  position: absolute;
 
-  font-size:9px;
-  font-weight:900;
+  left: -100%;
+  top: 0;
 
-  letter-spacing:3px;
+  width: 100%;
+  height: 1px;
+
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      var(--teal),
+      transparent
+    );
+
+  transition:
+    left .7s ease;
 }
 
-.clock{
-  font-size:
-    clamp(38px,6vw,65px);
+.tool-card:hover {
+  transform: translateY(-7px);
 
-  font-weight:950;
+  border-color: var(--line2);
 
-  letter-spacing:2px;
-
-  line-height:1;
+  box-shadow:
+    0 25px 70px rgba(0,0,0,.38);
 }
 
-.date{
-  margin-top:11px;
-
-  color:var(--muted);
-
-  font-size:12px;
+.tool-card:hover::before {
+  left: 100%;
 }
 
-.utc{
-  margin-top:5px;
+.tool-number {
+  position: absolute;
 
-  color:var(--muted2);
+  top: 25px;
+  right: 27px;
 
-  font-size:10px;
+  color:
+    rgba(85,229,209,.25);
 
-  letter-spacing:1px;
+  font-size: 10px;
+  font-weight: 900;
+
+  letter-spacing: .15em;
+}
+
+.tool-icon {
+  width: 52px;
+  height: 52px;
+
+  display: grid;
+  place-items: center;
+
+  margin-bottom: 29px;
+
+  border: 1px solid var(--line2);
+  border-radius: 12px;
+
+  color: var(--teal);
+
+  background:
+    rgba(85,229,209,.04);
+
+  font-size: 20px;
+}
+
+.tool-label {
+  color: var(--teal);
+
+  font-size: 8px;
+  font-weight: 900;
+
+  letter-spacing: .18em;
+}
+
+.tool-card h3 {
+  margin-top: 8px;
+
+  font-size: 29px;
+
+  letter-spacing: -.035em;
+}
+
+.tool-card p {
+  max-width: 520px;
+
+  margin-top: 11px;
+
+  color: var(--muted);
+
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+.tool-arrow {
+  margin-top: auto;
+  padding-top: 24px;
+
+  color: var(--teal);
+
+  font-size: 20px;
+
+  transition:
+    transform .25s ease;
+}
+
+.tool-card:hover .tool-arrow {
+  transform:
+    translateX(8px);
 }
 
 
 /* =========================================================
-   INFO STRIP
+   WORKFLOW
    ========================================================= */
 
-.info-strip{
-  display:grid;
+.workflow-grid {
+  display: grid;
 
   grid-template-columns:
-    repeat(3,1fr);
+    repeat(5, 1fr);
 
-  gap:1px;
+  gap: 10px;
+}
 
-  overflow:hidden;
+.workflow-card {
+  position: relative;
 
-  border:
-    1px solid var(--line);
+  min-height: 190px;
 
-  border-radius:18px;
+  padding: 23px;
+
+  border: 1px solid var(--line);
+  border-radius: 14px;
 
   background:
-    var(--line);
+    rgba(255,255,255,.014);
 }
 
-.info-item{
-  padding:25px;
+.workflow-card:not(:last-child)::after {
+  content: "→";
+
+  position: absolute;
+
+  top: 50%;
+  right: -18px;
+
+  transform:
+    translateY(-50%);
+
+  color: var(--teal);
+
+  z-index: 5;
+}
+
+.workflow-number {
+  color: var(--teal);
+
+  font-size: 9px;
+  font-weight: 900;
+
+  letter-spacing: .15em;
+}
+
+.workflow-card h3 {
+  margin-top: 25px;
+
+  font-size: 18px;
+}
+
+.workflow-card p {
+  margin-top: 9px;
+
+  color: var(--muted);
+
+  font-size: 11px;
+  line-height: 1.6;
+}
+
+
+/* =========================================================
+   CLOCK
+   ========================================================= */
+
+.clock-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(2, 1fr);
+
+  gap: 15px;
+}
+
+.clock-card {
+  padding: 32px;
+
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
 
   background:
-    rgba(6,17,15,.9);
+    linear-gradient(
+      135deg,
+      rgba(85,229,209,.045),
+      rgba(255,255,255,.012)
+    );
 }
 
-.info-item-label{
-  color:var(--muted2);
+.clock-label {
+  color: var(--teal);
 
-  font-size:8px;
-  font-weight:900;
+  font-size: 8px;
+  font-weight: 900;
 
-  letter-spacing:2px;
+  letter-spacing: .18em;
 }
 
-.info-item-value{
-  margin-top:8px;
+.clock-time {
+  margin-top: 12px;
 
-  color:var(--text);
+  font-family:
+    "SFMono-Regular",
+    Consolas,
+    monospace;
 
-  font-size:13px;
+  font-size:
+    clamp(40px, 6vw, 74px);
+
+  line-height: 1;
+
+  font-weight: 700;
+
+  letter-spacing: -.07em;
+}
+
+.clock-date {
+  margin-top: 12px;
+
+  color: var(--muted);
+
+  font-size: 11px;
 }
 
 
@@ -1498,56 +1266,79 @@ nav a:hover::after{
    FOOTER
    ========================================================= */
 
-footer{
-  padding:
-    55px 25px;
+footer {
+  margin-top: 30px;
 
-  text-align:center;
+  border-top: 1px solid var(--line);
 
-  border-top:
-    1px solid rgba(160,220,211,.07);
-
-  color:#55706b;
-
-  font-size:10px;
-
-  letter-spacing:1px;
+  background: #030708;
 }
 
-footer strong{
-  color:#89a39e;
+.footer-inner {
+  min-height: 125px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 30px;
 }
 
-footer a{
-  color:var(--text);
+.footer-brand {
+  color: var(--teal);
 
-  text-decoration:none;
+  font-size: 13px;
+  font-weight: 950;
 
-  transition:color .2s ease;
+  letter-spacing: .16em;
 }
 
-footer a:hover{
-  color:var(--teal);
+.footer-copy {
+  margin-top: 7px;
+
+  color: var(--muted2);
+
+  font-size: 9px;
+}
+
+.footer-links {
+  display: flex;
+  flex-wrap: wrap;
+
+  gap: 15px;
+}
+
+.footer-links a {
+  color: #71898a;
+
+  font-size: 9px;
+  font-weight: 900;
+
+  letter-spacing: .08em;
+}
+
+.footer-links a:hover {
+  color: var(--teal);
 }
 
 
 /* =========================================================
-   SCROLL ANIMATIONS
+   REVEAL
    ========================================================= */
 
-.reveal{
-  opacity:0;
+.reveal {
+  opacity: 0;
 
   transform:
-    translateY(28px);
+    translateY(24px);
 
   transition:
-    opacity .8s ease,
-    transform .8s cubic-bezier(.2,.8,.2,1);
+    opacity .75s ease,
+    transform .75s ease;
 }
 
-.reveal.visible{
-  opacity:1;
+.reveal.visible {
+  opacity: 1;
 
   transform:
     translateY(0);
@@ -1555,177 +1346,190 @@ footer a:hover{
 
 
 /* =========================================================
+   ANIMATIONS
+   ========================================================= */
+
+@keyframes pulse {
+
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: .45;
+    transform: scale(.75);
+  }
+}
+
+@keyframes radarSweep {
+
+  from {
+    transform:
+      rotate(0deg);
+  }
+
+  to {
+    transform:
+      rotate(360deg);
+  }
+}
+
+@keyframes scanline {
+
+  from {
+    transform:
+      translateY(-100%);
+  }
+
+  to {
+    transform:
+      translateY(100%);
+  }
+}
+
+
+/* =========================================================
+   TABLET
+   ========================================================= */
+
+@media (max-width: 1050px) {
+
+  .hero-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .hero-visual {
+    min-height: 390px;
+  }
+
+  .workflow-grid {
+    grid-template-columns:
+      repeat(3, 1fr);
+  }
+
+  .workflow-card::after {
+    display: none;
+  }
+}
+
+
+/* =========================================================
    MOBILE
    ========================================================= */
 
-@media(max-width:1100px){
+@media (max-width: 800px) {
 
-  .system-grid{
-    grid-template-columns:
-      repeat(2,1fr);
-  }
-
-  .quick-grid{
-    grid-template-columns:
-      repeat(2,1fr);
-  }
-
-}
-
-
-@media(max-width:850px){
-
-  header{
-    flex-wrap:wrap;
-
-    padding:
-      11px 15px;
-
-    gap:10px;
-  }
-
-  nav{
-    order:3;
-
-    width:100%;
-
-    justify-content:center;
-
-    padding-bottom:5px;
-  }
-
-  .header-status{
-    margin-left:auto;
-  }
-
-  .feature-panel{
-    grid-template-columns:1fr;
-  }
-
-  .time-grid{
-    grid-template-columns:1fr;
-  }
-
-  .info-strip{
-    grid-template-columns:1fr;
-  }
-
-}
-
-
-@media(max-width:650px){
-
-  .shell{
+  .container {
     width:
-      calc(100% - 14px);
-
-    margin:7px auto;
-
-    border-radius:19px;
+      calc(100% - 28px);
   }
 
-  header{
-    position:relative;
-
-    top:0;
-
-    margin:7px;
-
-    border-radius:15px;
+  .nav-links {
+    display: none;
   }
 
-  .brand-name{
-    font-size:11px;
+  .nav-status {
+    display: none;
   }
 
-  nav{
-    gap:2px;
+  .hero {
+    padding-top: 70px;
   }
 
-  nav a{
-    padding:8px 7px;
-
-    font-size:8px;
-
-    letter-spacing:1px;
-  }
-
-  .header-status{
-    display:none;
-  }
-
-  .hero{
-    min-height:680px;
-
-    padding:
-      70px 18px
-      80px;
-  }
-
-  .hero h1{
+  .hero-title {
     font-size:
-      68px;
-
-    letter-spacing:
-      -4px;
-
-    margin:
-      42px 0
-      28px;
+      clamp(64px, 18vw, 110px);
   }
 
-  .hero-description{
-    font-size:17px;
+  .hero-description {
+    font-size: 14px;
   }
 
-  .hero-actions{
-    width:100%;
-
-    flex-direction:column;
-
-    max-width:300px;
+  .tools-grid {
+    grid-template-columns: 1fr;
   }
 
-  .btn{
-    width:100%;
+  .workflow-grid {
+    grid-template-columns: 1fr;
   }
 
-  .section{
-    padding:
-      58px 18px;
+  .clock-grid {
+    grid-template-columns: 1fr;
   }
 
-  .section-head{
-    display:block;
+  .system-grid {
+    grid-template-columns:
+      repeat(2, 1fr);
   }
 
-  .section-intro{
-    margin-top:17px;
+  .system-item:nth-child(2) {
+    border-right: 0;
   }
 
-  .system-grid,
-  .quick-grid{
-    grid-template-columns:1fr;
+  .system-item:nth-child(-n+2) {
+    border-bottom:
+      1px solid var(--line);
   }
 
-  .system-card{
-    min-height:205px;
+  .footer-inner {
+    flex-direction: column;
+
+    align-items: flex-start;
+
+    padding: 30px 0;
+  }
+}
+
+
+/* =========================================================
+   SMALL MOBILE
+   ========================================================= */
+
+@media (max-width: 520px) {
+
+  .section {
+    padding: 78px 0;
   }
 
-  .feature-main{
-    padding:25px;
-
-    min-height:360px;
+  .hero-actions {
+    flex-direction: column;
   }
 
-  .feature-actions{
-    flex-direction:column;
+  .btn {
+    width: 100%;
   }
 
-  .search-box input{
-    font-size:14px;
+  .search-shortcut {
+    display: none;
   }
 
+  .system-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .system-item {
+    border-right: 0;
+    border-bottom:
+      1px solid var(--line);
+  }
+
+  .system-item:last-child {
+    border-bottom: 0;
+  }
+
+  .hero-visual {
+    min-height: 330px;
+  }
+
+  .radar {
+    width: 300px;
+  }
+
+  .footer-links {
+    gap: 12px;
+  }
 }
 
 
@@ -1733,17 +1537,19 @@ footer a:hover{
    REDUCED MOTION
    ========================================================= */
 
-@media(prefers-reduced-motion:reduce){
+@media (prefers-reduced-motion: reduce) {
+
+  html {
+    scroll-behavior: auto;
+  }
 
   *,
   *::before,
-  *::after{
-    animation-duration:.01ms !important;
-    animation-iteration-count:1 !important;
-    scroll-behavior:auto !important;
-    transition-duration:.01ms !important;
+  *::after {
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .001ms !important;
   }
-
 }
 
 </style>
@@ -1753,58 +1559,71 @@ footer a:hover{
 <body>
 
 
-<div class="shell">
-
-
-<!-- =====================================================
+<!-- =======================================================
      HEADER
-     ===================================================== -->
+     ======================================================= -->
 
-<header>
+<header class="site-header">
 
-  <a href="./" class="brand">
-
-    <span class="brand-mark">
-      SF
-    </span>
-
-    <span class="brand-name">
-      NAVTOOL HUB
-    </span>
-
-  </a>
-
-
-  <nav>
-
-    <a href="#systems">
-      SYSTEMS
-    </a>
-
-    <a href="#quicklinks">
-      QUICKLINKS
-    </a>
-
-    <a href="#time">
-      TIME
-    </a>
+  <div class="container navbar">
 
     <a
-      href="https://me.navtool.de"
-      target="_blank"
-      rel="noopener"
+      class="brand"
+      href="./"
+      aria-label="NAVTOOL Startseite"
     >
-      PORTFOLIO
+
+      <div class="brand-mark"></div>
+
+      <div>
+        <div class="brand-name">
+          NAVTOOL
+        </div>
+
+        <div class="brand-sub">
+          Maritime Workspace
+        </div>
+      </div>
+
     </a>
 
-  </nav>
+
+    <nav class="nav-links">
+
+      <a href="./map/">
+        MAP
+      </a>
+
+      <a href="./navtext/">
+        NAVTEXT
+      </a>
+
+      <a href="./colreg/">
+        COLREG
+      </a>
+
+      <a href="./weather/">
+        WEATHER
+      </a>
+
+      <a href="./calc/">
+        CALC
+      </a>
+
+      <a href="#tools">
+        TOOLS
+      </a>
+
+    </nav>
 
 
-  <div class="header-status">
+    <div class="nav-status">
 
-    <span class="status-dot"></span>
+      <span class="status-dot"></span>
 
-    SYSTEM ONLINE
+      SYSTEM ONLINE
+
+    </div>
 
   </div>
 
@@ -1812,381 +1631,158 @@ footer a:hover{
 
 
 
-<!-- =====================================================
+<!-- =======================================================
      MAIN
-     ===================================================== -->
+     ======================================================= -->
 
 <main>
 
 
-<!-- =====================================================
+<!-- =======================================================
      HERO
-     ===================================================== -->
+     ======================================================= -->
 
 <section class="hero">
 
-  <div class="eyebrow">
+  <div class="container hero-grid">
 
-    <span class="dot">●</span>
 
-    NAVTOOL · MARITIME · DIGITAL WORKSPACE
+    <div class="hero-content reveal">
 
-  </div>
+      <div class="hero-kicker">
 
-
-  <h1>
-
-    NAVTOOL
-
-    <span>HUB</span>
-
-  </h1>
-
-
-  <p class="hero-description">
-
-    Dein zentraler Einstiegspunkt für
-
-    <strong>
-      Navigation, Karten, Wetter,
-      Berechnungen und maritime Tools.
-    </strong>
-
-    <br>
-
-    Alles an einem Ort.
-
-  </p>
-
-
-  <div class="hero-actions">
-
-    <a
-      class="btn btn-primary"
-      href="#systems"
-    >
-      EXPLORE SYSTEMS →
-    </a>
-
-
-    <a
-      class="btn btn-secondary"
-      href="/map/"
-    >
-      OPEN NAV MAP
-    </a>
-
-  </div>
-
-
-  <div class="scroll-indicator">
-
-    SCROLL
-
-    <span class="scroll-line"></span>
-
-  </div>
-
-</section>
-
-
-
-<!-- =====================================================
-     SYSTEMS
-     ===================================================== -->
-
-<section
-  class="section reveal"
-  id="systems"
->
-
-  <div class="section-head">
-
-    <div>
-
-      <div class="kicker">
-        01 · SYSTEMS
-      </div>
-
-      <h2>
-        Maritime Tools
-      </h2>
-
-    </div>
-
-
-    <p class="section-intro">
-
-      Die wichtigsten NavTool-Systeme
-      direkt vom zentralen Hub aus erreichbar.
-
-    </p>
-
-  </div>
-
-
-
-  <div class="system-grid">
-
-
-    <!-- MAP -->
-
-    <a
-      class="system-card"
-      href="/map/"
-    >
-
-      <span class="system-number">
-        01
-      </span>
-
-      <div class="system-icon">
-        ⌁
-      </div>
-
-      <h3>
-        Navigation Map
-      </h3>
-
-      <p>
-        Interaktive maritime Karte für
-        Positionen, Wegpunkte, Routen
-        und nautische Navigation.
-      </p>
-
-      <div class="card-arrow">
-        OPEN MAP →
-      </div>
-
-    </a>
-
-
-
-    <!-- NAVTEXT -->
-
-    <a
-      class="system-card"
-      href="/navtext/"
-    >
-
-      <span class="system-number">
-        02
-      </span>
-
-      <div class="system-icon">
-        ≋
-      </div>
-
-      <h3>
-        NavText
-      </h3>
-
-      <p>
-        Navigationstexte, Berechnungen
-        und praktische Hilfsmittel für
-        den maritimen Alltag.
-      </p>
-
-      <div class="card-arrow">
-        OPEN NAVTEXT →
-      </div>
-
-    </a>
-
-
-
-    <!-- CALC -->
-
-    <a
-      class="system-card"
-      href="/calc/"
-    >
-
-      <span class="system-number">
-        03
-      </span>
-
-      <div class="system-icon">
-        ∑
-      </div>
-
-      <h3>
-        Calculation
-      </h3>
-
-      <p>
-        Nautische Rechner für ETA,
-        Kurs, Distanz, Strom,
-        Großkreis und weitere Aufgaben.
-      </p>
-
-      <div class="card-arrow">
-        OPEN CALC →
-      </div>
-
-    </a>
-
-
-
-    <!-- WEATHER -->
-
-    <a
-      class="system-card"
-      href="/weather/"
-    >
-
-      <span class="system-number">
-        04
-      </span>
-
-      <div class="system-icon">
-        ◌
-      </div>
-
-      <h3>
-        Weather
-      </h3>
-
-      <p>
-        Wetterinformationen,
-        Wind, Druck, Regen und
-        maritime Wetterübersicht.
-      </p>
-
-      <div class="card-arrow">
-        OPEN WEATHER →
-      </div>
-
-    </a>
-
-
-  </div>
-
-</section>
-
-
-
-<!-- =====================================================
-     FEATURE
-     ===================================================== -->
-
-<section class="section reveal">
-
-  <div class="feature-panel">
-
-
-    <div class="feature-main">
-
-      <div class="feature-label">
-        NAVTOOL · CORE
-      </div>
-
-      <h3>
-        Built for
-        <span style="color:var(--teal)">
-          navigation.
+        <span>
+          NAVTOOL / 2026
         </span>
-      </h3>
 
-      <p>
+        DIGITAL MARITIME WORKSPACE
 
-        NavTool verbindet praktische
-        maritime Werkzeuge mit einer
-        zentralen, schnellen Oberfläche.
+      </div>
 
-        Von der Karte bis zur Berechnung —
-        ohne unnötige Umwege.
+
+      <h1 class="hero-title">
+
+        NAV<span>TOOL</span>
+
+      </h1>
+
+
+      <p class="hero-description">
+
+        Eine zentrale digitale Arbeitsumgebung
+        für maritime Navigation.
+
+        Karten, Routing, NAVTEXT, COLREG,
+        Wetter und nautische Berechnungen —
+        direkt aus einer Oberfläche erreichbar.
 
       </p>
 
 
-      <div class="feature-actions">
+      <div class="hero-actions">
 
         <a
-          href="/map/"
           class="btn btn-primary"
+          href="./map/"
         >
-          START NAVIGATION
+          MAP ÖFFNEN →
         </a>
+
 
         <a
-          href="/navtext/"
           class="btn btn-secondary"
+          href="./navtext/"
         >
-          OPEN NAVTEXT
+          NAVTEXT →
+        </a>
+
+
+        <a
+          class="btn btn-secondary"
+          href="./colreg/"
+        >
+          COLREG →
         </a>
 
       </div>
 
+
+      <!-- SEARCH -->
+
+      <div class="search-wrapper">
+
+        <div class="search-box">
+
+          <div class="search-icon">
+            ⌕
+          </div>
+
+
+          <input
+            id="globalSearch"
+            type="search"
+            autocomplete="off"
+            spellcheck="false"
+            placeholder="NAVTOOL durchsuchen – z. B. Map, COLREG, Wetter..."
+            aria-label="NAVTOOL durchsuchen"
+            aria-autocomplete="list"
+          >
+
+
+          <div class="search-shortcut">
+            ENTER
+          </div>
+
+        </div>
+
+
+        <div
+          id="searchResults"
+          class="search-results"
+          role="listbox"
+        ></div>
+
+      </div>
+
     </div>
 
 
 
-    <div class="feature-side">
+    <!-- RADAR -->
+
+    <div class="hero-visual reveal">
+
+      <div class="radar">
+
+        <div class="radar-x"></div>
+        <div class="radar-y"></div>
+
+        <div class="radar-sweep"></div>
+
+        <div class="radar-dot dot-a"></div>
+        <div class="radar-dot dot-b"></div>
+        <div class="radar-dot dot-c"></div>
+
+        <div class="ship-marker"></div>
 
 
-      <div class="metric">
-
-        <div>
-
-          <div class="metric-label">
-            SYSTEM
-          </div>
-
-          <div class="metric-label">
-            NAVTOOL HUB
-          </div>
-
+        <div class="radar-label label-n">
+          N 000°
         </div>
 
-        <div class="metric-value teal">
-          ONLINE
+        <div class="radar-label label-s">
+          S 180°
         </div>
 
-      </div>
-
-
-      <div class="metric">
-
-        <div>
-
-          <div class="metric-label">
-            PLATFORM
-          </div>
-
-          <div class="metric-label">
-            WEB
-          </div>
-
+        <div class="radar-label label-w">
+          W 270°
         </div>
 
-        <div class="metric-value">
-          24/7
+        <div class="radar-label label-e">
+          E 090°
         </div>
 
       </div>
-
-
-      <div class="metric">
-
-        <div>
-
-          <div class="metric-label">
-            TOOLS
-          </div>
-
-          <div class="metric-label">
-            MARITIME
-          </div>
-
-        </div>
-
-        <div class="metric-value teal">
-          ACTIVE
-        </div>
-
-      </div>
-
 
     </div>
 
@@ -2196,70 +1792,66 @@ footer a:hover{
 
 
 
-<!-- =====================================================
-     SEARCH
-     ===================================================== -->
+<!-- =======================================================
+     SYSTEM
+     ======================================================= -->
 
-<section class="section reveal">
+<section class="system-bar">
 
-  <div class="section-head">
+  <div class="container system-grid">
 
-    <div>
 
-      <div class="kicker">
-        02 · SEARCH
+    <div class="system-item">
+
+      <div class="system-label">
+        Network
       </div>
 
-      <h2>
-        Find a Tool
-      </h2>
+      <div class="system-value system-online">
+        ● ONLINE
+      </div>
 
     </div>
 
 
-    <p class="section-intro">
+    <div class="system-item">
 
-      Suche direkt nach einem NavTool-
-      System oder öffne eine externe
-      Suche, wenn nichts Passendes
-      gefunden wurde.
-
-    </p>
-
-  </div>
-
-
-  <div class="search-wrap">
-
-    <div class="search-box">
-
-      <div class="search-icon">
-        ⌕
+      <div class="system-label">
+        Platform
       </div>
 
-      <input
-        id="search"
-        type="search"
-        autocomplete="off"
-        placeholder="Suche z. B. Map, Navigation, Wetter, Rechner..."
-      >
-
-      <button
-        id="searchBtn"
-        class="search-button"
-        type="button"
-        aria-label="Suchen"
-      >
-        →
-      </button>
+      <div class="system-value">
+        GitHub Pages
+      </div>
 
     </div>
 
 
-    <div
-      id="searchResults"
-      class="search-results"
-    ></div>
+    <div class="system-item">
+
+      <div class="system-label">
+        Interface
+      </div>
+
+      <div class="system-value">
+        NAVTOOL HUB
+      </div>
+
+    </div>
+
+
+    <div class="system-item">
+
+      <div class="system-label">
+        Modules
+      </div>
+
+      <div class="system-value">
+        05 ACTIVE
+      </div>
+
+    </div>
+
 
   </div>
 
@@ -2267,245 +1859,224 @@ footer a:hover{
 
 
 
-<!-- =====================================================
-     QUICKLINKS
-     ===================================================== -->
+<!-- =======================================================
+     TOOLS
+     ======================================================= -->
 
 <section
-  class="section reveal"
-  id="quicklinks"
+  id="tools"
+  class="section"
 >
 
-  <div class="section-head">
+  <div class="container">
 
-    <div>
 
-      <div class="kicker">
-        03 · SHORTCUTS
+    <div class="section-header reveal">
+
+      <div class="eyebrow">
+        NAVTOOL MODULES
       </div>
 
-      <h2>
-        Quicklinks
+      <h2 class="section-title">
+        Die Werkzeuge.
       </h2>
 
+      <p class="section-description">
+        Fünf zentrale Module für die tägliche
+        maritime Arbeit.
+      </p>
+
     </div>
 
-  </div>
 
+    <div class="tools-grid">
 
-  <div class="quick-grid">
 
+      <!-- MAP -->
 
-    <a
-      class="quick-card"
-      href="https://ecampus.jade-hs.de"
-      target="_blank"
-      rel="noopener"
-    >
+      <a
+        href="./map/"
+        class="tool-card reveal"
+      >
 
-      <div class="quick-icon">
-        🎓
-      </div>
+        <div class="tool-number">
+          01
+        </div>
 
-      <div class="quick-text">
+        <div class="tool-icon">
+          ◉
+        </div>
 
-        <strong>
-          E-Campus
-        </strong>
+        <div class="tool-label">
+          NAVIGATION / ROUTING
+        </div>
 
-        <span>
-          JADE HS
-        </span>
+        <h3>
+          MAP
+        </h3>
 
-      </div>
+        <p>
+          Interaktive maritime Karte,
+          Positionen, Waypoints und
+          Routenplanung.
+        </p>
 
-    </a>
+        <div class="tool-arrow">
+          →
+        </div>
 
+      </a>
 
 
-    <a
-      class="quick-card"
-      href="https://jadeconnect.sharepoint.com/sites/StudierendeFBSeefahrtundLogistik"
-      target="_blank"
-      rel="noopener"
-    >
 
-      <div class="quick-icon">
-        📚
-      </div>
+      <!-- NAVTEXT -->
 
-      <div class="quick-text">
+      <a
+        href="./navtext/"
+        class="tool-card reveal"
+      >
 
-        <strong>
-          Jade Connect
-        </strong>
+        <div class="tool-number">
+          02
+        </div>
 
-        <span>
-          STUDIERENDE
-        </span>
+        <div class="tool-icon">
+          ≡
+        </div>
 
-      </div>
+        <div class="tool-label">
+          NAVIGATION / TEXT
+        </div>
 
-    </a>
+        <h3>
+          NAVTEXT
+        </h3>
 
+        <p>
+          Nautische Texte,
+          Navigationsinformationen und
+          strukturierte Informationen.
+        </p>
 
+        <div class="tool-arrow">
+          →
+        </div>
 
-    <a
-      class="quick-card"
-      href="https://map.openseamap.org"
-      target="_blank"
-      rel="noopener"
-    >
+      </a>
 
-      <div class="quick-icon">
-        ⚓
-      </div>
 
-      <div class="quick-text">
 
-        <strong>
-          OpenSeaMap
-        </strong>
+      <!-- COLREG -->
 
-        <span>
-          MARITIME MAP
-        </span>
+      <a
+        href="./colreg/"
+        class="tool-card reveal"
+      >
 
-      </div>
+        <div class="tool-number">
+          03
+        </div>
 
-    </a>
+        <div class="tool-icon">
+          ⚓
+        </div>
 
+        <div class="tool-label">
+          NAVIGATION / SAFETY
+        </div>
 
+        <h3>
+          COLREG
+        </h3>
 
-    <a
-      class="quick-card"
-      href="https://moodle.jade-hs.de/moodle/login/index.php"
-      target="_blank"
-      rel="noopener"
-    >
+        <p>
+          Kollisionsverhütungsregeln,
+          Lichterführung, Signalkörper
+          und Schallsignale.
+        </p>
 
-      <div class="quick-icon">
-        💻
-      </div>
+        <div class="tool-arrow">
+          →
+        </div>
 
-      <div class="quick-text">
+      </a>
 
-        <strong>
-          Moodle
-        </strong>
 
-        <span>
-          JADE HS
-        </span>
 
-      </div>
+      <!-- WEATHER -->
 
-    </a>
+      <a
+        href="./weather/"
+        class="tool-card reveal"
+      >
 
+        <div class="tool-number">
+          04
+        </div>
 
+        <div class="tool-icon">
+          ☁
+        </div>
 
-    <a
-      class="quick-card"
-      href="https://www.studierendenwerk-oldenburg.de/essen/speiseplaene-mensen/speiseplan-elsfleth"
-      target="_blank"
-      rel="noopener"
-    >
+        <div class="tool-label">
+          METEO / SEA
+        </div>
 
-      <div class="quick-icon">
-        🍝
-      </div>
+        <h3>
+          WEATHER
+        </h3>
 
-      <div class="quick-text">
+        <p>
+          Wetter, Wind, Temperatur
+          und maritime Wetterinformationen
+          für die Navigation.
+        </p>
 
-        <strong>
-          Mensa
-        </strong>
+        <div class="tool-arrow">
+          →
+        </div>
 
-        <span>
-          ELSFLETH
-        </span>
+      </a>
 
-      </div>
 
-    </a>
 
+      <!-- CALC -->
 
+      <a
+        href="./calc/"
+        class="tool-card reveal"
+      >
 
-    <a
-      class="quick-card"
-      href="/map/"
-    >
+        <div class="tool-number">
+          05
+        </div>
 
-      <div class="quick-icon">
-        🗺️
-      </div>
+        <div class="tool-icon">
+          Σ
+        </div>
 
-      <div class="quick-text">
+        <div class="tool-label">
+          NAVIGATION / CALCULATION
+        </div>
 
-        <strong>
-          NavTool Map
-        </strong>
+        <h3>
+          CALC
+        </h3>
 
-        <span>
-          INTERNAL
-        </span>
+        <p>
+          Nautische Berechnungen,
+          Distanzen, Zeiten, Kurse,
+          ETA und weitere Funktionen.
+        </p>
 
-      </div>
+        <div class="tool-arrow">
+          →
+        </div>
 
-    </a>
+      </a>
 
 
-
-    <a
-      class="quick-card"
-      href="/navtext/"
-    >
-
-      <div class="quick-icon">
-        🧭
-      </div>
-
-      <div class="quick-text">
-
-        <strong>
-          NavText
-        </strong>
-
-        <span>
-          INTERNAL
-        </span>
-
-      </div>
-
-    </a>
-
-
-
-    <a
-      class="quick-card"
-      href="https://me.navtool.de"
-      target="_blank"
-      rel="noopener"
-    >
-
-      <div class="quick-icon">
-        ◈
-      </div>
-
-      <div class="quick-text">
-
-        <strong>
-          Portfolio
-        </strong>
-
-        <span>
-          ME.NAVTOOL.DE
-        </span>
-
-      </div>
-
-    </a>
-
+    </div>
 
   </div>
 
@@ -2513,81 +2084,142 @@ footer a:hover{
 
 
 
-<!-- =====================================================
-     TIME
-     ===================================================== -->
+<!-- =======================================================
+     WORKFLOW
+     ======================================================= -->
 
-<section
-  class="section reveal"
-  id="time"
->
+<section class="section">
 
-  <div class="section-head">
+  <div class="container">
 
-    <div>
 
-      <div class="kicker">
-        04 · TIME
+    <div class="section-header reveal">
+
+      <div class="eyebrow">
+        NAVIGATION WORKFLOW
       </div>
 
-      <h2>
-        Shipboard Time
+      <h2 class="section-title">
+        Ein Workflow.
       </h2>
 
-    </div>
-
-  </div>
-
-
-  <div class="time-grid">
-
-
-    <div class="time-card">
-
-      <div class="time-label">
-        LOCAL TIME
-      </div>
-
-      <div
-        id="clock"
-        class="clock"
-      >
-        --:--:--
-      </div>
-
-      <div
-        id="date"
-        class="date"
-      >
-        --
-      </div>
+      <p class="section-description">
+        Die einzelnen NAVTOOL-Module greifen
+        logisch ineinander.
+      </p>
 
     </div>
 
 
+    <div class="workflow-grid">
 
-    <div class="time-card">
 
-      <div class="time-label">
-        UTC
-      </div>
-
-      <div
-        id="utcClock"
-        class="clock"
+      <a
+        href="./map/"
+        class="workflow-card reveal"
       >
-        --:--:--
-      </div>
 
-      <div
-        id="utcDate"
-        class="date"
+        <div class="workflow-number">
+          01 / MAP
+        </div>
+
+        <h3>
+          Route planen
+        </h3>
+
+        <p>
+          Positionen, Waypoints und
+          Routen auf der Karte.
+        </p>
+
+      </a>
+
+
+      <a
+        href="./navtext/"
+        class="workflow-card reveal"
       >
-        --
-      </div>
+
+        <div class="workflow-number">
+          02 / NAVTEXT
+        </div>
+
+        <h3>
+          Informationen
+        </h3>
+
+        <p>
+          Nautische Informationen
+          strukturiert erfassen.
+        </p>
+
+      </a>
+
+
+      <a
+        href="./colreg/"
+        class="workflow-card reveal"
+      >
+
+        <div class="workflow-number">
+          03 / COLREG
+        </div>
+
+        <h3>
+          Situation prüfen
+        </h3>
+
+        <p>
+          Kollisionsverhütung,
+          Lichter und Signale.
+        </p>
+
+      </a>
+
+
+      <a
+        href="./weather/"
+        class="workflow-card reveal"
+      >
+
+        <div class="workflow-number">
+          04 / WEATHER
+        </div>
+
+        <h3>
+          Wetter prüfen
+        </h3>
+
+        <p>
+          Wind, Wetter und
+          maritime Bedingungen.
+        </p>
+
+      </a>
+
+
+      <a
+        href="./calc/"
+        class="workflow-card reveal"
+      >
+
+        <div class="workflow-number">
+          05 / CALC
+        </div>
+
+        <h3>
+          Berechnen
+        </h3>
+
+        <p>
+          Zeit, Distanz, Kurs,
+          ETA und weitere Werte.
+        </p>
+
+      </a>
+
 
     </div>
-
 
   </div>
 
@@ -2595,290 +2227,292 @@ footer a:hover{
 
 
 
-<!-- =====================================================
-     SYSTEM INFORMATION
-     ===================================================== -->
+<!-- =======================================================
+     CLOCK
+     ======================================================= -->
 
-<section class="section reveal">
+<section class="section">
 
-  <div class="info-strip">
+  <div class="container">
 
 
-    <div class="info-item">
+    <div class="section-header reveal">
 
-      <div class="info-item-label">
-        NAVTOOL
+      <div class="eyebrow">
+        SHIP CLOCK
       </div>
 
-      <div class="info-item-value">
-        Maritime Digital Workspace
-      </div>
+      <h2 class="section-title">
+        Time & UTC.
+      </h2>
+
+      <p class="section-description">
+        Lokale Zeit und UTC direkt im
+        NAVTOOL Hub.
+      </p>
 
     </div>
 
 
-    <div class="info-item">
+    <div class="clock-grid">
 
-      <div class="info-item-label">
-        MAIN NAVIGATION
+
+      <div class="clock-card reveal">
+
+        <div class="clock-label">
+          LOCAL TIME
+        </div>
+
+        <div
+          id="localTime"
+          class="clock-time"
+        >
+          --:--:--
+        </div>
+
+        <div
+          id="localDate"
+          class="clock-date"
+        >
+          --
+        </div>
+
       </div>
 
-      <div class="info-item-value">
-        Map · NavText · Calc · Weather
+
+      <div class="clock-card reveal">
+
+        <div class="clock-label">
+          UTC
+        </div>
+
+        <div
+          id="utcTime"
+          class="clock-time"
+        >
+          --:--:--
+        </div>
+
+        <div
+          id="utcDate"
+          class="clock-date"
+        >
+          --
+        </div>
+
       </div>
+
 
     </div>
-
-
-    <div class="info-item">
-
-      <div class="info-item-label">
-        STATUS
-      </div>
-
-      <div class="info-item-value">
-        <span style="color:var(--teal)">
-          ●
-        </span>
-        Systems available
-      </div>
-
-    </div>
-
 
   </div>
 
 </section>
-
 
 </main>
 
 
 
-<!-- =====================================================
+<!-- =======================================================
      FOOTER
-     ===================================================== -->
+     ======================================================= -->
 
 <footer>
 
-  NAVTOOL HUB
+  <div class="container footer-inner">
 
-  ·
 
-  Maritime Digital Workspace
+    <div>
 
-  ·
+      <div class="footer-brand">
+        NAVTOOL
+      </div>
 
-  Made with ❤️ by
+      <div class="footer-copy">
+        Maritime Navigation Workspace · navtool.de
+      </div>
 
-  <a
-    href="https://www.instagram.com/thesimonfischer"
-    target="_blank"
-    rel="noopener"
-  >
-    Simon Fischer
-  </a>
+    </div>
 
-  <br><br>
 
-  <strong>
-    NAVIGATION · WEATHER · CALCULATION · NAVTEXT
-  </strong>
+    <div class="footer-links">
+
+      <a href="./map/">
+        MAP
+      </a>
+
+      <a href="./navtext/">
+        NAVTEXT
+      </a>
+
+      <a href="./colreg/">
+        COLREG
+      </a>
+
+      <a href="./weather/">
+        WEATHER
+      </a>
+
+      <a href="./calc/">
+        CALC
+      </a>
+
+      <a href="#">
+        TOP ↑
+      </a>
+
+    </div>
+
+
+  </div>
 
 </footer>
-
-
-</div>
 
 
 
 <script>
 
 /* =========================================================
-   NAVTOOL HUB JAVASCRIPT
+   NAVTOOL SEARCH
    ========================================================= */
 
-
-/* =========================================================
-   TIME
-   ========================================================= */
-
-function updateTime(){
-
-  const now = new Date();
-
-
-  /* LOCAL */
-
-  document.getElementById("clock").textContent =
-    now.toLocaleTimeString(
-      "de-DE",
-      {
-        hour:"2-digit",
-        minute:"2-digit",
-        second:"2-digit"
-      }
-    );
-
-
-  document.getElementById("date").textContent =
-    now.toLocaleDateString(
-      "de-DE",
-      {
-        weekday:"long",
-        day:"numeric",
-        month:"long",
-        year:"numeric"
-      }
-    );
-
-
-  /* UTC */
-
-  document.getElementById("utcClock").textContent =
-    now.toLocaleTimeString(
-      "de-DE",
-      {
-        timeZone:"UTC",
-        hour:"2-digit",
-        minute:"2-digit",
-        second:"2-digit"
-      }
-    );
-
-
-  document.getElementById("utcDate").textContent =
-    now.toLocaleDateString(
-      "de-DE",
-      {
-        timeZone:"UTC",
-        weekday:"long",
-        day:"numeric",
-        month:"long",
-        year:"numeric"
-      }
-    );
-
-}
-
-
-updateTime();
-
-setInterval(
-  updateTime,
-  1000
-);
-
-
-/* =========================================================
-   NAVTOOL INTERNAL SEARCH
-   ========================================================= */
-
-const searchInput =
-  document.getElementById("search");
-
-const searchButton =
-  document.getElementById("searchBtn");
-
-const searchResults =
-  document.getElementById("searchResults");
-
-
-/*
-  Alle internen NavTool-Ziele.
-
-  Hier kannst du später problemlos
-  weitere Seiten hinzufügen.
-*/
-
-const tools = [
+const routes = [
 
   {
-    name:"Navigation Map",
-    description:"Interaktive maritime Karte",
-    icon:"⌁",
-    url:"/map/",
-    keywords:[
+    title: "MAP & ROUTING",
+
+    description:
+      "Interaktive maritime Karte und Routenplanung.",
+
+    url: "./map/",
+
+    icon: "◉",
+
+    keywords: [
       "map",
       "karte",
-      "navigation",
-      "nav",
-      "route",
+      "karten",
       "routing",
-      "wegpunkt",
-      "waypoint",
-      "position"
-    ]
-  },
-
-  {
-    name:"NavText",
-    description:"Navigationstexte und nautische Tools",
-    icon:"≋",
-    url:"/navtext/",
-    keywords:[
-      "navtext",
-      "text",
-      "navigationstext",
+      "route",
+      "routen",
       "navigation",
-      "nautik",
-      "nautisch"
+      "waypoint",
+      "waypoints",
+      "searoute",
+      "sea route"
     ]
   },
 
+
   {
-    name:"Calculation",
-    description:"Nautische Berechnungen",
-    icon:"∑",
-    url:"/calc/",
-    keywords:[
-      "calc",
-      "calculation",
-      "rechner",
-      "rechnen",
-      "berechnung",
-      "eta",
-      "kurs",
-      "distanz",
-      "strom",
-      "grosskreis",
-      "großkreis"
+    title: "NAVTEXT",
+
+    description:
+      "Nautische Texte und Navigationsinformationen.",
+
+    url: "./navtext/",
+
+    icon: "≡",
+
+    keywords: [
+      "navtext",
+      "nav text",
+      "navigation text",
+      "navigationstext",
+      "text",
+      "nautischer text"
     ]
   },
 
+
   {
-    name:"Weather",
-    description:"Maritimes Wetter",
-    icon:"◌",
-    url:"/weather/",
-    keywords:[
+    title: "COLREG",
+
+    description:
+      "Kollisionsverhütungsregeln, Lichter und Signale.",
+
+    url: "./colreg/",
+
+    icon: "⚓",
+
+    keywords: [
+      "colreg",
+      "col regs",
+      "col-reg",
+      "collision",
+      "collision regulations",
+      "collision regulation",
+      "kollisionsverhütung",
+      "kollisionsverhuetung",
+      "kollisionsregeln",
+      "verkehrsregeln",
+      "verkehrsregel",
+      "lichterführung",
+      "lichterfuehrung",
+      "lichter",
+      "signalkörper",
+      "signalkoerper",
+      "schallsignale",
+      "sound signals",
+      "navigation rules"
+    ]
+  },
+
+
+  {
+    title: "WEATHER",
+
+    description:
+      "Wetter, Wind und maritime Bedingungen.",
+
+    url: "./weather/",
+
+    icon: "☁",
+
+    keywords: [
       "weather",
       "wetter",
       "wind",
       "regen",
-      "rain",
-      "druck",
-      "pressure",
-      "temperatur"
+      "temperatur",
+      "forecast",
+      "vorhersage",
+      "seewetter",
+      "meteo",
+      "meteorologie"
     ]
   },
 
+
   {
-    name:"CREW",
-    description:"Shipboard Operations & Crew Service",
-    icon:"⚓",
-    url:"/crew/",
-    keywords:[
-      "crew",
-      "ship",
-      "schiff",
-      "cuno",
-      "cargo",
-      "ladung",
-      "ballast",
-      "operations",
-      "arbeit",
-      "work"
+    title: "CALC",
+
+    description:
+      "Nautische Berechnungen und Navigation Calculators.",
+
+    url: "./calc/",
+
+    icon: "Σ",
+
+    keywords: [
+      "calc",
+      "calculation",
+      "calculate",
+      "berechnung",
+      "berechnen",
+      "eta",
+      "distanz",
+      "distance",
+      "zeit",
+      "time",
+      "kurs",
+      "course",
+      "strom",
+      "tide",
+      "tides",
+      "großkreis",
+      "grosskreis",
+      "great circle"
     ]
   }
 
@@ -2886,177 +2520,237 @@ const tools = [
 
 
 /* =========================================================
-   NORMALIZE SEARCH
+   SEARCH
    ========================================================= */
 
-function normalizeSearch(value){
+const searchInput =
+  document.getElementById("globalSearch");
 
-  return value
+const searchResults =
+  document.getElementById("searchResults");
+
+let activeIndex = -1;
+
+
+function normalize(text) {
+
+  return text
     .toLowerCase()
-    .trim()
     .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g,"");
+    .replace(/[\u0300-\u036f]/g, "")
+    .trim();
 
 }
 
 
-/* =========================================================
-   SEARCH RESULTS
-   ========================================================= */
+function findRoutes(query) {
 
-function getSearchResults(query){
+  const q =
+    normalize(query);
 
-  const normalized =
-    normalizeSearch(query);
-
-  if(!normalized){
+  if (!q) {
     return [];
   }
 
 
-  return tools
-    .map(tool => {
+  return routes
+
+    .map(route => {
 
       let score = 0;
 
-      const name =
-        normalizeSearch(tool.name);
 
-      const description =
-        normalizeSearch(tool.description);
-
-
-      if(name === normalized){
-        score += 100;
-      }
-
-      if(name.includes(normalized)){
-        score += 50;
-      }
-
-      if(description.includes(normalized)){
-        score += 25;
+      if (
+        normalize(route.title)
+          .includes(q)
+      ) {
+        score += 20;
       }
 
 
-      tool.keywords.forEach(keyword => {
+      route.keywords.forEach(keyword => {
 
-        const key =
-          normalizeSearch(keyword);
+        const k =
+          normalize(keyword);
 
-        if(key === normalized){
-          score += 80;
+
+        if (k === q) {
+          score += 30;
         }
 
-        else if(key.includes(normalized)){
-          score += 40;
+        else if (k.includes(q)) {
+          score += 10;
+        }
+
+        else if (q.includes(k)) {
+          score += 6;
         }
 
       });
 
 
       return {
-        tool,
+        ...route,
         score
       };
 
     })
-    .filter(item => item.score > 0)
+
+    .filter(route => route.score > 0)
+
     .sort(
-      (a,b) =>
+      (a, b) =>
         b.score - a.score
     )
-    .slice(0,5);
+
+    .slice(0, 5);
 
 }
 
 
 /* =========================================================
-   RENDER SEARCH SUGGESTIONS
+   RENDER
    ========================================================= */
 
-function renderSearchResults(query){
+function renderSearch() {
 
-  const results =
-    getSearchResults(query);
+  const query =
+    searchInput.value;
 
 
-  if(!query.trim()){
+  searchResults.innerHTML = "";
+
+  activeIndex = -1;
+
+
+  if (!query.trim()) {
 
     searchResults.classList.remove(
       "visible"
     );
 
-    searchResults.innerHTML = "";
-
     return;
+
   }
 
 
-  if(!results.length){
+  const matches =
+    findRoutes(query);
+
+
+  if (!matches.length) {
 
     searchResults.innerHTML = `
 
-      <div
+      <button
+        type="button"
         class="search-result"
-        data-external="true"
+        id="webSearchButton"
       >
 
         <div class="result-icon">
-          ↗
+          ⌕
         </div>
 
-        <div class="result-text">
+        <div>
 
-          <strong>
-            Im Web suchen
-          </strong>
+          <div class="result-title">
+            WEB-SUCHE
+          </div>
 
-          <span>
-            Keine passende NavTool-Seite gefunden
-          </span>
+          <div class="result-description">
+            Keine NAVTOOL-Seite gefunden.
+            Im Web suchen.
+          </div>
 
         </div>
 
-      </div>
+        <div class="result-arrow">
+          →
+        </div>
+
+      </button>
 
     `;
 
-    searchResults.classList.add(
-      "visible"
-    );
+
+    searchResults
+      .classList
+      .add("visible");
+
+
+    document
+      .getElementById("webSearchButton")
+      .addEventListener(
+        "click",
+        webSearch
+      );
+
 
     return;
   }
 
 
-  searchResults.innerHTML =
-    results.map(item => `
+  matches.forEach(
+    (route, index) => {
 
-      <a
-        class="search-result"
-        href="${item.tool.url}"
-      >
+      const button =
+        document.createElement(
+          "button"
+        );
+
+
+      button.type = "button";
+
+      button.className =
+        "search-result";
+
+      button.dataset.index =
+        index;
+
+
+      button.innerHTML = `
 
         <div class="result-icon">
-          ${item.tool.icon}
+          ${route.icon}
         </div>
 
-        <div class="result-text">
+        <div>
 
-          <strong>
-            ${item.tool.name}
-          </strong>
+          <div class="result-title">
+            ${route.title}
+          </div>
 
-          <span>
-            ${item.tool.description}
-          </span>
+          <div class="result-description">
+            ${route.description}
+          </div>
 
         </div>
 
-      </a>
+        <div class="result-arrow">
+          →
+        </div>
 
-    `).join("");
+      `;
+
+
+      button.addEventListener(
+        "click",
+        () => {
+
+          window.location.href =
+            route.url;
+
+        }
+      );
+
+
+      searchResults.appendChild(
+        button
+      );
+
+    }
+  );
 
 
   searchResults.classList.add(
@@ -3067,36 +2761,19 @@ function renderSearchResults(query){
 
 
 /* =========================================================
-   SEARCH EXECUTION
+   WEB SEARCH
    ========================================================= */
 
-function executeSearch(){
+function webSearch() {
 
   const query =
     searchInput.value.trim();
 
 
-  if(!query){
+  if (!query) {
     return;
   }
 
-
-  const results =
-    getSearchResults(query);
-
-
-  /* INTERNAL RESULT */
-
-  if(results.length){
-
-    window.location.href =
-      results[0].tool.url;
-
-    return;
-  }
-
-
-  /* ECOSIA FALLBACK */
 
   const url =
     "https://www.ecosia.org/search?q=" +
@@ -3106,25 +2783,53 @@ function executeSearch(){
   window.open(
     url,
     "_blank",
-    "noopener"
+    "noopener,noreferrer"
   );
 
 }
 
 
 /* =========================================================
-   SEARCH EVENTS
+   ENTER
+   ========================================================= */
+
+function executeSearch() {
+
+  const query =
+    searchInput.value.trim();
+
+
+  if (!query) {
+    return;
+  }
+
+
+  const matches =
+    findRoutes(query);
+
+
+  if (matches.length) {
+
+    window.location.href =
+      matches[0].url;
+
+    return;
+
+  }
+
+
+  webSearch();
+
+}
+
+
+/* =========================================================
+   INPUT
    ========================================================= */
 
 searchInput.addEventListener(
   "input",
-  () => {
-
-    renderSearchResults(
-      searchInput.value
-    );
-
-  }
+  renderSearch
 );
 
 
@@ -3132,15 +2837,108 @@ searchInput.addEventListener(
   "keydown",
   event => {
 
-    if(event.key === "Enter"){
+    const items =
+      [
+        ...searchResults.querySelectorAll(
+          ".search-result"
+        )
+      ];
+
+
+    if (
+      event.key === "ArrowDown"
+    ) {
 
       event.preventDefault();
 
-      executeSearch();
+
+      if (!items.length) {
+        return;
+      }
+
+
+      activeIndex =
+        Math.min(
+          activeIndex + 1,
+          items.length - 1
+        );
+
+
+      items.forEach(
+        (item, index) => {
+
+          item.classList.toggle(
+            "active",
+            index === activeIndex
+          );
+
+        }
+      );
 
     }
 
-    if(event.key === "Escape"){
+
+    else if (
+      event.key === "ArrowUp"
+    ) {
+
+      event.preventDefault();
+
+
+      if (!items.length) {
+        return;
+      }
+
+
+      activeIndex =
+        Math.max(
+          activeIndex - 1,
+          0
+        );
+
+
+      items.forEach(
+        (item, index) => {
+
+          item.classList.toggle(
+            "active",
+            index === activeIndex
+          );
+
+        }
+      );
+
+    }
+
+
+    else if (
+      event.key === "Enter"
+    ) {
+
+      event.preventDefault();
+
+
+      if (
+        activeIndex >= 0 &&
+        items[activeIndex]
+      ) {
+
+        items[activeIndex].click();
+
+      }
+
+      else {
+
+        executeSearch();
+
+      }
+
+    }
+
+
+    else if (
+      event.key === "Escape"
+    ) {
 
       searchResults.classList.remove(
         "visible"
@@ -3152,63 +2950,19 @@ searchInput.addEventListener(
 );
 
 
-searchButton.addEventListener(
-  "click",
-  executeSearch
-);
-
-
 /* =========================================================
-   EXTERNAL SEARCH CLICK
-   ========================================================= */
-
-searchResults.addEventListener(
-  "click",
-  event => {
-
-    const external =
-      event.target.closest(
-        "[data-external]"
-      );
-
-    if(!external){
-      return;
-    }
-
-
-    const query =
-      searchInput.value.trim();
-
-
-    if(!query){
-      return;
-    }
-
-
-    window.open(
-      "https://www.ecosia.org/search?q=" +
-      encodeURIComponent(query),
-      "_blank",
-      "noopener"
-    );
-
-  }
-);
-
-
-/* =========================================================
-   CLOSE SEARCH WHEN CLICKING OUTSIDE
+   CLOSE SEARCH
    ========================================================= */
 
 document.addEventListener(
   "click",
   event => {
 
-    if(
+    if (
       !event.target.closest(
-        ".search-wrap"
+        ".search-wrapper"
       )
-    ){
+    ) {
 
       searchResults.classList.remove(
         "visible"
@@ -3217,6 +2971,121 @@ document.addEventListener(
     }
 
   }
+);
+
+
+/* =========================================================
+   "/" SEARCH SHORTCUT
+   ========================================================= */
+
+document.addEventListener(
+  "keydown",
+  event => {
+
+    if (
+      event.key === "/" &&
+      document.activeElement !== searchInput
+    ) {
+
+      event.preventDefault();
+
+      searchInput.focus();
+
+    }
+
+  }
+);
+
+
+/* =========================================================
+   CLOCK
+   ========================================================= */
+
+function updateClock() {
+
+  const now =
+    new Date();
+
+
+  const localTime =
+    now.toLocaleTimeString(
+      "de-DE",
+      {
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit"
+      }
+    );
+
+
+  const utcTime =
+    now.toLocaleTimeString(
+      "de-DE",
+      {
+        timeZone: "UTC",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit"
+      }
+    );
+
+
+  const localDate =
+    now.toLocaleDateString(
+      "de-DE",
+      {
+        weekday: "long",
+        day: "2-digit",
+        month: "long",
+        year: "numeric"
+      }
+    );
+
+
+  const utcDate =
+    now.toLocaleDateString(
+      "de-DE",
+      {
+        timeZone: "UTC",
+        weekday: "long",
+        day: "2-digit",
+        month: "long",
+        year: "numeric"
+      }
+    );
+
+
+  document.getElementById(
+    "localTime"
+  ).textContent =
+    localTime;
+
+
+  document.getElementById(
+    "utcTime"
+  ).textContent =
+    utcTime;
+
+
+  document.getElementById(
+    "localDate"
+  ).textContent =
+    localDate;
+
+
+  document.getElementById(
+    "utcDate"
+  ).textContent =
+    "UTC · " + utcDate;
+
+}
+
+
+updateClock();
+
+setInterval(
+  updateClock,
+  1000
 );
 
 
@@ -3230,85 +3099,114 @@ const revealElements =
   );
 
 
-const observer =
-  new IntersectionObserver(
-    entries => {
+if (
+  "IntersectionObserver" in window
+) {
 
-      entries.forEach(entry => {
+  const observer =
+    new IntersectionObserver(
+      entries => {
 
-        if(entry.isIntersecting){
+        entries.forEach(
+          entry => {
 
-          entry.target.classList.add(
-            "visible"
-          );
+            if (
+              entry.isIntersecting
+            ) {
 
-          observer.unobserve(
-            entry.target
-          );
+              entry.target.classList.add(
+                "visible"
+              );
 
-        }
+              observer.unobserve(
+                entry.target
+              );
 
-      });
+            }
 
-    },
-    {
-      threshold:.12
-    }
-  );
+          }
+        );
 
-
-revealElements.forEach(
-  element =>
-    observer.observe(element)
-);
-
-
-/* =========================================================
-   HEADER SHADOW ON SCROLL
-   ========================================================= */
-
-const header =
-  document.querySelector("header");
+      },
+      {
+        threshold: .12
+      }
+    );
 
 
-window.addEventListener(
-  "scroll",
-  () => {
+  revealElements.forEach(
+    element => {
 
-    if(window.scrollY > 30){
-
-      header.style.boxShadow =
-        "0 15px 45px rgba(0,0,0,.45)";
-
-    }else{
-
-      header.style.boxShadow =
-        "0 12px 40px rgba(0,0,0,.35)";
-
-    }
-
-  },
-  {
-    passive:true
-  }
-);
-
-
-/* =========================================================
-   CARD STAGGER
-   ========================================================= */
-
-document
-  .querySelectorAll(".system-card")
-  .forEach(
-    (card,index) => {
-
-      card.style.transitionDelay =
-        `${index * 45}ms`;
+      observer.observe(
+        element
+      );
 
     }
   );
 
+}
+
+else {
+
+  revealElements.forEach(
+    element => {
+
+      element.classList.add(
+        "visible"
+      );
+
+    }
+  );
+
+}
+
+
+/* =========================================================
+   RADAR PARALLAX
+   ========================================================= */
+
+const radar =
+  document.querySelector(
+    ".radar"
+  );
+
+
+if (
+  radar &&
+  window.matchMedia(
+    "(pointer:fine)"
+  ).matches
+) {
+
+  document.addEventListener(
+    "mousemove",
+    event => {
+
+      const x =
+        (
+          event.clientX /
+          window.innerWidth -
+          .5
+        ) * 5;
+
+
+      const y =
+        (
+          event.clientY /
+          window.innerHeight -
+          .5
+        ) * -5;
+
+
+      radar.style.transform =
+        `perspective(900px)
+         rotateX(${y}deg)
+         rotateY(${x}deg)`;
+
+    }
+  );
+
+}
 
 </script>
 

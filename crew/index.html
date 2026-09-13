@@ -1,0 +1,1537 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#061011">
+
+  <title>CREW — CUNO ESSBERGER</title>
+
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    crossorigin=""
+  >
+
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+<div class="app-shell">
+
+  <!-- MOBILE TOPBAR -->
+  <header class="mobile-topbar">
+    <div class="brand-small">
+      <span class="brand-mark">C</span>
+      <div>
+        <strong>CREW</strong>
+        <small>CUNO ESSBERGER</small>
+      </div>
+    </div>
+
+    <button class="icon-button" id="mobileMenuBtn">☰</button>
+  </header>
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+
+    <div class="brand">
+      <div class="brand-mark">C</div>
+      <div>
+        <div class="brand-title">CREW</div>
+        <div class="brand-subtitle">SHIPBOARD SYSTEM</div>
+      </div>
+    </div>
+
+    <div class="vessel-label">
+      <span class="status-dot"></span>
+      CUNO ESSBERGER
+    </div>
+
+    <nav class="main-nav">
+
+      <button class="nav-item active" data-view="dashboard">
+        <span>◉</span>
+        <span>Dashboard</span>
+      </button>
+
+      <button class="nav-item" data-view="cargo">
+        <span>▦</span>
+        <span>Cargo</span>
+      </button>
+
+      <button class="nav-item" data-view="ballast">
+        <span>◇</span>
+        <span>Ballast</span>
+      </button>
+
+      <button class="nav-item" data-view="voyage">
+        <span>⌁</span>
+        <span>Voyage</span>
+      </button>
+
+      <button class="nav-item" data-view="operations">
+        <span>≡</span>
+        <span>Operations</span>
+      </button>
+
+      <button class="nav-item" data-view="crew">
+        <span>♙</span>
+        <span>Crew Service</span>
+      </button>
+
+      <button class="nav-item" data-view="reports">
+        <span>▤</span>
+        <span>Reports</span>
+      </button>
+
+      <button class="nav-item" data-view="checklists">
+        <span>☑</span>
+        <span>Checklists</span>
+      </button>
+
+    </nav>
+
+    <div class="sidebar-bottom">
+
+      <button class="crew-user" id="crewLoginBtn">
+        <div class="avatar" id="sidebarAvatar">--</div>
+        <div class="crew-user-text">
+          <strong id="sidebarCrewName">No crew profile</strong>
+          <small>Local profile</small>
+        </div>
+      </button>
+
+      <div class="system-state">
+        <span class="status-dot"></span>
+        <span>SYSTEM READY</span>
+      </div>
+
+    </div>
+
+  </aside>
+
+
+  <!-- MAIN -->
+  <main class="main-content">
+
+    <!-- HEADER -->
+    <header class="topbar">
+
+      <div>
+        <div class="topbar-kicker">
+          SHIPBOARD OPERATIONS SYSTEM
+        </div>
+
+        <h1 id="pageTitle">Dashboard</h1>
+      </div>
+
+      <div class="topbar-right">
+
+        <div class="clock">
+          <span id="currentDate">--</span>
+          <strong id="currentClock">--:--:--</strong>
+        </div>
+
+        <button class="top-user" id="topCrewBtn">
+          <span class="avatar small" id="topAvatar">--</span>
+          <span id="topCrewName">Crew</span>
+        </button>
+
+      </div>
+
+    </header>
+
+
+    <!-- ========================= -->
+    <!-- DASHBOARD -->
+    <!-- ========================= -->
+
+    <section class="view active" id="view-dashboard">
+
+      <div class="page-heading">
+        <div>
+          <span class="eyebrow">LIVE SHIP STATUS</span>
+          <h2>CUNO ESSBERGER</h2>
+        </div>
+
+        <div class="heading-actions">
+          <a
+            class="button secondary"
+            href="https://www.marinetraffic.com/en/ais/details/ships/shipid:5627050"
+            target="_blank"
+            rel="noopener"
+          >
+            MarineTraffic ↗
+          </a>
+
+          <button class="button primary" id="refreshAISBtn">
+            ↻ Refresh AIS
+          </button>
+        </div>
+      </div>
+
+
+      <div class="stat-grid">
+
+        <article class="stat-card">
+          <span class="stat-label">Cargo onboard</span>
+          <strong id="dashCargoTotal">0.0 m³</strong>
+          <small>14 cargo tanks</small>
+        </article>
+
+        <article class="stat-card">
+          <span class="stat-label">Loaded today</span>
+          <strong id="dashLoadedToday">0.0 m³</strong>
+          <small>Daily capacity 20,000 m³</small>
+        </article>
+
+        <article class="stat-card">
+          <span class="stat-label">Discharged today</span>
+          <strong id="dashDischargedToday">0.0 m³</strong>
+          <small>Daily capacity 20,000 m³</small>
+        </article>
+
+        <article class="stat-card">
+          <span class="stat-label">Mean draft</span>
+          <strong id="dashMeanDraft">—</strong>
+          <small>Forward / aft</small>
+        </article>
+
+        <article class="stat-card">
+          <span class="stat-label">Freeboard</span>
+          <strong id="dashFreeboard">—</strong>
+          <small>Current condition</small>
+        </article>
+
+        <article class="stat-card">
+          <span class="stat-label">AIS</span>
+          <strong id="dashAIS">OFFLINE</strong>
+          <small id="dashAISInfo">No live connection</small>
+        </article>
+
+      </div>
+
+
+      <div class="dashboard-grid">
+
+        <!-- MAP -->
+        <article class="panel map-panel">
+
+          <div class="panel-header">
+
+            <div>
+              <span class="eyebrow">NAVIGATION</span>
+              <h3>Vessel Position</h3>
+            </div>
+
+            <span class="live-badge" id="mapStatus">
+              AIS OFFLINE
+            </span>
+
+          </div>
+
+          <div id="shipMap"></div>
+
+          <div class="map-footer">
+
+            <div class="map-position">
+              <span>LAT</span>
+              <strong id="mapLat">—</strong>
+            </div>
+
+            <div class="map-position">
+              <span>LON</span>
+              <strong id="mapLon">—</strong>
+            </div>
+
+            <div class="map-position">
+              <span>SOG</span>
+              <strong id="mapSog">—</strong>
+            </div>
+
+            <div class="map-position">
+              <span>COG</span>
+              <strong id="mapCog">—</strong>
+            </div>
+
+          </div>
+
+          <div class="manual-position">
+
+            <div>
+              <label>Manual LAT</label>
+              <input type="number" step="0.000001" id="manualLat">
+            </div>
+
+            <div>
+              <label>Manual LON</label>
+              <input type="number" step="0.000001" id="manualLon">
+            </div>
+
+            <button class="button secondary" id="saveManualPosition">
+              Set Position
+            </button>
+
+          </div>
+
+        </article>
+
+
+        <!-- VOYAGE -->
+        <article class="panel">
+
+          <div class="panel-header">
+
+            <div>
+              <span class="eyebrow">VOYAGE</span>
+              <h3>Passage Status</h3>
+            </div>
+
+            <button class="text-button" data-view-link="voyage">
+              Open →
+            </button>
+
+          </div>
+
+          <div class="voyage-route">
+
+            <div class="port">
+              <span>FROM</span>
+              <strong id="dashFrom">—</strong>
+            </div>
+
+            <div class="route-line">
+              <span>→</span>
+            </div>
+
+            <div class="port right">
+              <span>NEXT</span>
+              <strong id="dashTo">—</strong>
+            </div>
+
+          </div>
+
+          <div class="info-list">
+
+            <div>
+              <span>ETA</span>
+              <strong id="dashETA">—</strong>
+            </div>
+
+            <div>
+              <span>ETD</span>
+              <strong id="dashETD">—</strong>
+            </div>
+
+            <div>
+              <span>Pilot</span>
+              <strong id="dashPilot">—</strong>
+            </div>
+
+          </div>
+
+        </article>
+
+
+        <!-- CONDITION -->
+        <article class="panel">
+
+          <div class="panel-header">
+            <div>
+              <span class="eyebrow">SHIP CONDITION</span>
+              <h3>Current Readings</h3>
+            </div>
+          </div>
+
+          <div class="condition-grid">
+
+            <div>
+              <span>Draft FWD</span>
+              <strong id="dashDraftFwd">—</strong>
+            </div>
+
+            <div>
+              <span>Draft AFT</span>
+              <strong id="dashDraftAft">—</strong>
+            </div>
+
+            <div>
+              <span>Air Draft</span>
+              <strong id="dashAirDraft">—</strong>
+            </div>
+
+            <div>
+              <span>Water Depth</span>
+              <strong id="dashWaterDepth">—</strong>
+            </div>
+
+            <div>
+              <span>Air Temp.</span>
+              <strong id="dashAirTemp">—</strong>
+            </div>
+
+            <div>
+              <span>Water Temp.</span>
+              <strong id="dashWaterTemp">—</strong>
+            </div>
+
+          </div>
+
+        </article>
+
+
+        <!-- OPERATIONS -->
+        <article class="panel operations-panel">
+
+          <div class="panel-header">
+
+            <div>
+              <span class="eyebrow">OPERATIONS LOG</span>
+              <h3>Latest Activity</h3>
+            </div>
+
+            <button class="text-button" data-view-link="operations">
+              Open →
+            </button>
+
+          </div>
+
+          <div id="dashboardOperations" class="timeline">
+            <div class="empty-state">
+              No operations recorded.
+            </div>
+          </div>
+
+        </article>
+
+
+        <!-- CARGO MINI -->
+        <article class="panel cargo-overview">
+
+          <div class="panel-header">
+
+            <div>
+              <span class="eyebrow">CARGO</span>
+              <h3>Tank Overview</h3>
+            </div>
+
+            <button class="text-button" data-view-link="cargo">
+              Manage →
+            </button>
+
+          </div>
+
+          <div id="dashboardCargoTanks" class="mini-tanks"></div>
+
+        </article>
+
+
+        <!-- NEXT STEPS -->
+        <article class="panel next-panel">
+
+          <div class="panel-header">
+            <div>
+              <span class="eyebrow">OPERATIONS</span>
+              <h3>Next Steps</h3>
+            </div>
+          </div>
+
+          <div id="dashboardNextSteps" class="next-steps">
+            <div class="empty-state">
+              No next step recorded.
+            </div>
+          </div>
+
+        </article>
+
+      </div>
+
+    </section>
+
+
+    <!-- ========================= -->
+    <!-- CARGO -->
+    <!-- ========================= -->
+
+    <section class="view" id="view-cargo">
+
+      <div class="page-heading">
+
+        <div>
+          <span class="eyebrow">CARGO MANAGEMENT</span>
+          <h2>14 Cargo Tanks</h2>
+          <p>
+            Individual tank status, quantity, loading and discharge tracking.
+          </p>
+        </div>
+
+        <div class="heading-actions">
+          <button class="button primary" id="addCargoTankBtn">
+            + Add / Edit Tank
+          </button>
+        </div>
+
+      </div>
+
+
+      <div class="cargo-summary-grid">
+
+        <div class="big-number-card">
+          <span>ONBOARD</span>
+          <strong id="cargoTotal">0.0 m³</strong>
+        </div>
+
+        <div class="big-number-card">
+          <span>LOADED TODAY</span>
+          <strong id="cargoLoadedToday">0.0 m³</strong>
+        </div>
+
+        <div class="big-number-card">
+          <span>DISCHARGED TODAY</span>
+          <strong id="cargoDischargedToday">0.0 m³</strong>
+        </div>
+
+        <div class="big-number-card">
+          <span>DAILY CAPACITY</span>
+          <strong>20,000 m³</strong>
+        </div>
+
+      </div>
+
+
+      <div class="panel">
+
+        <div class="panel-header">
+
+          <div>
+            <span class="eyebrow">LOADING PERFORMANCE</span>
+            <h3>Daily Cargo Movement</h3>
+          </div>
+
+        </div>
+
+        <div class="progress-block">
+
+          <div class="progress-label">
+            <span>Loading</span>
+            <strong id="loadingPercent">0%</strong>
+          </div>
+
+          <div class="progress-track large">
+            <div class="progress-fill" id="loadingProgress"></div>
+          </div>
+
+        </div>
+
+        <div class="progress-block">
+
+          <div class="progress-label">
+            <span>Discharging</span>
+            <strong id="dischargingPercent">0%</strong>
+          </div>
+
+          <div class="progress-track large">
+            <div class="progress-fill discharge" id="dischargingProgress"></div>
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <div class="panel">
+
+        <div class="panel-header">
+          <div>
+            <span class="eyebrow">CARGO PLAN</span>
+            <h3>Port / Starboard</h3>
+          </div>
+        </div>
+
+        <div class="ship-plan">
+
+          <div class="ship-side">
+            <div class="side-title">
+              <span>PORT / BACKBORD</span>
+            </div>
+
+            <div id="cargoPortTanks" class="tank-column"></div>
+          </div>
+
+          <div class="ship-center">
+            <div class="ship-body">
+              <div class="bow">BOW</div>
+              <div class="center-line"></div>
+              <div class="stern">STERN</div>
+            </div>
+          </div>
+
+          <div class="ship-side">
+            <div class="side-title">
+              <span>STARBOARD / STEUERBORD</span>
+            </div>
+
+            <div id="cargoStarboardTanks" class="tank-column"></div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- ========================= -->
+    <!-- BALLAST -->
+    <!-- ========================= -->
+
+    <section class="view" id="view-ballast">
+
+      <div class="page-heading">
+
+        <div>
+          <span class="eyebrow">BALLAST MANAGEMENT</span>
+          <h2>14 Ballast Tanks</h2>
+          <p>
+            Filling and discharge progress for Port and Starboard.
+          </p>
+        </div>
+
+        <div>
+          <button class="button primary" id="addBallastBtn">
+            + Edit Ballast Tank
+          </button>
+        </div>
+
+      </div>
+
+
+      <div class="cargo-summary-grid">
+
+        <div class="big-number-card">
+          <span>BALLAST ONBOARD</span>
+          <strong id="ballastTotal">0.0 m³</strong>
+        </div>
+
+        <div class="big-number-card">
+          <span>FILLING</span>
+          <strong id="ballastFilling">0</strong>
+        </div>
+
+        <div class="big-number-card">
+          <span>DISCHARGING</span>
+          <strong id="ballastDischarging">0</strong>
+        </div>
+
+        <div class="big-number-card">
+          <span>TANKS</span>
+          <strong>14</strong>
+        </div>
+
+      </div>
+
+
+      <div class="panel">
+
+        <div class="panel-header">
+
+          <div>
+            <span class="eyebrow">BALLAST PLAN</span>
+            <h3>Port / Starboard</h3>
+          </div>
+
+        </div>
+
+        <div class="ship-plan">
+
+          <div class="ship-side">
+
+            <div class="side-title">
+              <span>PORT / BACKBORD</span>
+            </div>
+
+            <div id="ballastPortTanks" class="tank-column"></div>
+
+          </div>
+
+          <div class="ship-center">
+            <div class="ship-body">
+              <div class="bow">BOW</div>
+              <div class="center-line"></div>
+              <div class="stern">STERN</div>
+            </div>
+          </div>
+
+          <div class="ship-side">
+
+            <div class="side-title">
+              <span>STARBOARD / STEUERBORD</span>
+            </div>
+
+            <div id="ballastStarboardTanks" class="tank-column"></div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- ========================= -->
+    <!-- VOYAGE -->
+    <!-- ========================= -->
+
+    <section class="view" id="view-voyage">
+
+      <div class="page-heading">
+
+        <div>
+          <span class="eyebrow">VOYAGE & CONDITION</span>
+          <h2>Voyage Planning</h2>
+        </div>
+
+      </div>
+
+
+      <div class="two-column">
+
+        <form class="panel form-panel" id="voyageForm">
+
+          <div class="panel-header">
+            <div>
+              <span class="eyebrow">VOYAGE</span>
+              <h3>Passage Information</h3>
+            </div>
+          </div>
+
+          <div class="form-grid">
+
+            <label>
+              Departure / From
+              <input id="voyageFrom" type="text" placeholder="Dublin">
+            </label>
+
+            <label>
+              Next Port / To
+              <input id="voyageTo" type="text" placeholder="Belfast">
+            </label>
+
+            <label>
+              ETA
+              <input id="voyageETA" type="datetime-local">
+            </label>
+
+            <label>
+              ETD
+              <input id="voyageETD" type="datetime-local">
+            </label>
+
+            <label>
+              Pilot Arrival
+              <input id="pilotArrival" type="datetime-local">
+            </label>
+
+            <label>
+              Pilot Departure
+              <input id="pilotDeparture" type="datetime-local">
+            </label>
+
+            <label>
+              Next Port Latitude
+              <input id="nextPortLat" type="number" step="0.000001">
+            </label>
+
+            <label>
+              Next Port Longitude
+              <input id="nextPortLon" type="number" step="0.000001">
+            </label>
+
+          </div>
+
+          <div class="form-actions">
+            <button class="button primary" type="submit">
+              Save Voyage
+            </button>
+          </div>
+
+        </form>
+
+
+        <form class="panel form-panel" id="conditionForm">
+
+          <div class="panel-header">
+            <div>
+              <span class="eyebrow">SHIP CONDITION</span>
+              <h3>Current Readings</h3>
+            </div>
+          </div>
+
+          <div class="form-grid">
+
+            <label>
+              Freeboard Port [m]
+              <input id="freeboardPort" type="number" step="0.01">
+            </label>
+
+            <label>
+              Freeboard Starboard [m]
+              <input id="freeboardStarboard" type="number" step="0.01">
+            </label>
+
+            <label>
+              Draft Forward [m]
+              <input id="draftFwd" type="number" step="0.01">
+            </label>
+
+            <label>
+              Draft Aft [m]
+              <input id="draftAft" type="number" step="0.01">
+            </label>
+
+            <label>
+              Air Draft [m]
+              <input id="airDraft" type="number" step="0.01">
+            </label>
+
+            <label>
+              Water Depth [m]
+              <input id="waterDepth" type="number" step="0.01">
+            </label>
+
+            <label>
+              Air Temperature [°C]
+              <input id="airTemp" type="number" step="0.1">
+            </label>
+
+            <label>
+              Water Temperature [°C]
+              <input id="waterTemp" type="number" step="0.1">
+            </label>
+
+          </div>
+
+          <div class="form-actions">
+            <button class="button primary" type="submit">
+              Save Condition
+            </button>
+          </div>
+
+        </form>
+
+      </div>
+
+
+      <div class="panel pilot-panel">
+
+        <div class="panel-header">
+          <div>
+            <span class="eyebrow">PILOT</span>
+            <h3>Pilot Status</h3>
+          </div>
+        </div>
+
+        <div class="pilot-timeline">
+
+          <div class="pilot-step">
+            <span class="pilot-dot"></span>
+            <strong>Arrival</strong>
+            <small id="pilotArrivalDisplay">Not set</small>
+          </div>
+
+          <div class="pilot-line"></div>
+
+          <div class="pilot-step">
+            <span class="pilot-dot"></span>
+            <strong>On Board</strong>
+            <small>Operational event</small>
+          </div>
+
+          <div class="pilot-line"></div>
+
+          <div class="pilot-step">
+            <span class="pilot-dot"></span>
+            <strong>Departure</strong>
+            <small id="pilotDepartureDisplay">Not set</small>
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- ========================= -->
+    <!-- OPERATIONS -->
+    <!-- ========================= -->
+
+    <section class="view" id="view-operations">
+
+      <div class="page-heading">
+
+        <div>
+          <span class="eyebrow">SHIP OPERATIONS</span>
+          <h2>Operations Log</h2>
+          <p>
+            What was done and what comes next.
+          </p>
+        </div>
+
+      </div>
+
+
+      <form class="panel operation-form" id="operationForm">
+
+        <div class="panel-header">
+
+          <div>
+            <span class="eyebrow">NEW ENTRY</span>
+            <h3>Record Operation</h3>
+          </div>
+
+        </div>
+
+        <div class="form-grid">
+
+          <label>
+            Time
+            <input id="operationTime" type="datetime-local">
+          </label>
+
+          <label>
+            Operation
+            <select id="operationType">
+
+              <option value="arrival">Arrival</option>
+              <option value="departure">Departure</option>
+              <option value="loading">Loading</option>
+              <option value="discharging">Discharging</option>
+              <option value="ballast">Ballast</option>
+              <option value="pilot">Pilot</option>
+              <option value="cargo">Cargo</option>
+              <option value="maintenance">Maintenance</option>
+              <option value="tank-cleaning">Tank Cleaning</option>
+              <option value="other">Other</option>
+
+            </select>
+          </label>
+
+          <label class="full">
+            What was done?
+            <textarea id="operationDone" rows="3"
+              placeholder="z. B. Departure: Dublin"></textarea>
+          </label>
+
+          <label class="full">
+            Next steps
+            <textarea id="operationNext" rows="3"
+              placeholder="z. B. Next labour: Belfast"></textarea>
+          </label>
+
+        </div>
+
+        <div class="form-actions">
+          <button class="button primary" type="submit">
+            + Record Operation
+          </button>
+        </div>
+
+      </form>
+
+
+      <div class="panel">
+
+        <div class="panel-header">
+          <div>
+            <span class="eyebrow">HISTORY</span>
+            <h3>Operations Timeline</h3>
+          </div>
+
+          <button class="button danger-outline" id="clearOperationsBtn">
+            Clear Log
+          </button>
+        </div>
+
+        <div id="operationsTimeline" class="large-timeline"></div>
+
+      </div>
+
+    </section>
+
+
+    <!-- ========================= -->
+    <!-- CREW -->
+    <!-- ========================= -->
+
+    <section class="view" id="view-crew">
+
+      <div class="page-heading">
+
+        <div>
+          <span class="eyebrow">CREW SERVICE</span>
+          <h2>Work & Earnings</h2>
+          <p>
+            Local crew profile and monthly working-time calculation.
+          </p>
+        </div>
+
+        <button class="button primary" id="openCrewProfile">
+          Edit Profile
+        </button>
+
+      </div>
+
+
+      <div class="two-column">
+
+        <article class="panel crew-profile-card">
+
+          <div class="profile-header">
+
+            <div class="large-avatar" id="crewLargeAvatar">
+              --
+            </div>
+
+            <div>
+              <span class="eyebrow">CREW MEMBER</span>
+              <h3 id="crewFullName">No profile</h3>
+              <p id="crewCompany">Company not set</p>
+            </div>
+
+          </div>
+
+          <div class="profile-data">
+
+            <div>
+              <span>Last, First</span>
+              <strong id="profileName">—</strong>
+            </div>
+
+            <div>
+              <span>Date of Birth</span>
+              <strong id="profileDOB">—</strong>
+            </div>
+
+            <div>
+              <span>Age</span>
+              <strong id="profileAge">—</strong>
+            </div>
+
+            <div>
+              <span>Place of Birth</span>
+              <strong id="profileBirthPlace">—</strong>
+            </div>
+
+            <div>
+              <span>Company</span>
+              <strong id="profileCompany">—</strong>
+            </div>
+
+            <div>
+              <span>Position</span>
+              <strong id="profilePosition">—</strong>
+            </div>
+
+          </div>
+
+        </article>
+
+
+        <article class="panel earnings-card">
+
+          <div class="panel-header">
+            <div>
+              <span class="eyebrow">PAYMENT</span>
+              <h3>Hourly Rates</h3>
+            </div>
+          </div>
+
+          <div id="rateList" class="rate-list"></div>
+
+          <div class="earnings-total">
+            <span>MONTHLY TOTAL</span>
+            <strong id="monthlyEarnings">€ 0.00</strong>
+          </div>
+
+        </article>
+
+      </div>
+
+
+      <div class="panel work-panel">
+
+        <div class="panel-header">
+
+          <div>
+            <span class="eyebrow">WORK</span>
+            <h3 id="workMonthTitle">Work Calendar</h3>
+          </div>
+
+          <div class="month-controls">
+
+            <button class="button secondary" id="previousMonth">
+              ←
+            </button>
+
+            <button class="button secondary" id="todayMonth">
+              Today
+            </button>
+
+            <button class="button secondary" id="nextMonth">
+              →
+            </button>
+
+          </div>
+
+        </div>
+
+        <div class="work-help">
+          Mouse gedrückt halten und Stunden markieren. Anschließend Arbeitsart auswählen.
+        </div>
+
+        <div class="work-calendar-wrapper">
+          <div id="workCalendar" class="work-calendar"></div>
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- ========================= -->
+    <!-- REPORTS -->
+    <!-- ========================= -->
+
+    <section class="view" id="view-reports">
+
+      <div class="page-heading">
+
+        <div>
+          <span class="eyebrow">REPORTING</span>
+          <h2>Reports</h2>
+          <p>
+            Generate printable operational reports.
+          </p>
+        </div>
+
+      </div>
+
+
+      <div class="panel">
+
+        <div class="form-grid">
+
+          <label>
+            Report Type
+            <select id="reportType">
+
+              <option value="daily">Daily Ship Report</option>
+              <option value="voyage">Voyage Report</option>
+              <option value="cargo">Cargo Report</option>
+              <option value="ballast">Ballast Report</option>
+              <option value="operations">Operations Report</option>
+              <option value="crew">Crew Work Report</option>
+              <option value="full">Full Ship Report</option>
+
+            </select>
+          </label>
+
+          <label>
+            Period
+            <select id="reportPeriod">
+
+              <option value="today">Today</option>
+              <option value="24h">Last 24 Hours</option>
+              <option value="7d">Last 7 Days</option>
+              <option value="14d">Last 14 Days</option>
+              <option value="30d">Last 30 Days</option>
+              <option value="custom">Custom</option>
+
+            </select>
+          </label>
+
+          <label id="customStartWrap" class="hidden">
+            From
+            <input id="reportStart" type="date">
+          </label>
+
+          <label id="customEndWrap" class="hidden">
+            To
+            <input id="reportEnd" type="date">
+          </label>
+
+        </div>
+
+        <div class="form-actions">
+
+          <button class="button primary" id="generateReportBtn">
+            Generate Report
+          </button>
+
+          <button class="button secondary" id="printReportBtn">
+            Print / PDF
+          </button>
+
+          <button class="button secondary" id="exportDataBtn">
+            Backup JSON
+          </button>
+
+          <label class="button secondary file-button">
+            Import JSON
+            <input type="file" id="importDataInput" accept=".json">
+          </label>
+
+        </div>
+
+      </div>
+
+
+      <div class="panel report-preview-panel">
+
+        <div class="panel-header">
+          <div>
+            <span class="eyebrow">PREVIEW</span>
+            <h3>Report</h3>
+          </div>
+        </div>
+
+        <div id="reportPreview" class="report-preview">
+
+          <div class="empty-state">
+            Select a report and click Generate Report.
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- ========================= -->
+    <!-- CHECKLISTS -->
+    <!-- ========================= -->
+
+    <section class="view" id="view-checklists">
+
+      <div class="page-heading">
+
+        <div>
+          <span class="eyebrow">CHECKLISTS</span>
+          <h2>Shipboard Checklists</h2>
+          <p>
+            Digital completion with print / PDF output.
+          </p>
+        </div>
+
+      </div>
+
+
+      <div class="two-column">
+
+        <div class="panel checklist-menu">
+
+          <div class="panel-header">
+            <div>
+              <span class="eyebrow">SELECT</span>
+              <h3>Checklist</h3>
+            </div>
+          </div>
+
+          <div id="checklistButtons"></div>
+
+        </div>
+
+
+        <div class="panel">
+
+          <div class="panel-header">
+
+            <div>
+              <span class="eyebrow">CHECKLIST</span>
+              <h3 id="checklistTitle">—</h3>
+            </div>
+
+            <div class="heading-actions">
+
+              <button class="button secondary" id="downloadChecklistBtn">
+                Download
+              </button>
+
+              <button class="button primary" id="printChecklistBtn">
+                Print / PDF
+              </button>
+
+            </div>
+
+          </div>
+
+          <div id="checklistForm"></div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+</div>
+
+
+<!-- ========================= -->
+<!-- TANK MODAL -->
+<!-- ========================= -->
+
+<dialog id="tankDialog" class="modal">
+
+  <form method="dialog" class="modal-card" id="tankForm">
+
+    <div class="modal-header">
+
+      <div>
+        <span class="eyebrow">TANK MANAGEMENT</span>
+        <h3 id="tankModalTitle">Tank</h3>
+      </div>
+
+      <button class="modal-close" value="cancel">
+        ×
+      </button>
+
+    </div>
+
+    <input type="hidden" id="tankType">
+    <input type="hidden" id="tankId">
+
+    <div class="form-grid">
+
+      <label>
+        Status
+        <select id="tankStatus">
+          <option value="empty">Empty</option>
+          <option value="loading">Loading</option>
+          <option value="part-loaded">Part Loaded</option>
+          <option value="full">Full</option>
+          <option value="discharging">Discharging</option>
+          <option value="cleaning">Cleaning</option>
+          <option value="closed">Closed</option>
+        </select>
+      </label>
+
+      <label>
+        Capacity [m³]
+        <input id="tankCapacity" type="number" step="0.01">
+      </label>
+
+      <label>
+        Current Quantity [m³]
+        <input id="tankCurrent" type="number" step="0.01">
+      </label>
+
+      <label>
+        Loaded Today [m³]
+        <input id="tankLoadedToday" type="number" step="0.01">
+      </label>
+
+      <label>
+        Discharged Today [m³]
+        <input id="tankDischargedToday" type="number" step="0.01">
+      </label>
+
+      <label id="tankProductWrap">
+        Product
+        <input id="tankProduct" type="text">
+      </label>
+
+      <label id="tankTemperatureWrap">
+        Temperature [°C]
+        <input id="tankTemperature" type="number" step="0.1">
+      </label>
+
+      <label id="tankUllageWrap">
+        Ullage [m]
+        <input id="tankUllage" type="number" step="0.01">
+      </label>
+
+    </div>
+
+    <div class="form-actions">
+
+      <button class="button secondary" value="cancel">
+        Cancel
+      </button>
+
+      <button class="button primary" id="saveTankBtn" value="default">
+        Save Tank
+      </button>
+
+    </div>
+
+  </form>
+
+</dialog>
+
+
+<!-- ========================= -->
+<!-- CREW PROFILE MODAL -->
+<!-- ========================= -->
+
+<dialog id="crewDialog" class="modal">
+
+  <form method="dialog" class="modal-card" id="crewForm">
+
+    <div class="modal-header">
+
+      <div>
+        <span class="eyebrow">CREW PROFILE</span>
+        <h3>Personal Data</h3>
+      </div>
+
+      <button class="modal-close" value="cancel">
+        ×
+      </button>
+
+    </div>
+
+    <div class="form-grid">
+
+      <label>
+        First Name
+        <input id="crewFirstName" type="text" required>
+      </label>
+
+      <label>
+        Last Name
+        <input id="crewLastName" type="text" required>
+      </label>
+
+      <label>
+        Date of Birth
+        <input id="crewDOB" type="date">
+      </label>
+
+      <label>
+        Place of Birth
+        <input id="crewBirthPlace" type="text">
+      </label>
+
+      <label>
+        Company
+        <input id="crewCompanyInput" type="text">
+      </label>
+
+      <label>
+        Position
+        <input id="crewPosition" type="text">
+      </label>
+
+    </div>
+
+    <div class="form-actions">
+
+      <button class="button secondary" value="cancel">
+        Cancel
+      </button>
+
+      <button class="button primary" value="default">
+        Save Profile
+      </button>
+
+    </div>
+
+  </form>
+
+</dialog>
+
+
+<!-- ========================= -->
+<!-- WORK MODAL -->
+<!-- ========================= -->
+
+<dialog id="workDialog" class="modal">
+
+  <form method="dialog" class="modal-card" id="workForm">
+
+    <div class="modal-header">
+
+      <div>
+        <span class="eyebrow">WORK ENTRY</span>
+        <h3>Add Working Time</h3>
+      </div>
+
+      <button class="modal-close" value="cancel">
+        ×
+      </button>
+
+    </div>
+
+    <div id="workSelectionInfo" class="selection-info"></div>
+
+    <label>
+      Work Category
+      <select id="workActivity">
+
+        <option value="watch">Watch ×1.5</option>
+        <option value="maintenance">Maintenance ×1.2</option>
+        <option value="manoeuvring">Manouvering ×1.5</option>
+        <option value="tankCleaning">Tank Cleaning ×1.3</option>
+        <option value="provision">Provision ×1.1</option>
+        <option value="other">Other ×1.0</option>
+
+      </select>
+    </label>
+
+    <label>
+      Notes
+      <textarea id="workNotes" rows="3"
+        placeholder="Optional notes"></textarea>
+    </label>
+
+    <div class="rate-preview" id="workRatePreview">
+      € 0.00 / h
+    </div>
+
+    <div class="form-actions">
+
+      <button class="button secondary" value="cancel">
+        Cancel
+      </button>
+
+      <button class="button primary" value="default">
+        Add Work Time
+      </button>
+
+    </div>
+
+  </form>
+
+</dialog>
+
+
+<!-- ========================= -->
+<!-- TOAST -->
+<!-- ========================= -->
+
+<div id="toast" class="toast"></div>
+
+
+<!-- ========================= -->
+<!-- PRINT SHEET -->
+<!-- ========================= -->
+
+<div id="printSheet" class="print-sheet"></div>
+
+
+<script
+  src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+  crossorigin="">
+</script>
+
+<script src="app.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,1836 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Seekarte – Start → Ziel | NavTool</title>
+
+    <meta
+        name="description"
+        content="Maritimer Routenplaner für Start, Ziel, Waypoints, Distanz, Geschwindigkeit, Fahrzeit und ETA."
+    >
+
+    <!-- Leaflet -->
+    <link
+        rel="stylesheet"
+        href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    >
+
+    <!-- NavTool Map CSS -->
+    <link rel="stylesheet" href="./styles.css">
+</head>
+
+<body>
+
+<!-- =========================================================
+     HEADER
+========================================================= -->
+
+<header class="topbar">
+
+    <div class="brand">
+
+        <div class="brand-mark">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+
+        <div>
+            <div class="brand-name">NAVTOOL</div>
+            <div class="brand-sub">
+                SEEKARTE / START → ZIEL
+            </div>
+        </div>
+
+    </div>
+
+    <nav class="main-nav">
+
+        <a href="../">HOME</a>
+
+        <a
+            href="#route"
+            class="active"
+        >
+            ROUTE
+        </a>
+
+        <a href="#map-section">
+            KARTE
+        </a>
+
+        <a href="#calculation">
+            BERECHNUNG
+        </a>
+
+        <a href="#info">
+            INFO
+        </a>
+
+    </nav>
+
+    <div class="system-status">
+        <span></span>
+        SYSTEM ONLINE
+    </div>
+
+</header>
+
+
+<!-- =========================================================
+     HERO
+========================================================= -->
+
+<main>
+
+<section
+    class="hero"
+    id="route"
+>
+
+    <div class="hero-inner">
+
+        <div class="eyebrow">
+            NAVTOOL / MARITIME ROUTING
+        </div>
+
+        <h1>
+            START.
+            <span>ZIEL.</span>
+            ROUTE.
+        </h1>
+
+        <p class="hero-text">
+            Setze Start, Ziel und beliebig viele Zwischenpunkte.
+            Die Route, Distanz, Fahrzeit und ETA werden direkt berechnet.
+        </p>
+
+    </div>
+
+</section>
+
+
+<!-- =========================================================
+     ROUTE CONTROL
+========================================================= -->
+
+<section class="control-section">
+
+    <div class="panel">
+
+        <div class="panel-header">
+
+            <div>
+                <div class="panel-kicker">
+                    ROUTE CONFIGURATION
+                </div>
+
+                <h2>
+                    Start → Ziel
+                </h2>
+            </div>
+
+            <div class="route-state">
+                <span id="routeStateDot"></span>
+                <span id="routeStateText">
+                    BEREIT
+                </span>
+            </div>
+
+        </div>
+
+
+        <div class="route-form">
+
+            <!-- START -->
+
+            <div class="field-block">
+
+                <label for="startInput">
+                    START
+                </label>
+
+                <div class="input-row">
+
+                    <input
+                        id="startInput"
+                        type="text"
+                        value="Hamburg"
+                        placeholder="z. B. Hamburg"
+                        autocomplete="off"
+                    >
+
+                    <button
+                        type="button"
+                        class="small-button"
+                        id="startSearchBtn"
+                    >
+                        SUCHEN
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- SWAP -->
+
+            <button
+                type="button"
+                class="swap-button"
+                id="swapBtn"
+                title="Start und Ziel tauschen"
+            >
+                ⇄
+            </button>
+
+
+            <!-- DESTINATION -->
+
+            <div class="field-block">
+
+                <label for="destinationInput">
+                    ZIEL
+                </label>
+
+                <div class="input-row">
+
+                    <input
+                        id="destinationInput"
+                        type="text"
+                        value="Bremerhaven"
+                        placeholder="z. B. Bremerhaven"
+                        autocomplete="off"
+                    >
+
+                    <button
+                        type="button"
+                        class="small-button"
+                        id="destinationSearchBtn"
+                    >
+                        SUCHEN
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- NAVIGATION MODE -->
+
+        <div class="map-action-row">
+
+            <button
+                type="button"
+                class="action-button"
+                id="setStartMapBtn"
+            >
+                <span>＋</span>
+                START AUF KARTE
+            </button>
+
+            <button
+                type="button"
+                class="action-button"
+                id="setDestinationMapBtn"
+            >
+                <span>＋</span>
+                ZIEL AUF KARTE
+            </button>
+
+            <button
+                type="button"
+                class="action-button primary-outline"
+                id="addWaypointBtn"
+            >
+                <span>＋</span>
+                WAYPOINT HINZUFÜGEN
+            </button>
+
+            <button
+                type="button"
+                class="action-button danger-outline"
+                id="clearWaypointsBtn"
+            >
+                WAYPOINTS LÖSCHEN
+            </button>
+
+        </div>
+
+
+        <div
+            class="map-instruction"
+            id="mapInstruction"
+        >
+            Tipp: Klicke auf „Waypoint hinzufügen“ und anschließend auf
+            die Karte. Der Punkt kann danach per Drag & Drop verschoben werden.
+        </div>
+
+
+        <!-- SPEED / DEPARTURE -->
+
+        <div class="technical-grid">
+
+            <div class="field-block">
+
+                <label for="speedInput">
+                    GESCHWINDIGKEIT
+                </label>
+
+                <div class="unit-input">
+
+                    <input
+                        id="speedInput"
+                        type="number"
+                        value="12"
+                        min="0.1"
+                        max="100"
+                        step="0.1"
+                    >
+
+                    <span>KN</span>
+
+                </div>
+
+            </div>
+
+
+            <div class="field-block">
+
+                <label for="departureInput">
+                    ABFAHRT
+                </label>
+
+                <input
+                    id="departureInput"
+                    type="datetime-local"
+                >
+
+            </div>
+
+
+            <div class="field-block">
+
+                <label for="routingMode">
+                    ROUTING
+                </label>
+
+                <select id="routingMode">
+
+                    <option value="direct">
+                        DIREKT / GROSSKREIS
+                    </option>
+
+                    <option value="sea">
+                        SEA ROUTE / SEAROUTES
+                    </option>
+
+                </select>
+
+            </div>
+
+        </div>
+
+
+        <!-- MAIN CALCULATE BUTTON -->
+
+        <div class="calculate-row">
+
+            <button
+                type="button"
+                class="calculate-button"
+                id="calculateBtn"
+            >
+                <span class="calculate-icon">▶</span>
+
+                <span>
+                    ROUTE BERECHNEN
+                </span>
+            </button>
+
+        </div>
+
+
+        <div
+            class="error-box hidden"
+            id="errorBox"
+        ></div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================================================
+     MAP
+========================================================= -->
+
+<section
+    class="map-section"
+    id="map-section"
+>
+
+    <div class="section-heading">
+
+        <div>
+            <div class="panel-kicker">
+                LIVE CHART
+            </div>
+
+            <h2>
+                Seekarte
+            </h2>
+        </div>
+
+        <div class="map-status" id="mapStatus">
+            KARTE WIRD GELADEN …
+        </div>
+
+    </div>
+
+
+    <div class="map-wrapper">
+
+        <div id="map"></div>
+
+        <div class="map-overlay top-left">
+
+            <div class="legend-item">
+                <span class="legend-line"></span>
+                ROUTE
+            </div>
+
+            <div class="legend-item">
+                <span class="legend-dot start"></span>
+                START
+            </div>
+
+            <div class="legend-item">
+                <span class="legend-dot destination"></span>
+                ZIEL
+            </div>
+
+        </div>
+
+
+        <div
+            class="map-overlay bottom-left"
+            id="mapCoordinates"
+        >
+            LAT — / LON —
+        </div>
+
+
+        <div
+            class="map-overlay bottom-right"
+            id="waypointCounter"
+        >
+            WAYPOINTS: 0
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================================================
+     RESULTS
+========================================================= -->
+
+<section
+    class="results-section"
+    id="calculation"
+>
+
+    <div class="section-heading">
+
+        <div>
+
+            <div class="panel-kicker">
+                NAVIGATION RESULT
+            </div>
+
+            <h2>
+                Berechnung
+            </h2>
+
+        </div>
+
+    </div>
+
+
+    <div class="result-grid">
+
+        <div class="result-card">
+
+            <div class="result-label">
+                DISTANZ
+            </div>
+
+            <div class="result-value">
+                <span id="distanceNm">—</span>
+                <small>NM</small>
+            </div>
+
+            <div
+                class="result-secondary"
+                id="distanceKm"
+            >
+                — KM
+            </div>
+
+        </div>
+
+
+        <div class="result-card">
+
+            <div class="result-label">
+                GESCHWINDIGKEIT
+            </div>
+
+            <div class="result-value">
+                <span id="resultSpeed">—</span>
+                <small>KN</small>
+            </div>
+
+            <div class="result-secondary">
+                VESSEL SPEED
+            </div>
+
+        </div>
+
+
+        <div class="result-card highlight">
+
+            <div class="result-label">
+                FAHRZEIT
+            </div>
+
+            <div class="result-value">
+                <span id="travelTime">—</span>
+            </div>
+
+            <div class="result-secondary">
+                DISTANZ ÷ SPEED
+            </div>
+
+        </div>
+
+
+        <div class="result-card">
+
+            <div class="result-label">
+                ETA
+            </div>
+
+            <div class="result-value eta">
+                <span id="etaValue">—</span>
+            </div>
+
+            <div
+                class="result-secondary"
+                id="etaDate"
+            >
+                —
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ROUTE DETAILS -->
+
+    <div class="route-details">
+
+        <div class="detail-item">
+
+            <span class="detail-label">
+                START
+            </span>
+
+            <strong id="resultStart">
+                Hamburg
+            </strong>
+
+        </div>
+
+
+        <div class="detail-item">
+
+            <span class="detail-label">
+                WAYPOINTS
+            </span>
+
+            <strong id="resultWaypoints">
+                0
+            </strong>
+
+        </div>
+
+
+        <div class="detail-item">
+
+            <span class="detail-label">
+                ZIEL
+            </span>
+
+            <strong id="resultDestination">
+                Bremerhaven
+            </strong>
+
+        </div>
+
+
+        <div class="detail-item">
+
+            <span class="detail-label">
+                ROUTING
+            </span>
+
+            <strong id="resultRouting">
+                DIREKT
+            </strong>
+
+        </div>
+
+    </div>
+
+
+    <div
+        class="calculation-note"
+        id="calculationNote"
+    >
+        Route noch nicht berechnet.
+    </div>
+
+</section>
+
+
+<!-- =========================================================
+     INFO
+========================================================= -->
+
+<section
+    class="info-section"
+    id="info"
+>
+
+    <div class="info-panel">
+
+        <div class="panel-kicker">
+            NAVTOOL / INFO
+        </div>
+
+        <h2>
+            Bedienung
+        </h2>
+
+        <div class="info-grid">
+
+            <div>
+                <strong>01 / Start & Ziel</strong>
+                <p>
+                    Orte über die Suchfelder suchen oder direkt über
+                    „Start auf Karte“ bzw. „Ziel auf Karte“ setzen.
+                </p>
+            </div>
+
+            <div>
+                <strong>02 / Waypoints</strong>
+                <p>
+                    „Waypoint hinzufügen“ aktivieren und auf die Karte
+                    klicken. Waypoints können anschließend verschoben
+                    oder gelöscht werden.
+                </p>
+            </div>
+
+            <div>
+                <strong>03 / Berechnung</strong>
+                <p>
+                    Die Distanz wird aus allen Streckenabschnitten
+                    berechnet. Fahrzeit = Distanz / Geschwindigkeit.
+                </p>
+            </div>
+
+            <div>
+                <strong>04 / Sea Route</strong>
+                <p>
+                    Für eine echte nautische Seeroute mit Fahrwassern,
+                    TSS und Landumfahrung wird ein SeaRoutes-Proxy benötigt.
+                    Die lokale Berechnung funktioniert unabhängig davon.
+                </p>
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+</main>
+
+
+<!-- =========================================================
+     FOOTER
+========================================================= -->
+
+<footer class="footer">
+
+    <div class="footer-inner">
+
+        <div>
+            <strong>NAVTOOL</strong>
+            <span>MARITIME TOOLS</span>
+        </div>
+
+        <div class="footer-links">
+
+            <a href="../">
+                HOME
+            </a>
+
+            <a href="../colreg/">
+                COLREG
+            </a>
+
+            <a href="#route">
+                SEEKARTE
+            </a>
+
+        </div>
+
+        <div class="footer-copy">
+            © 2026 NAVTOOL
+        </div>
+
+    </div>
+
+</footer>
+
+
+<!-- Leaflet JS -->
+<script
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+></script>
+
+<!-- NavTool Map JS -->
+<script src="./app.js"></script>
+
+</body>
+</html>    <!-- =====================================================
+         FONT AWESOME
+    ====================================================== -->
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    >
+
+    <!-- =====================================================
+         NAVTOOL MAP CSS
+    ====================================================== -->
+
+    <link
+        rel="stylesheet"
+        href="styles.css"
+    >
+</head>
+
+
+<body>
+
+<div id="top"></div>
+
+<div class="site-shell">
+
+    <!-- =====================================================
+         NAVTOOL HEADER
+    ====================================================== -->
+
+    <header class="nav-header">
+
+        <div class="nav-inner">
+
+            <a
+                href="../"
+                class="nav-brand"
+            >
+
+                <div class="nav-brand-mark">
+                    <i class="fa-solid fa-compass"></i>
+                </div>
+
+                <div class="nav-brand-copy">
+
+                    <strong>NAVTOOL</strong>
+
+                    <span>
+                        MARITIME TOOLKIT
+                    </span>
+
+                </div>
+
+            </a>
+
+
+            <nav class="nav-main">
+
+                <a href="../">
+                    START
+                </a>
+
+                <a href="../colreg/">
+                    COLREG
+                </a>
+
+                <a
+                    href="./"
+                    class="active"
+                >
+                    SEEKARTE
+                </a>
+
+            </nav>
+
+
+            <div class="nav-system">
+
+                <span class="system-dot"></span>
+
+                <span>
+                    SYSTEM ONLINE
+                </span>
+
+            </div>
+
+
+            <button
+                type="button"
+                class="mobile-menu-button"
+                id="mobileMenuButton"
+                aria-label="Menü öffnen"
+            >
+                <i class="fa-solid fa-bars"></i>
+            </button>
+
+        </div>
+
+
+        <div
+            class="mobile-nav"
+            id="mobileNav"
+        >
+
+            <a href="../">
+                START
+            </a>
+
+            <a href="../colreg/">
+                COLREG
+            </a>
+
+            <a href="./">
+                SEEKARTE
+            </a>
+
+        </div>
+
+    </header>
+
+
+    <!-- =====================================================
+         HERO
+    ====================================================== -->
+
+    <section class="hero">
+
+        <div class="hero-grid"></div>
+
+        <div class="hero-glow"></div>
+
+        <div class="hero-content">
+
+            <div class="eyebrow">
+
+                <span class="eyebrow-line"></span>
+
+                NAVTOOL / ROUTE PLANNER
+
+            </div>
+
+
+            <h1>
+
+                START.
+                <span>ZIEL.</span>
+                ROUTE.
+
+            </h1>
+
+
+            <p>
+
+                Maritime Routenplanung mit echten Waypoints,
+                Seemeilen, Geschwindigkeit, Reisezeit und ETA.
+
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         MAIN
+    ====================================================== -->
+
+    <main>
+
+
+        <!-- =================================================
+             ROUTE CONFIGURATION
+        ================================================== -->
+
+        <section
+            class="planner-section"
+            id="route"
+        >
+
+            <div class="section-heading">
+
+                <div class="section-heading-line"></div>
+
+                <span>
+                    ROUTE CONFIGURATION
+                </span>
+
+            </div>
+
+
+            <div class="planner-grid">
+
+
+                <!-- START -->
+
+                <article class="route-card">
+
+                    <div class="route-card-top">
+
+                        <span class="field-number">
+                            01
+                        </span>
+
+                        <span class="field-label">
+                            STARTHAFEN
+                        </span>
+
+                    </div>
+
+
+                    <div class="input-wrapper start-input">
+
+                        <i class="fa-solid fa-location-dot"></i>
+
+                        <input
+                            type="text"
+                            id="startInput"
+                            placeholder="z. B. Hamburg"
+                            autocomplete="off"
+                        >
+
+                    </div>
+
+
+                    <button
+                        type="button"
+                        class="map-select-button"
+                        id="setStartBtn"
+                    >
+
+                        <i class="fa-solid fa-crosshairs"></i>
+
+                        AUF KARTE SETZEN
+
+                    </button>
+
+                </article>
+
+
+                <!-- SWAP -->
+
+                <div class="swap-area">
+
+                    <button
+                        type="button"
+                        class="swap-button"
+                        id="swapBtn"
+                        title="Start und Ziel tauschen"
+                    >
+
+                        <i class="fa-solid fa-arrow-right-arrow-left"></i>
+
+                    </button>
+
+                </div>
+
+
+                <!-- DESTINATION -->
+
+                <article class="route-card">
+
+                    <div class="route-card-top">
+
+                        <span class="field-number">
+                            02
+                        </span>
+
+                        <span class="field-label">
+                            ZIELHAFEN
+                        </span>
+
+                    </div>
+
+
+                    <div class="input-wrapper destination-input">
+
+                        <i class="fa-solid fa-anchor"></i>
+
+                        <input
+                            type="text"
+                            id="destinationInput"
+                            placeholder="z. B. Rotterdam"
+                            autocomplete="off"
+                        >
+
+                    </div>
+
+
+                    <button
+                        type="button"
+                        class="map-select-button"
+                        id="setDestinationBtn"
+                    >
+
+                        <i class="fa-solid fa-crosshairs"></i>
+
+                        AUF KARTE SETZEN
+
+                    </button>
+
+                </article>
+
+            </div>
+
+
+            <!-- =================================================
+                 OPTIONS
+            ================================================== -->
+
+            <div class="options-grid">
+
+
+                <div class="option-card">
+
+                    <label for="speedInput">
+                        GESCHWINDIGKEIT
+                    </label>
+
+                    <div class="unit-input">
+
+                        <input
+                            type="number"
+                            id="speedInput"
+                            min="0.1"
+                            max="100"
+                            step="0.1"
+                            value="12"
+                        >
+
+                        <span>
+                            KN
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <div class="option-card">
+
+                    <label for="departureInput">
+                        ABFAHRT
+                    </label>
+
+                    <input
+                        type="datetime-local"
+                        id="departureInput"
+                    >
+
+                </div>
+
+
+                <div class="option-card">
+
+                    <label for="routingMode">
+                        ROUTING-MODUS
+                    </label>
+
+                    <select id="routingMode">
+
+                        <option value="sea">
+                            SEA ROUTE
+                        </option>
+
+                        <option value="direct">
+                            GROSSKREIS / DIREKT
+                        </option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 WAYPOINTS
+            ================================================== -->
+
+            <div class="waypoint-toolbar">
+
+                <div class="waypoint-title">
+
+                    <div class="waypoint-icon">
+                        <i class="fa-solid fa-route"></i>
+                    </div>
+
+                    <div>
+
+                        <strong>
+                            WAYPOINTS
+                        </strong>
+
+                        <span id="waypointCount">
+                            0 WAYPOINTS
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <div class="waypoint-actions">
+
+                    <button
+                        type="button"
+                        class="secondary-button"
+                        id="addWaypointBtn"
+                    >
+
+                        <i class="fa-solid fa-location-crosshairs"></i>
+
+                        WAYPOINT AUF KARTE
+
+                    </button>
+
+
+                    <button
+                        type="button"
+                        class="secondary-button danger-button"
+                        id="clearWaypointsBtn"
+                    >
+
+                        <i class="fa-solid fa-trash"></i>
+
+                        WAYPOINTS LÖSCHEN
+
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <div
+                class="waypoint-list"
+                id="waypointList"
+            >
+
+                <div class="empty-waypoints">
+
+                    <i class="fa-solid fa-route"></i>
+
+                    <span>
+                        Noch keine Waypoints gesetzt.
+                    </span>
+
+                    <small>
+                        Klicke auf „Waypoint auf Karte“
+                        und anschließend auf die gewünschte Position.
+                    </small>
+
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 ACTIONS
+            ================================================== -->
+
+            <div class="main-actions">
+
+                <button
+                    type="button"
+                    class="calculate-button"
+                    id="calculateBtn"
+                >
+
+                    <span>
+                        ROUTE BERECHNEN
+                    </span>
+
+                    <i class="fa-solid fa-arrow-right"></i>
+
+                </button>
+
+
+                <button
+                    type="button"
+                    class="example-button"
+                    id="exampleBtn"
+                >
+
+                    <i class="fa-solid fa-flask"></i>
+
+                    BEISPIEL
+
+                </button>
+
+            </div>
+
+
+            <!-- STATUS -->
+
+            <div
+                class="route-status"
+                id="routeStatus"
+            >
+
+                <div class="status-icon">
+                    <i class="fa-solid fa-circle-info"></i>
+                </div>
+
+                <div>
+
+                    <strong>
+                        BEREIT
+                    </strong>
+
+                    <span>
+                        Start und Ziel eingeben oder direkt auf der Karte setzen.
+                    </span>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================================
+             MAP
+        ====================================================== -->
+
+        <section
+            class="map-section"
+            id="mapSection"
+        >
+
+            <div class="section-heading map-heading">
+
+                <div class="section-heading-line"></div>
+
+                <span>
+                    NAVIGATION MAP
+                </span>
+
+            </div>
+
+
+            <div class="map-wrapper">
+
+                <div
+                    id="map"
+                    class="map"
+                ></div>
+
+
+                <!-- MAP CONTROLS -->
+
+                <div class="map-panel top-left">
+
+                    <div class="map-panel-title">
+                        ROUTE
+                    </div>
+
+                    <div class="legend-row">
+
+                        <span class="legend-line start-line"></span>
+
+                        <span>
+                            START
+                        </span>
+
+                    </div>
+
+                    <div class="legend-row">
+
+                        <span class="legend-line route-line"></span>
+
+                        <span>
+                            ROUTE
+                        </span>
+
+                    </div>
+
+                    <div class="legend-row">
+
+                        <span class="legend-line waypoint-line"></span>
+
+                        <span>
+                            WAYPOINT
+                        </span>
+
+                    </div>
+
+                    <div class="legend-row">
+
+                        <span class="legend-line destination-line"></span>
+
+                        <span>
+                            ZIEL
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <div class="map-panel top-right">
+
+                    <div class="map-live">
+
+                        <span class="live-dot"></span>
+
+                        <span id="mapModeLabel">
+                            MAP READY
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <div class="map-panel bottom-left">
+
+                    <div>
+                        <span>NM</span>
+                        <strong id="mapDistanceNm">
+                            —
+                        </strong>
+                    </div>
+
+                    <div>
+                        <span>KM</span>
+                        <strong id="mapDistanceKm">
+                            —
+                        </strong>
+                    </div>
+
+                </div>
+
+
+                <div class="map-panel bottom-right">
+
+                    <button
+                        type="button"
+                        id="fitRouteBtn"
+                        title="Route anzeigen"
+                    >
+
+                        <i class="fa-solid fa-expand"></i>
+
+                    </button>
+
+                </div>
+
+
+                <div
+                    class="map-click-mode"
+                    id="mapClickMode"
+                >
+
+                    <i class="fa-solid fa-location-crosshairs"></i>
+
+                    <span>
+                        Klicke jetzt auf die Karte
+                    </span>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================================
+             CALCULATION
+        ====================================================== -->
+
+        <section
+            class="results-section"
+            id="calculation"
+        >
+
+            <div class="section-heading">
+
+                <div class="section-heading-line"></div>
+
+                <span>
+                    ROUTE DATA
+                </span>
+
+            </div>
+
+
+            <div class="results-title">
+
+                <span>
+                    BERECHNUNG
+                </span>
+
+            </div>
+
+
+            <div class="result-grid">
+
+
+                <article class="result-card">
+
+                    <div class="result-icon">
+                        <i class="fa-solid fa-water"></i>
+                    </div>
+
+                    <div class="result-label">
+                        DISTANZ
+                    </div>
+
+                    <div class="result-value">
+
+                        <span id="distanceNm">
+                            —
+                        </span>
+
+                        <small>
+                            NM
+                        </small>
+
+                    </div>
+
+                    <div class="result-description">
+                        Nautische Meilen
+                    </div>
+
+                </article>
+
+
+                <article class="result-card">
+
+                    <div class="result-icon">
+                        <i class="fa-solid fa-ruler-horizontal"></i>
+                    </div>
+
+                    <div class="result-label">
+                        DISTANZ
+                    </div>
+
+                    <div class="result-value">
+
+                        <span id="distanceKm">
+                            —
+                        </span>
+
+                        <small>
+                            KM
+                        </small>
+
+                    </div>
+
+                    <div class="result-description">
+                        Kilometer
+                    </div>
+
+                </article>
+
+
+                <article class="result-card">
+
+                    <div class="result-icon">
+                        <i class="fa-solid fa-gauge-high"></i>
+                    </div>
+
+                    <div class="result-label">
+                        GESCHWINDIGKEIT
+                    </div>
+
+                    <div class="result-value">
+
+                        <span id="resultSpeed">
+                            —
+                        </span>
+
+                        <small>
+                            KN
+                        </small>
+
+                    </div>
+
+                    <div class="result-description">
+                        eingegebene Fahrt
+                    </div>
+
+                </article>
+
+
+                <article class="result-card">
+
+                    <div class="result-icon">
+                        <i class="fa-regular fa-clock"></i>
+                    </div>
+
+                    <div class="result-label">
+                        REISEZEIT
+                    </div>
+
+                    <div class="result-value result-time">
+
+                        <span id="travelTime">
+                            —
+                        </span>
+
+                    </div>
+
+                    <div class="result-description">
+                        geschätzte Fahrzeit
+                    </div>
+
+                </article>
+
+            </div>
+
+
+            <!-- =================================================
+                 ROUTE INFORMATION
+            ================================================== -->
+
+            <div class="route-information-grid">
+
+
+                <div class="information-card">
+
+                    <span>
+                        START
+                    </span>
+
+                    <strong id="resultStart">
+                        —
+                    </strong>
+
+                </div>
+
+
+                <div class="information-card">
+
+                    <span>
+                        WAYPOINTS
+                    </span>
+
+                    <strong id="resultWaypoints">
+                        0
+                    </strong>
+
+                </div>
+
+
+                <div class="information-card">
+
+                    <span>
+                        ZIEL
+                    </span>
+
+                    <strong id="resultDestination">
+                        —
+                    </strong>
+
+                </div>
+
+
+                <div class="information-card">
+
+                    <span>
+                        KURS
+                    </span>
+
+                    <strong id="resultBearing">
+                        —
+                    </strong>
+
+                </div>
+
+
+                <div class="information-card">
+
+                    <span>
+                        ABFAHRT
+                    </span>
+
+                    <strong id="resultDeparture">
+                        —
+                    </strong>
+
+                </div>
+
+
+                <div class="information-card eta-card">
+
+                    <span>
+                        ETA
+                    </span>
+
+                    <strong id="resultEta">
+                        —
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 ROUTE NOTICE
+            ================================================== -->
+
+            <div class="route-notice">
+
+                <div class="notice-icon">
+                    <i class="fa-solid fa-compass"></i>
+                </div>
+
+                <div>
+
+                    <strong>
+                        ROUTING-HINWEIS
+                    </strong>
+
+                    <p id="routingNotice">
+
+                        Im Modus „SEA ROUTE“ wird die maritime Route
+                        über den konfigurierten SeaRoutes-Proxy berechnet.
+                        Im Direktmodus wird die Großkreisroute berechnet.
+
+                    </p>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================================
+             INFO
+        ====================================================== -->
+
+        <section
+            class="info-section"
+            id="info"
+        >
+
+            <div class="section-heading">
+
+                <div class="section-heading-line"></div>
+
+                <span>
+                    SYSTEM INFORMATION
+                </span>
+
+            </div>
+
+
+            <div class="info-grid">
+
+                <div class="info-box">
+
+                    <i class="fa-solid fa-route"></i>
+
+                    <h3>
+                        Maritime Routing
+                    </h3>
+
+                    <p>
+                        Die SEA-ROUTE-Variante verwendet eine maritime
+                        Routing-Engine und kann Start, Ziel und mehrere
+                        Waypoints als gemeinsame Route verarbeiten.
+                    </p>
+
+                </div>
+
+
+                <div class="info-box">
+
+                    <i class="fa-solid fa-location-dot"></i>
+
+                    <h3>
+                        Waypoints
+                    </h3>
+
+                    <p>
+                        Waypoints können direkt auf der Karte gesetzt,
+                        verschoben und gelöscht werden.
+                    </p>
+
+                </div>
+
+
+                <div class="info-box">
+
+                    <i class="fa-solid fa-clock"></i>
+
+                    <h3>
+                        ETA
+                    </h3>
+
+                    <p>
+                        Die ETA wird anhand der Routendistanz,
+                        der eingegebenen Geschwindigkeit und der
+                        Abfahrtszeit berechnet.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- =====================================================
+         FOOTER
+    ====================================================== -->
+
+    <footer class="nav-footer">
+
+        <div class="footer-inner">
+
+
+            <div class="footer-brand">
+
+                <div class="footer-brand-mark">
+                    <i class="fa-solid fa-compass"></i>
+                </div>
+
+                <div>
+
+                    <strong>
+                        NAVTOOL
+                    </strong>
+
+                    <span>
+                        MARITIME TOOLKIT
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div class="footer-links">
+
+                <a href="../">
+                    START
+                </a>
+
+                <a href="../colreg/">
+                    COLREG
+                </a>
+
+                <a href="./">
+                    SEEKARTE
+                </a>
+
+                <a href="#info">
+                    INFO
+                </a>
+
+            </div>
+
+
+            <div class="footer-copy">
+
+                <span>
+                    © <span id="currentYear"></span> NavTool
+                </span>
+
+                <span>
+                    MARITIME DIGITAL TOOLS
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <div class="footer-bottom">
+
+            <span>
+                NAVTOOL.DE
+            </span>
+
+            <span>
+                ROUTE • COLREG • MARITIME TOOLS
+            </span>
+
+        </div>
+
+    </footer>
+
+</div>
+
+
+<!-- =====================================================
+     LEAFLET JS
+====================================================== -->
+
+<script
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+></script>
+
+
+<!-- =====================================================
+     NAVTOOL MAP JS
+====================================================== -->
+
+<script src="app.js"></script>
+
+</body>
+</html>

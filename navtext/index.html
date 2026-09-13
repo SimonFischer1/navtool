@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="NAVTEX Geräte-Simulator – Interaktive maritime Sicherheitsmeldungen, Wetter und Navigatorische Ereignisse">
+    <title>NAVTEX — SIMULATOR</title>
+
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Rajdhani:wght@500;600;700&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+<!-- Background Effects -->
+<div class="background-grid"></div>
+<div class="background-glow"></div>
+<div class="page-progress" id="pageProgress"></div>
+
+<!-- Header -->
+<header class="topbar">
+    <div class="brand">
+        <div class="brand-mark">
+            <i class="fa-solid fa-radio"></i>
+        </div>
+        <div class="brand-text">
+            <span class="brand-main">NAVTEX</span>
+            <span class="brand-sub">SIMULATOR</span>
+        </div>
+    </div>
+
+    <nav class="navigation">
+        <a href="#device" class="nav-link active">GERÄT</a>
+        <a href="#messages" class="nav-link">MELDUNGEN</a>
+        <a href="#about" class="nav-link">INFO</a>
+        <!-- Demo integration: link to the Stations demo page -->
+        <a href="navtext-stations.html" class="nav-link">STATIONS (DEMO)</a>
+    </nav>
+
+    <div class="header-status">
+        <span class="status-dot"></span>
+        <span>SYSTEM ONLINE</span>
+    </div>
+</header>
+
+<main>
+
+<!-- Hero Section -->
+<section class="hero" id="device">
+    <div class="hero-content reveal">
+        <div class="eyebrow">
+            <span></span>
+            MARITIME SICHERHEIT
+        </div>
+        <h1>NAVTEX<span>.</span></h1>
+        <p class="hero-description">
+            Wähle einen Bereich (A–Z) aus und erhalten Sie aktuelle Meldungen zu Wetter,
+            Wettervorhersage und navigatorischen Ereignissen von der Deutschen See.
+        </p>
+
+        <!-- Quick access to the Stations demo -->
+        <div style="margin-top:20px">
+            <a href="navtext-stations.html" class="action-btn" style="min-width:160px;padding:10px 14px;border-radius:8px;border:1px solid var(--border);background:rgba(255,255,255,0.02);color:var(--text);text-decoration:none;display:inline-flex;align-items:center;gap:8px;">
+                <i class="fa-solid fa-map-location-dot" style="color:var(--mint);"></i>
+                Demo: Stations anzeigen
+            </a>
+        </div>
+    </div>
+
+    <!-- NAVTEX Device Panel -->
+    <div class="device-panel reveal">
+        <div class="panel-header">
+            <div>
+                <div class="panel-kicker">NAVTEX SENDER</div>
+                <h2>Bereichs-Auswahl</h2>
+            </div>
+            <div class="device-id">
+                ACTIVE / <span id="activeArea">—</span>
+            </div>
+        </div>
+
+        <!-- Device Display -->
+        <div class="device-display">
+            <div class="display-header">
+                <div class="display-info">
+                    <span class="display-label">BEREICH</span>
+                    <span class="display-value" id="displayArea">—</span>
+                </div>
+                <div class="display-info">
+                    <span class="display-label">STATION</span>
+                    <span class="display-value" id="displayStation">—</span>
+                </div>
+                <div class="display-info">
+                    <span class="display-label">UHRZEIT</span>
+                    <span class="display-value" id="displayTime">—</span>
+                </div>
+            </div>
+
+            <div class="display-screen" id="displayScreen">
+                <div class="screen-placeholder">
+                    <i class="fa-solid fa-display"></i>
+                    <p>Bereich eingeben und ENT drücken</p>
+                </div>
+            </div>
+
+            <div class="display-status">
+                <span class="status-indicator" id="statusIndicator"></span>
+                <span id="statusText">BEREIT</span>
+            </div>
+        </div>
+
+        <!-- Input Controls -->
+        <div class="device-controls">
+            <div class="control-group">
+                <label for="areaInput">BEREICHS-EINGABE (A–Z)</label>
+                <input 
+                    type="text" 
+                    id="areaInput" 
+                    placeholder="z. B. E" 
+                    maxlength="1" 
+                    autocomplete="off"
+                    class="area-input"
+                >
+                <div class="input-hint">oder klicke auf einen Bereich unten</div>
+            </div>
+
+            <div class="control-group">
+                <label>SCHNELLWAHLGITTER</label>
+                <div class="area-grid">
+                    <button class="area-btn" data-area="A">A</button>
+                    <button class="area-btn" data-area="B">B</button>
+                    <button class="area-btn" data-area="C">C</button>
+                    <button class="area-btn" data-area="D">D</button>
+                    <button class="area-btn" data-area="E">E</button>
+                    <button class="area-btn" data-area="F">F</button>
+                    <button class="area-btn" data-area="G">G</button>
+                    <button class="area-btn" data-area="H">H</button>
+                    <button class="area-btn" data-area="I">I</button>
+                    <button class="area-btn" data-area="J">J</button>
+                    <button class="area-btn" data-area="K">K</button>
+                    <button class="area-btn" data-area="L">L</button>
+                    <button class="area-btn" data-area="M">M</button>
+                    <button class="area-btn" data-area="N">N</button>
+                    <button class="area-btn" data-area="O">O</button>
+                    <button class="area-btn" data-area="P">P</button>
+                    <button class="area-btn" data-area="Q">Q</button>
+                    <button class="area-btn" data-area="R">R</button>
+                    <button class="area-btn" data-area="S">S</button>
+                    <button class="area-btn" data-area="T">T</button>
+                    <button class="area-btn" data-area="U">U</button>
+                    <button class="area-btn" data-area="V">V</button>
+                    <button class="area-btn" data-area="W">W</button>
+                    <button class="area-btn" data-area="X">X</button>
+                    <button class="area-btn" data-area="Y">Y</button>
+                    <button class="area-btn" data-area="Z">Z</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="device-actions">
+            <button id="enterButton" class="action-btn primary">
+                <i class="fa-solid fa-arrow-right"></i>
+                ENTER (ENT)
+            </button>
+            <button id="clearButton" class="action-btn secondary">
+                <i class="fa-solid fa-xmark"></i>
+                LÖSCHEN (CLR)
+            </button>
+            <button id="printButton" class="action-btn tertiary">
+                <i class="fa-solid fa-print"></i>
+                DRUCK
+            </button>
+        </div>
+
+        <!-- Disclaimer -->
+        <div class="device-disclaimer">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+            <div>
+                <strong>⚠ ES IST NUR EINE DEMO! ⚠</strong>
+                <p>Alle angezeigten Daten sind frei erfunden und für Demonstrationszwecke generiert. Diese Website ersetzt keine echten NAVTEX-Meldungen.</p>
+                <p><strong>COPYRIGHT by NavTool.de</strong></p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Messages History Section -->
+<section class="messages-section" id="messages">
+    <div class="section-heading reveal">
+        <div>
+            <div class="eyebrow">
+                <span></span>
+                MELDUNGS-ARCHIV
+            </div>
+            <h2>GESPEICHERTE MELDUNGEN</h2>
+        </div>
+    </div>
+
+    <div class="messages-grid reveal" id="messagesGrid">
+        <div class="no-messages">
+            <i class="fa-solid fa-inbox"></i>
+            <p>Keine Meldungen gesendet. Wähle einen Bereich und drücke ENTER!</p>
+        </div>
+    </div>
+</section>
+
+<!-- Info Section -->
+<section class="info-section" id="about">
+    <div class="info-card reveal">
+        <div class="info-number">01</div>
+        <div>
+            <div class="eyebrow">
+                <span></span>
+                WAS IST NAVTEX?
+            </div>
+            <h2>MARITIME SICHERHEIT RUND UM DIE UHR</h2>
+            <p>
+                NAVTEX (Navigational Telex) ist ein internationales Küstenfunksystem zur Verbreitung von
+                Sicherheitsmeldungen für die Schifffahrt. Die Meldungen enthalten Informationen zu Wetter,
+                Gefahren und Navigatorischen Ereignissen.
+            </p>
+            <p>
+                Dieses System wird von den nationalen Hydrographischen Diensten betrieben und ist für alle
+                Schiffe mit entsprechender Ausrüstung kostenlos empfangbar.
+            </p>
+        </div>
+    </div>
+
+    <div class="info-card reveal">
+        <div class="info-number">02</div>
+        <div>
+            <div class="eyebrow">
+                <span></span>
+                BEREICHE
+            </div>
+            <h2>GEOGRAPHISCHE ABDECKUNG</h2>
+            <p>
+                Die NAVTEX-Bereiche decken die Küstenbereiche der Ozeane ab. Jeder Bereich wird durch
+                einen Sender betreut und sendet auf den internationalen NAVTEX-Frequenzen.
+            </p>
+            <p>
+                Die Bereiche sind nach geografischen Regionen organisiert und ermöglichen es Schiffen,
+                relevante Informationen für ihre jeweilige Region zu empfangen.
+            </p>
+        </div>
+    </div>
+
+    <div class="sources-card reveal">
+        <div class="sources-title">QUELLEN & INFORMATIONEN</div>
+        <div class="sources-list">
+            <a href="https://www.imo.org/" target="_blank" rel="noopener">
+                International Maritime Organization (IMO)
+                <i class="fa-solid fa-arrow-up-right-from-square"></i>
+            </a>
+            <a href="https://www.dwd.de/DE/fachnutzer/schifffahrt/funkausstrahlung/navtex/navtex.htm" target="_blank" rel="noopener">
+                Deutscher Wetterdienst – NAVTEX
+                <i class="fa-solid fa-arrow-up-right-from-square"></i>
+            </a>
+            <a href="https://navtool.de/" target="_blank" rel="noopener">
+                NavTool.de
+                <i class="fa-solid fa-arrow-up-right-from-square"></i>
+            </a>
+            <a href="navtext-stations.html" target="_blank" rel="noopener">
+                Stations Demo (klick to open)
+                <i class="fa-solid fa-arrow-up-right-from-square"></i>
+            </a>
+        </div>
+    </div>
+</section>
+
+</main>
+
+<!-- Footer -->
+<footer>
+    <div>
+        <strong>NAVTEX</strong>
+        <span>SIMULATOR</span>
+    </div>
+    <div>
+        MARITIME SAFETY INFORMATION DEMO
+    </div>
+    <div>
+        © NavTool.de <span id="year"></span>
+    </div>
+</footer>
+
+<!-- Print View (Hidden) -->
+<div id="printContainer" class="print-container"></div>
+
+<script src="app.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Navtext — Stations (Demo EN/DE)</title>
+  <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+  <header>
+    <h1 id="title">Navtext — Stations (Demo)</h1>
+    <div class="controls">
+      <div class="lang-toggle">
+        <button id="btn-en" class="active">English</button>
+        <button id="btn-de">Deutsch</button>
+      </div>
+      <button id="btn-storm">Show Storm Warnings</button>
+      <button id="btn-demo" class="demo-btn">Start Demo</button>
+    </div>
+  </header>
+
+  <main>
+    <div id="map-wrap">
+      <!-- Demo SVG map created for the demo; it's simplified and invented for demonstration purposes -->
+      <img id="map-img" src="assets/navtex-map.svg" alt="NAVTEX demo map">
+      <canvas id="overlay"></canvas>
+    </div>
+
+    <aside id="info">
+      <h2 id="info-title">Station info</h2>
+      <div id="info-content">Click a station area to see details.</div>
+    </aside>
+  </main>
+
+  <footer id="warning-banner" class="hidden"></footer>
+
+  <script src="assets/stations.js"></script>
+</body>
+</html>

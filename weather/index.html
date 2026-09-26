@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NavTool · Weather</title>
+<meta name="theme-color" content="#020807">
+<style>
+:root{--bg:#020807;--panel:#071210;--panel2:#0a1714;--text:#eef7f5;--muted:#91aaa6;--line:rgba(160,220,211,.16);--teal:#00e0c0;--teal2:#00bfa5;--cold:#68b9ff;--hot:#ff7c68;--warn:#f3c969;--red:#ff6678}
+*{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth}body{min-height:100vh;background:#000;color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;overflow-x:hidden}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-2;background:radial-gradient(circle at 50% 25%,rgba(0,224,192,.08),transparent 38%),linear-gradient(180deg,#020706,#000)}
+body:after{content:"";position:fixed;inset:0;pointer-events:none;z-index:20;opacity:.035;background:repeating-linear-gradient(to bottom,transparent 0,transparent 3px,rgba(255,255,255,.08) 4px)}
+.shell{width:min(1380px,calc(100% - 28px));margin:14px auto;border:1px solid rgba(160,220,211,.22);border-radius:25px;background:rgba(3,11,10,.94);box-shadow:0 30px 100px #000a,inset 0 0 80px rgba(0,224,192,.025);overflow:hidden}
+header{margin:15px;border:1px solid var(--line);border-radius:18px;min-height:66px;padding:0 18px;display:flex;align-items:center;justify-content:space-between;background:rgba(5,14,13,.88);position:sticky;top:14px;z-index:10;backdrop-filter:blur(16px)}
+.brand{display:flex;align-items:center;gap:11px;color:var(--text);text-decoration:none}.mark{width:39px;height:39px;border:1px solid rgba(0,224,192,.55);border-radius:11px;display:grid;place-items:center;color:var(--teal);font-weight:900;background:rgba(0,224,192,.06)}.brand b{font-size:13px;letter-spacing:1.7px}
+nav{display:flex;gap:18px;align-items:center;flex-wrap:wrap;justify-content:center}nav a{color:#8da6a2;text-decoration:none;font-size:12px;letter-spacing:1.2px;font-weight:800}nav a:hover{color:var(--teal)}
+.lang{border:1px solid rgba(0,224,192,.32);background:#07110f;color:var(--text);border-radius:999px;padding:8px 12px;cursor:pointer;font-weight:900;font-size:11px;letter-spacing:1px}.lang:hover{border-color:var(--teal);color:var(--teal)}
+.hero{padding:82px 7% 54px;text-align:center}.kicker{font-size:11px;letter-spacing:3px;color:var(--teal);font-weight:900}h1{font-size:clamp(64px,11vw,145px);line-height:.84;letter-spacing:-6px;margin:35px 0 28px;font-weight:950}h1 span{display:block;color:var(--teal)}.hero p{max-width:850px;margin:auto;color:#93aaa7;font-size:clamp(17px,2vw,23px);line-height:1.55}
+.search{width:min(900px,calc(100% - 36px));margin:0 auto 35px;display:flex;border:1px solid var(--line);border-radius:15px;overflow:hidden;background:#07110f;box-shadow:0 15px 50px #0005}.search input{flex:1;padding:17px 18px;border:0;outline:0;background:transparent;color:var(--text);font-size:16px}.search button{width:62px;border:0;background:var(--teal);color:#00110d;font-size:21px;cursor:pointer}
+.section{padding:62px 6.5%;border-top:1px solid rgba(160,220,211,.08)}.section-head{display:flex;justify-content:space-between;align-items:end;gap:20px;margin-bottom:25px}.section h2{font-size:39px;letter-spacing:-1px;margin-top:6px}.sub{color:var(--muted);line-height:1.6;max-width:850px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.card{border:1px solid var(--line);border-radius:19px;padding:24px;background:linear-gradient(145deg,rgba(10,25,22,.9),rgba(3,12,11,.9));position:relative;overflow:hidden;transition:.22s}.card:hover{transform:translateY(-4px);border-color:rgba(0,224,192,.42)}.card h3{font-size:22px;margin-bottom:8px}.card p{color:var(--muted);line-height:1.55}.tag{display:inline-flex;padding:6px 9px;border-radius:999px;border:1px solid var(--line);font-size:10px;letter-spacing:1px;color:var(--teal);margin-bottom:13px}.chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:15px}.chip{border:1px solid var(--line);border-radius:999px;padding:7px 10px;color:#b9ceca;font-size:12px;background:#07110f}
+.heightbar{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:22px}.level{border:1px solid var(--line);border-radius:14px;padding:14px;background:#07110f}.level b{display:block;margin-bottom:4px}.level small{color:var(--muted);line-height:1.4}.deep{border-left:3px solid var(--teal)}
+/* Wind */
+.wind-layout{display:grid;grid-template-columns:1.02fr .98fr;gap:16px}.formgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:13px}.field label{display:block;color:#9db4b0;font-size:11px;letter-spacing:1.2px;margin-bottom:6px}.field input,.field select{width:100%;padding:13px 12px;border-radius:11px;border:1px solid var(--line);outline:0;background:#06100e;color:var(--text);font-size:15px}.field input:focus,.field select:focus{border-color:rgba(0,224,192,.65);box-shadow:0 0 0 3px rgba(0,224,192,.06)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;border:1px solid var(--line);border-radius:11px;padding:12px 15px;background:#07110f;color:var(--text);text-decoration:none;cursor:pointer;font-weight:800}.btn:hover{border-color:rgba(0,224,192,.5);color:var(--teal)}.btn.primary{background:var(--teal);color:#00110d;border-color:var(--teal)}.actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:15px}.result{margin-top:16px;padding:16px;border:1px solid rgba(0,224,192,.22);border-radius:13px;background:rgba(0,224,192,.045);line-height:1.65}.error{border-color:rgba(255,102,120,.45);background:rgba(255,102,120,.06)}
+.windgraph{min-height:390px;border:1px solid var(--line);border-radius:18px;background:radial-gradient(circle,rgba(0,224,192,.055),transparent 55%),#050d0c;display:grid;place-items:center;position:relative;overflow:hidden}.compass{width:270px;height:270px;border:1px solid rgba(160,220,211,.25);border-radius:50%;position:relative}.compass:before,.compass:after{content:"";position:absolute;background:rgba(160,220,211,.12)}.compass:before{width:1px;height:100%;left:50%;top:0}.compass:after{height:1px;width:100%;top:50%;left:0}.ring{position:absolute;inset:25%;border:1px dashed rgba(160,220,211,.15);border-radius:50%}.dir{position:absolute;font-size:11px;color:#8ea9a4;font-weight:900}.n{top:7px;left:50%;transform:translateX(-50%)}.s{bottom:7px;left:50%;transform:translateX(-50%)}.e{right:8px;top:50%;transform:translateY(-50%)}.w{left:8px;top:50%;transform:translateY(-50%)}
+.varrow{position:absolute;left:50%;top:50%;width:4px;border-radius:10px;transform-origin:50% 100%;transform:translate(-50%,-100%) rotate(0deg);transition:.35s}.varrow:after{content:"";position:absolute;top:-11px;left:50%;transform:translateX(-50%);border-left:7px solid transparent;border-right:7px solid transparent;border-bottom:15px solid currentColor}.ship-arrow{height:96px;background:#fff;color:#fff}.app-arrow{height:78px;background:var(--hot);color:var(--hot)}.true-arrow{height:115px;background:var(--teal);color:var(--teal);box-shadow:0 0 18px rgba(0,224,192,.35)}.graph-legend{position:absolute;left:16px;bottom:14px;display:flex;gap:12px;flex-wrap:wrap;font-size:10px;color:#91aaa6}.legend-item{display:flex;gap:5px;align-items:center}.legend-dot{width:8px;height:8px;border-radius:50%}.legend-dot.ship{background:#fff}.legend-dot.app{background:var(--hot)}.legend-dot.true{background:var(--teal)}
+/* Dictionaries */
+.launcher{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}.launch{min-height:190px;border:1px solid var(--line);border-radius:20px;padding:28px;background:linear-gradient(145deg,rgba(10,25,22,.95),rgba(3,12,11,.9));color:var(--text);text-decoration:none;cursor:pointer;text-align:left;transition:.22s;position:relative;overflow:hidden}.launch:hover{transform:translateY(-5px);border-color:rgba(0,224,192,.55);box-shadow:0 18px 55px rgba(0,0,0,.25)}.launch .big{font-size:42px;margin-bottom:25px}.launch h3{font-size:25px}.launch p{color:var(--muted);line-height:1.5;margin-top:7px}.dict-panel{display:none}.dict-panel.open{display:block;animation:fadeUp .28s ease}.backline{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:20px}.filterbar{display:flex;gap:8px;flex-wrap:wrap;margin:17px 0 22px}.filter.active{background:var(--teal);color:#00110d;border-color:var(--teal)}
+.cloud-grid,.current-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.cloud-card,.current-card{border:1px solid var(--line);border-radius:18px;overflow:hidden;background:#07110f;transition:.22s;cursor:pointer}.cloud-card:hover,.current-card:hover{transform:translateY(-4px);border-color:rgba(0,224,192,.45)}.thumb{aspect-ratio:16/10;overflow:hidden;background:#0b1815;position:relative}.thumb img{width:100%;height:100%;object-fit:cover;display:block}.fallback{height:100%;display:grid;place-items:center;color:#52736d;font-size:42px}.cloud-body,.current-body{padding:17px}.cloud-body p,.current-body p{color:var(--muted);line-height:1.5}.type{font-size:10px;color:var(--teal);letter-spacing:2px;font-weight:900}.current-card.warm{border-top:3px solid var(--hot)}.current-card.cold{border-top:3px solid var(--cold)}.current-card .temp{font-weight:900}.warm .temp{color:var(--hot)}.cold .temp{color:var(--cold)}
+/* Learning */
+.pressure{display:grid;grid-template-columns:1fr 1fr;gap:16px}.hemisphere{border:1px solid var(--line);border-radius:18px;padding:20px;background:#050d0c}.rotation{height:260px;display:grid;place-items:center;position:relative}.rotation .circle{width:190px;height:190px;border:2px dashed rgba(0,224,192,.35);border-radius:50%;position:relative;animation:spin 10s linear infinite}.rotation .center{position:absolute;inset:50%;transform:translate(-50%,-50%);font-weight:900;font-size:24px;color:var(--teal)}.rotation .arrowhead{position:absolute;top:-7px;left:50%;width:0;height:0;border-left:8px solid transparent;border-right:8px solid transparent;border-bottom:17px solid var(--teal)}.rotation.reverse .circle{animation-direction:reverse}@keyframes spin{to{transform:rotate(360deg)}}
+.info{margin-top:18px;padding:25px;border:1px solid var(--line);border-radius:18px;background:linear-gradient(145deg,rgba(10,25,22,.8),rgba(3,12,11,.9))}.knowledge-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.knowledge-card{min-height:190px}
+.tool-links{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.link{padding:17px;border:1px solid var(--line);border-radius:14px;text-decoration:none;color:var(--text);background:#07110f;transition:.2s}.link:hover{background:var(--teal);color:#00110d}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.72);backdrop-filter:blur(8px);display:none;align-items:center;justify-content:center;padding:20px;z-index:50}.modal.open{display:flex}.modalbox{width:min(920px,100%);max-height:90vh;overflow:auto;border:1px solid var(--line);border-radius:20px;background:#06100e;box-shadow:0 30px 100px #000b;padding:24px}.modalbox h2{font-size:32px;margin:5px 0 15px}.close{float:right}.largeimg{width:100%;max-height:430px;object-fit:contain;border-radius:14px;background:#020807;margin:8px 0 18px}.missing{display:grid;place-items:center;min-height:220px;border:1px dashed var(--line);border-radius:14px;color:#52736d;margin:8px 0 18px;text-align:center;padding:20px}.hidden{display:none!important}.notice{font-size:12px;color:#6f8b86;margin-top:10px}
+footer{text-align:center;padding:45px 20px;color:#66817c;border-top:1px solid rgba(160,220,211,.08)}footer a{color:var(--text);text-decoration:none}footer a:hover{color:var(--teal)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@media(max-width:1050px){.grid,.cloud-grid,.current-grid,.knowledge-grid{grid-template-columns:1fr 1fr}.wind-layout,.pressure{grid-template-columns:1fr}}
+@media(max-width:700px){.shell{width:calc(100% - 12px);margin:6px;border-radius:17px}header{margin:7px;top:7px;flex-direction:column;gap:10px;padding:10px}nav{gap:12px}.hero{padding:65px 18px 45px}h1{font-size:68px;letter-spacing:-3px}.section{padding:48px 16px}.section h2{font-size:31px}.grid,.cloud-grid,.current-grid,.tool-links,.knowledge-grid,.launcher{grid-template-columns:1fr}.heightbar,.formgrid{grid-template-columns:1fr 1fr}.search{width:calc(100% - 24px)}.windgraph{min-height:330px}.compass{width:230px;height:230px}}
+
+.site-footer{
+  text-align:center;
+  padding:42px 20px 48px;
+  border-top:1px solid rgba(160,220,211,.08);
+  margin-top:40px;
+}
+.site-footer a{
+  color:#66817c;
+  text-decoration:none;
+  font-size:12px;
+  letter-spacing:1.8px;
+  font-weight:700;
+  transition:color .2s ease;
+}
+.site-footer a:hover{
+  color:#00e0c0;
+}
+
+</style>
+</head>
+<body>
+<div class="shell">
+<header>
+  <a class="brand" href="https://navtool.de/" aria-label="Zurück zu NavTool Home"><span class="mark">SF</span><b data-de="NAVTOOL · WEATHER" data-en="NAVTOOL · WEATHER">NAVTOOL · WEATHER</b></a>
+  <nav><a href="https://navtool.de/" data-de="← ZURÜCK ZU NAVTOOL" data-en="← BACK TO NAVTOOL">← ZURÜCK ZU NAVTOOL</a><button class="lang" id="langBtn" type="button">DE / EN</button></nav>
+</header>
+
+<section class="hero">
+  <div class="kicker" data-de="NAVTOOL · WEATHER · METEOROLOGIE" data-en="NAVTOOL · WEATHER · METEOROLOGY">NAVTOOL · WEATHER · METEOROLOGIE</div>
+  <h1>WEATHER <span>TOOLS</span></h1>
+  <p data-de="Wetterwissen, Wolken, Strömungen, Windberechnung und Wetterkarten – ergänzt um deine Meteorologie-Kursunterlagen." data-en="Weather knowledge, clouds, currents, wind calculations and weather charts – enhanced with your meteorology course notes.">Wetterwissen, Wolken, Strömungen, Windberechnung und Wetterkarten – ergänzt um deine Meteorologie-Kursunterlagen.</p>
+</section>
+
+<div class="search"><input id="toolSearch" autocomplete="off" placeholder="Suche z. B. Cumulus, Golfstrom, Fetch, Kaltfront, Hochdruck ..."><button id="searchBtn">→</button></div>
+
+<section class="section" id="overview">
+  <div class="section-head"><div><div class="kicker">01 · OVERVIEW</div><h2 data-de="Meteorologie auf einen Blick" data-en="Meteorology at a glance">Meteorologie auf einen Blick</h2></div></div>
+  <p class="sub" data-de="Die wichtigsten Grundlagen aus deinen Unterlagen: Wolkenbildung, Drucksysteme, Fronten, Wind, Seegang, Strömungen und GRIB-Daten." data-en="Key topics from your notes: cloud formation, pressure systems, fronts, wind, sea state, currents and GRIB data.">Die wichtigsten Grundlagen aus deinen Unterlagen: Wolkenbildung, Drucksysteme, Fronten, Wind, Seegang, Strömungen und GRIB-Daten.</p>
+  <div class="heightbar"><div class="level"><b>0–2 km</b><small>Stratus · Stratocumulus · Cumulus</small></div><div class="level"><b>2–7 km</b><small>Altostratus · Altocumulus</small></div><div class="level"><b>7–13 km</b><small>Cirrus · Cirrocumulus · Cirrostratus</small></div><div class="level deep"><b>Alle Höhen</b><small>Cumulonimbus · starke Konvektion</small></div></div>
+</section>
+
+<section class="section" id="wind">
+  <div class="section-head"><div><div class="kicker">02 · WIND</div><h2 data-de="Scheinbarer → wahrer Wind" data-en="Apparent → true wind">Scheinbarer → wahrer Wind</h2></div></div>
+  <div class="wind-layout">
+    <div class="card">
+      <span class="tag">VECTOR CALCULATOR</span>
+      <h3 data-de="Nautische Eingabe" data-en="Nautical input">Nautische Eingabe</h3>
+      <p data-de="Kurs 0–359°T, Fahrt durch Wasser, scheinbare Windgeschwindigkeit, Winkel 0–180° ab Bug und Seite. 0° = von vorne, 180° = von achtern." data-en="Heading 0–359°T, speed through water, apparent wind speed, angle 0–180° off the bow and side. 0° = ahead, 180° = astern.">Kurs 0–359°T, Fahrt durch Wasser, scheinbare Windgeschwindigkeit, Winkel 0–180° ab Bug und Seite. 0° = von vorne, 180° = von achtern.</p>
+      <div class="formgrid" style="margin-top:17px">
+        <div class="field"><label data-de="SCHIFFSKURS °T" data-en="VESSEL HEADING °T">SCHIFFSKURS °T</label><input id="shipCourse" type="number" min="0" max="359" step="1" value="090"></div>
+        <div class="field"><label data-de="FAHRT DURCH WASSER kn" data-en="SPEED THROUGH WATER kn">FAHRT DURCH WASSER kn</label><input id="shipSpeed" type="number" min="0" max="100" step="0.1" value="12"></div>
+        <div class="field"><label data-de="SCHEINBARER WIND kn" data-en="APPARENT WIND kn">SCHEINBARER WIND kn</label><input id="appSpeed" type="number" min="0" max="150" step="0.1" value="20"></div>
+        <div class="field"><label data-de="WINKEL AB BUG 0–180°" data-en="ANGLE OFF BOW 0–180°">WINKEL AB BUG 0–180°</label><input id="appAngle" type="number" min="0" max="180" step="1" value="45"></div>
+        <div class="field"><label data-de="SEITE" data-en="SIDE">SEITE</label><select id="appSide"><option value="stb" data-de="Steuerbord (grün)" data-en="Starboard (green)">Steuerbord (grün)</option><option value="bb" data-de="Backbord (rot)" data-en="Port (red)">Backbord (rot)</option></select></div>
+      </div>
+      <div class="actions"><button class="btn primary" id="calcWind" data-de="Berechnen" data-en="Calculate">Berechnen</button><button class="btn" id="resetWind" data-de="Zurücksetzen" data-en="Reset">Zurücksetzen</button></div>
+      <div class="result" id="windResult">Noch keine Berechnung.</div>
+      <div class="notice" data-de="Mathematisch: scheinbarer Wind = wahrer Wind − Schiffsgeschwindigkeit; wahrer Wind = scheinbarer Wind + Schiffsgeschwindigkeit. Keine Berücksichtigung von Strom oder Leeway." data-en="Math: apparent wind = true wind − ship velocity; true wind = apparent wind + ship velocity. No current or leeway allowance.">Mathematisch: scheinbarer Wind = wahrer Wind − Schiffsgeschwindigkeit; wahrer Wind = scheinbarer Wind + Schiffsgeschwindigkeit. Keine Berücksichtigung von Strom oder Leeway.</div>
+    </div>
+    <div class="windgraph">
+      <div class="compass"><div class="ring"></div><span class="dir n">N</span><span class="dir e">E</span><span class="dir s">S</span><span class="dir w">W</span><div class="varrow ship-arrow" id="shipArrow"></div><div class="varrow app-arrow" id="appArrow"></div><div class="varrow true-arrow" id="trueArrow"></div></div>
+      <div class="graph-legend"><span class="legend-item"><i class="legend-dot ship"></i> Kurs</span><span class="legend-item"><i class="legend-dot app"></i> scheinbar</span><span class="legend-item"><i class="legend-dot true"></i> wahr</span></div>
+    </div>
+  </div>
+  <div class="info"><b>Fetch</b><p class="sub" style="margin-top:7px" data-de="Fetch ist die Strecke, über die der Wind ununterbrochen über Wasser weht. Langer Fetch, starker Wind und lange Wirkdauer fördern höheren Seegang. Kreuzsee kann entstehen, wenn unterschiedliche Wellensysteme zusammentreffen." data-en="Fetch is the distance over which wind blows continuously over water. Long fetch, strong wind and long duration promote higher sea state. Cross sea can develop when different wave systems meet.">Fetch ist die Strecke, über die der Wind ununterbrochen über Wasser weht. Langer Fetch, starker Wind und lange Wirkdauer fördern höheren Seegang. Kreuzsee kann entstehen, wenn unterschiedliche Wellensysteme zusammentreffen.</p></div>
+</section>
+
+<section class="section" id="pressure">
+  <div class="section-head"><div><div class="kicker">03 · PRESSURE SYSTEMS</div><h2 data-de="Hoch & Tief · beide Halbkugeln" data-en="High & Low pressure · both hemispheres">Hoch & Tief · beide Halbkugeln</h2></div></div>
+  <div class="pressure">
+    <div class="hemisphere"><div class="tag">NORDHALBKUGEL</div><h3>NH · Northern Hemisphere</h3><div class="rotation"><div class="circle"><div class="arrowhead"></div></div><div class="center">T</div></div><p class="sub" data-de="Tief: gegen den Uhrzeigersinn. Hoch: im Uhrzeigersinn." data-en="Low: counter-clockwise. High: clockwise.">Tief: gegen den Uhrzeigersinn. Hoch: im Uhrzeigersinn.</p></div>
+    <div class="hemisphere"><div class="tag">SÜDHALBKUGEL</div><h3>SH · Southern Hemisphere</h3><div class="rotation"><div class="circle" style="animation-direction:reverse"><div class="arrowhead"></div></div><div class="center">T</div></div><p class="sub" data-de="Tief: im Uhrzeigersinn. Hoch: gegen den Uhrzeigersinn." data-en="Low: clockwise. High: counter-clockwise.">Tief: im Uhrzeigersinn. Hoch: gegen den Uhrzeigersinn.</p></div>
+  </div>
+  <div class="info"><b data-de="Wetterkarten-Merksatz" data-en="Weather chart rule">Wetterkarten-Merksatz</b><p class="sub" style="margin-top:7px" data-de="Enge Isobaren bedeuten einen großen Druckgradienten und meist stärkeren Wind. Warmfront = Halbkreise, Kaltfront = Dreiecke, Okklusion = Kombination." data-en="Tight isobars indicate a strong pressure gradient and usually stronger wind. Warm front = semicircles, cold front = triangles, occlusion = combination.">Enge Isobaren bedeuten einen großen Druckgradienten und meist stärkeren Wind. Warmfront = Halbkreise, Kaltfront = Dreiecke, Okklusion = Kombination.</p></div>
+</section>
+
+<section class="section" id="dictionaries">
+  <div class="section-head"><div><div class="kicker">04 · DICTIONARIES</div><h2 data-de="Wolken & Strömungen" data-en="Clouds & currents">Wolken & Strömungen</h2></div></div>
+  <p class="sub" data-de="Klicke zuerst auf einen Bereich. Danach bekommst du die Inhalte als übersichtliche Kacheln. Bei Strömungen kannst du nach warm, kalt oder allen Strömungen filtern." data-en="Choose a section first. The content then appears as clear tiles. In currents you can filter warm, cold or all currents.">Klicke zuerst auf einen Bereich. Danach bekommst du die Inhalte als übersichtliche Kacheln. Bei Strömungen kannst du nach warm, kalt oder allen Strömungen filtern.</p>
+  <div class="launcher" style="margin-top:22px">
+    <button class="launch" data-open="cloudPanel"><div class="big">☁️</div><h3 data-de="Wolken-Buch" data-en="Cloud dictionary">Wolken-Buch</h3><p data-de="Nach Namen und Bildern lernen. Zehn Hauptgattungen mit Höhe, Erscheinungsbild und nautischer Bedeutung." data-en="Learn by names and images. Ten main genera with height, appearance and maritime relevance.">Nach Namen und Bildern lernen. Zehn Hauptgattungen mit Höhe, Erscheinungsbild und nautischer Bedeutung.</p></button>
+    <button class="launch" data-open="currentPanel"><div class="big">🌊</div><h3 data-de="Strömungs-Lexikon" data-en="Current dictionary">Strömungs-Lexikon</h3><p data-de="Warme und kalte Strömungen, Verlauf, Gebiete, Nebel- und Seegangsrisiken." data-en="Warm and cold currents, routes, regions, fog and sea-state risks.">Warme und kalte Strömungen, Verlauf, Gebiete, Nebel- und Seegangsrisiken.</p></button>
+  </div>
+
+  <div class="dict-panel" id="cloudPanel">
+    <div class="backline"><div><div class="kicker">CLOUD DICTIONARY</div><h2>Wolken-Buch</h2></div><button class="btn" data-close-panel>← <span data-de="Übersicht" data-en="Overview">Übersicht</span></button></div>
+    <div class="cloud-grid" id="cloudGrid"></div>
+  </div>
+
+  <div class="dict-panel" id="currentPanel">
+    <div class="backline"><div><div class="kicker">OCEAN CURRENTS</div><h2>Strömungs-Lexikon</h2></div><button class="btn" data-close-panel>← <span data-de="Übersicht" data-en="Overview">Übersicht</span></button></div>
+    <div class="filterbar"><button class="btn filter active" data-filter="all" data-de="Alle" data-en="All">Alle</button><button class="btn filter" data-filter="warm" data-de="Warm" data-en="Warm">Warm</button><button class="btn filter" data-filter="cold" data-de="Kalt" data-en="Cold">Kalt</button></div>
+    <div class="current-grid" id="currentGrid"></div>
+  </div>
+</section>
+
+<section class="section" id="knowledge">
+  <div class="section-head"><div><div class="kicker">05 · COURSE KNOWLEDGE</div><h2 data-de="Meteorologie aus deinen Unterlagen" data-en="Meteorology from your notes">Meteorologie aus deinen Unterlagen</h2></div></div>
+  <p class="sub" data-de="Diese Übersicht wurde aus den von dir bereitgestellten Meteorologie-Unterlagen aufgebaut. Sie bleibt bewusst nah an deren Begriffen und Aussagen." data-en="This overview is built from the meteorology notes you provided and intentionally stays close to their terminology and statements.">Diese Übersicht wurde aus den von dir bereitgestellten Meteorologie-Unterlagen aufgebaut. Sie bleibt bewusst nah an deren Begriffen und Aussagen.</p>
+  <div class="knowledge-grid" id="knowledgeGrid" style="margin-top:22px"></div>
+</section>
+
+<section class="section" id="maps">
+  <div class="section-head"><div><div class="kicker">06 · LIVE TOOLS</div><h2 data-de="Wetterkarten & Quellen" data-en="Weather charts & sources">Wetterkarten & Quellen</h2></div></div>
+  <div class="grid">
+    <article class="card"><span class="tag">WINDY</span><h3>🌧 Regenradar</h3><iframe style="width:100%;height:360px;border:0;border-radius:13px;margin-top:15px" src="https://embed.windy.com/embed2.html?lat=53.14&lon=8.46&zoom=6&level=surface&overlay=radar&menu=true&message=true&marker=true&calendar=now" loading="lazy"></iframe></article>
+    <article class="card"><span class="tag">WINDY</span><h3>💨 Windkarte</h3><iframe style="width:100%;height:360px;border:0;border-radius:13px;margin-top:15px" src="https://embed.windy.com/embed2.html?lat=53.14&lon=8.46&zoom=6&level=surface&overlay=wind&menu=true&message=true&marker=true&calendar=now" loading="lazy"></iframe></article>
+    <article class="card"><span class="tag">WINDY</span><h3>🌀 Druck / Isobaren</h3><iframe style="width:100%;height:360px;border:0;border-radius:13px;margin-top:15px" src="https://embed.windy.com/embed2.html?lat=53.14&lon=8.46&zoom=5&level=surface&overlay=pressure&menu=true&message=true&marker=true" loading="lazy"></iframe></article>
+  </div>
+</section>
+
+<section class="section" id="links"><div class="section-head"><div><div class="kicker">07 · NAVIGATION</div><h2 data-de="Weitere Wetterquellen" data-en="More weather sources">Weitere Wetterquellen</h2></div></div><div class="tool-links">
+<a class="link" href="https://www.dwd.de/DE/leistungen/hobbymet_wk_europa/hobbyeuropakarten.html" target="_blank">🇩🇪 DWD Bodenwetterkarten ↗</a><a class="link" href="https://www.windy.com" target="_blank">💨 Windy ↗</a><a class="link" href="https://navtool.de/navtext/" target="_blank">🧭 NavText · Wetterdaten ↗</a><a class="link" href="https://www.canada.ca/en/environment-climate-change/services/ice-forecasts-observations/latest-conditions/canadian-sea-concentration-map.html" target="_blank">🧊 Canada Ice Conditions ↗</a><a class="link" href="https://map.openseamap.org" target="_blank">⚓ OpenSeaMap ↗</a><a class="link" href="https://navtool.de/calc/" target="_blank">⚓ NavTool Calculation ↗</a></div></section>
+
+<footer class="site-footer">
+  <a href="https://me.navtool.de" target="_blank" rel="noopener noreferrer">
+    Copyright © NavTool
+  </a>
+</footer>
+</div>
+
+<div class="modal" id="modal"><div class="modalbox"><button class="btn close" id="closeModal">Schließen</button><div id="modalContent"></div></div></div>
+
+<script>
+const clouds=[
+{id:'cumulus',de:'Cumulus',en:'Cumulus',short:'Cu',height:'0–2 km',kindDe:'Quellwolke / Haufenwolke',kindEn:'Cumulus / heap cloud',descDe:'Stark aufsteigende Luft produziert Quellwolken. Häufig tagsüber über erwärmtem Land; stärkere Entwicklung kann zu Schauern führen.',descEn:'Strong upward motion produces cumulus clouds. Often daytime over heated land; stronger development can lead to showers.'},
+{id:'stratocumulus',de:'Stratocumulus',en:'Stratocumulus',short:'Sc',height:'0–2 km',kindDe:'Schicht-/Haufenwolke',kindEn:'Layer / heap cloud',descDe:'Tiefe, ausgedehnte Wolkenfelder mit Ballen oder Walzen. Gehört zu den tiefen Wolkentypen.',descEn:'Low, extensive cloud fields with rolls or patches. One of the low cloud genera.'},
+{id:'stratus',de:'Stratus',en:'Stratus',short:'St',height:'0–2 km',kindDe:'Schichtwolke',kindEn:'Layer cloud',descDe:'Tiefe, flächige Schichtwolke. Langsame, großräumige Hebung begünstigt Schichtbewölkung.',descEn:'Low, widespread layer cloud. Slow, large-scale ascent favours layered cloud.'},
+{id:'altocumulus',de:'Altocumulus',en:'Altocumulus',short:'Ac',height:'2–7 km',kindDe:'Mittelhohe Wolke',kindEn:'Middle cloud',descDe:'Mittelhohe Felder, Ballen oder Walzen. Gehört zur mittleren Wolkenfamilie.',descEn:'Middle-level fields, patches or rolls. Part of the middle-cloud family.'},
+{id:'altostratus',de:'Altostratus',en:'Altostratus',short:'As',height:'2–7 km',kindDe:'Mittelhohe Schichtwolke',kindEn:'Middle layer cloud',descDe:'Graue bis bläuliche Schicht; die Sonne kann diffus durchscheinen. Häufig im Vorfeld von Frontensystemen.',descEn:'Grey to bluish layer; the sun may appear diffusely through it. Often found ahead of frontal systems.'},
+{id:'nimbostratus',de:'Nimbostratus',en:'Nimbostratus',short:'Ns',height:'2–7 km',kindDe:'Niederschlagswolke',kindEn:'Precipitation cloud',descDe:'Ausgedehnte Niederschlagswolke. In den Unterlagen wird sie besonders mit länger anhaltendem Niederschlag vor einer Okklusion bzw. an Fronten verbunden.',descEn:'Extensive precipitation cloud, associated in the notes with prolonged precipitation around fronts and before occlusion.'},
+{id:'cirrus',de:'Cirrus',en:'Cirrus',short:'Ci',height:'7–13 km',kindDe:'Hohe Eiswolke',kindEn:'High ice cloud',descDe:'Hohe faserige Eiswolke. Die Unterlagen ordnen Cirrus der hohen Wolkenschicht zu.',descEn:'High, fibrous ice cloud. The notes place cirrus in the high cloud layer.'},
+{id:'cirrocumulus',de:'Cirrocumulus',en:'Cirrocumulus',short:'Cc',height:'7–13 km',kindDe:'Hohe Eiswolke',kindEn:'High ice cloud',descDe:'Kleine, regelmäßig angeordnete Felder in großer Höhe, überwiegend aus Eiskristallen.',descEn:'Small, regularly arranged patches at high altitude, mainly made of ice crystals.'},
+{id:'cirrostratus',de:'Cirrostratus',en:'Cirrostratus',short:'Cs',height:'7–13 km',kindDe:'Hohe Eis-Schichtwolke',kindEn:'High ice layer cloud',descDe:'Dünner hoher Schleier aus Eiskristallen; kann einen Halo um Sonne oder Mond erzeugen.',descEn:'Thin high veil of ice crystals; may produce a halo around the sun or moon.'},
+{id:'cumulonimbus',de:'Cumulonimbus',en:'Cumulonimbus',short:'Cb',height:'Alle Höhen',kindDe:'Starke Konvektionswolke',kindEn:'Deep convective cloud',descDe:'Kann sich über viele Höhenschichten erstrecken. Starke Konvektion, Schauer, Gewitter und Böen sind möglich.',descEn:'Can extend through many altitude levels. Strong convection, showers, thunderstorms and gusts are possible.'}
+];
+
+const currents=[
+{id:'gulf-stream',de:'Golfstrom',en:'Gulf Stream',type:'warm',routeDe:'Golf von Mexiko → Florida → Nordatlantik',routeEn:'Gulf of Mexico → Florida → North Atlantic',descDe:'Starke warme Westgrenzströmung. In deinen Unterlagen wird er auch als Faktor für besondere Seegangsbedingungen und Freak-Wave-Risiken vor der US-Ostküste genannt.',descEn:'Strong warm western boundary current. Your notes also identify it as a factor in unusual sea states and freak-wave risk off the US East Coast.',riskDe:'Gegenläufiger Seegang kann sich aufstauen und steiler werden.',riskEn:'Opposing waves can pile up and become steeper.',img:'gulf-stream.jpeg'},
+{id:'north-atlantic-current',de:'Nordatlantikstrom',en:'North Atlantic Current',type:'warm',routeDe:'Nordatlantik → Richtung Europa',routeEn:'North Atlantic → toward Europe',descDe:'Warmer Teil des Atlantikstromsystems; transportiert Wärme Richtung Europa.',descEn:'Warm branch of the Atlantic current system, transporting heat toward Europe.',riskDe:'Wichtig für Wetter- und Seegangsbeurteilung im Nordatlantik.',riskEn:'Relevant to weather and sea-state assessment in the North Atlantic.',img:'north-atlantic-current.jpeg'},
+{id:'canary-current',de:'Kanarenstrom',en:'Canary Current',type:'cold',routeDe:'Iberische Halbinsel → NW-Afrika',routeEn:'Iberian Peninsula → NW Africa',descDe:'Kalte Ostgrenzströmung. Kaltes Wasser kann zusammen mit warmer Luft Küstennebel begünstigen.',descEn:'Cold eastern boundary current. Cold water with warm air can favour coastal fog.',riskDe:'Sichtverschlechterung durch Kaltwassernebel möglich.',riskEn:'Reduced visibility from cold-water fog is possible.',img:'canary-current.jpeg'},
+{id:'labrador-current',de:'Labradorstrom',en:'Labrador Current',type:'cold',routeDe:'Labrador / Arktis → Neufundland südwärts',routeEn:'Labrador / Arctic → south past Newfoundland',descDe:'Kalter Strom nach Süden. Die Unterlagen nennen den Labradorstrom als Beispiel, wo warme Luft über kaltes Wasser strömen und Kaltwassernebel entstehen kann.',descEn:'Cold southward current. The notes use it as an example where warm air over cold water can produce cold-water fog.',riskDe:'Nebel, Eis und komplexer Seegang vor Neufundland beachten.',riskEn:'Consider fog, ice and complex sea state near Newfoundland.',img:'labrador-current.jpeg'},
+{id:'humboldt-current',de:'Humboldtstrom',en:'Humboldt / Peru Current',type:'cold',routeDe:'Chile / Peru → nordwärts',routeEn:'Chile / Peru → northward',descDe:'Kalter Auftriebsstrom. Kaltes Wasser und aufsteigende Tiefenwasserbewegung können die Luft-Wasser-Verhältnisse stark prägen.',descEn:'Cold upwelling current. Cold water and rising deep water can strongly influence air-sea conditions.',riskDe:'Küstennebel und Sichtprobleme möglich.',riskEn:'Coastal fog and visibility problems are possible.',img:'humboldt-current.jpeg'},
+{id:'benguela-current',de:'Benguelastrom',en:'Benguela Current',type:'cold',routeDe:'Südwestafrika → nordwärts',routeEn:'Southwest Africa → northward',descDe:'Kalter Auftriebsstrom entlang der Westküste Afrikas. In deinen Klausurunterlagen wird er ausdrücklich als ozeanographischer Faktor für gefährliche Brecherzonen genannt.',descEn:'Cold upwelling current along southwest Africa. Your exam notes explicitly identify it as an oceanographic factor for dangerous breaker zones.',riskDe:'Gegenläufige Dünung + schmaler Schelf + kalter Strom können gefährlichen Seegang begünstigen.',riskEn:'Opposing swell + narrow shelf + cold current can promote dangerous sea states.',img:'benguela-current.jpeg'},
+{id:'agulhas-current',de:'Agulhasstrom',en:'Agulhas Current',type:'warm',routeDe:'Südostafrika → südwärts',routeEn:'Southeast Africa → southward',descDe:'Starke warme Westgrenzströmung entlang Südostafrika.',descEn:'Strong warm western boundary current along southeast Africa.',riskDe:'Gegenströmung und Dünung können den Seegang deutlich verändern.',riskEn:'Counter-currents and swell can strongly modify sea state.',img:'agulhas-current.jpeg'},
+{id:'kuroshio',de:'Kuroshio',en:'Kuroshio Current',type:'warm',routeDe:'Philippinen / Taiwan → Japan nordostwärts',routeEn:'Philippines / Taiwan → northeast toward Japan',descDe:'Starke warme Westgrenzströmung im Nordwestpazifik.',descEn:'Strong warm western boundary current in the Northwest Pacific.',riskDe:'Wetter- und Seegangsgradienten an der Stromgrenze beachten.',riskEn:'Watch weather and sea-state gradients at the current boundary.',img:'kuroshio.jpeg'},
+{id:'oyashio',de:'Oyashio',en:'Oyashio Current',type:'cold',routeDe:'Kamtschatka / Bering → Japan südwärts',routeEn:'Kamchatka / Bering → south toward Japan',descDe:'Kalte Strömung, die im Raum Japan auf den Kuroshio trifft.',descEn:'Cold current meeting the Kuroshio near Japan.',riskDe:'Starke Temperatur- und Wettergradienten möglich.',riskEn:'Strong temperature and weather gradients are possible.',img:'oyashio.jpeg'},
+{id:'east-australian-current',de:'Ostaustralstrom',en:'East Australian Current',type:'warm',routeDe:'Korallenmeer → entlang der Ostküste Australiens südwärts',routeEn:'Coral Sea → south along eastern Australia',descDe:'Warme Westgrenzströmung an der Ostküste Australiens.',descEn:'Warm western boundary current along eastern Australia.',riskDe:'Gegenwind kann den Seegang steiler machen.',riskEn:'Opposing wind can make the sea steeper.',img:'east-australian-current.jpeg'}
+];
+
+const knowledge=[
+{id:'cloud-formation',de:'Wolkenbildung',en:'Cloud formation',tag:'CLOUD',textDe:'Wolkenbildung ist mit aufsteigender Luft verbunden: Die Luft kühlt ab und kann unter den Taupunkt gelangen. Dafür müssen Kondensations- oder Gefrierkerne vorhanden sein.',textEn:'Cloud formation is linked to rising air: the air cools and can reach the dew point. Condensation or ice nuclei must be present.',extraDe:'Starke Hebung → Quellwolken; langsame großräumige Hebung → Schichtwolken.',extraEn:'Strong ascent → cumulus-type clouds; slow large-scale ascent → layered clouds.'},
+{id:'fog',de:'Nebel: warm, kalt, Strahlung',en:'Fog: warm, cold, radiation',tag:'FOG',textDe:'Warmwassernebel entsteht bei kalter Luft über warmem Wasser. Kaltwassernebel entsteht bei warmer, feuchter Luft über kaltem Wasser. Strahlungsnebel kann bei starker nächtlicher Abkühlung entstehen.',textEn:'Warm-water fog forms with cold air over warm water. Cold-water fog forms with warm moist air over cold water. Radiation fog can form after strong night-time cooling.',extraDe:'Die Unterlagen nennen besonders Küsten, Flussmündungen, Inselräume und kalte Strömungen als relevante Nebelgebiete.',extraEn:'The notes highlight coasts, river mouths, island passages and cold currents as relevant fog areas.'},
+{id:'fronts',de:'Warmfront · Kaltfront · Okklusion',en:'Warm front · Cold front · Occlusion',tag:'FRONTS',textDe:'Warmfront: warme Luft gleitet auf kalte Luft. Kaltfront: kalte Luft schiebt sich unter warme Luft. Okklusion: Kombination beider Fronttypen.',textEn:'Warm front: warm air glides over cold air. Cold front: cold air pushes beneath warm air. Occlusion: combination of both frontal types.',extraDe:'Kaltfront: häufig Schauer/Gewitter und Böen. Warmfront: eher langanhaltender Niederschlag und tiefe/mehrschichtige Bewölkung. Okklusion: oft eine Mischung.',extraEn:'Cold front: often showers/thunderstorms and gusts. Warm front: longer-lasting precipitation and layered cloud. Occlusion: often a mixture.'},
+{id:'isobars',de:'Isobaren & Druckgradient',en:'Isobars & pressure gradient',tag:'PRESSURE',textDe:'Enge Isobaren bedeuten einen großen Druckgradienten und damit meist stärkeren Wind. Bei Tiefs und Hochs verändert die Krümmung der Isobaren zusätzlich die Strömungsbedingungen.',textEn:'Tight isobars indicate a strong pressure gradient and usually stronger wind. Curvature around lows and highs also modifies the flow.',extraDe:'Auf Wetterkarten: Druckwerte, Verlagerung, Verstärkung/Abschwächung und neu entstandene Systeme vergleichen.',extraEn:'On weather charts: compare pressure values, movement, strengthening/weakening and newly formed systems.'},
+{id:'fetch',de:'Fetch & Seegang',en:'Fetch & sea state',tag:'SEA',textDe:'Fetch ist die Strecke, über die Wind ununterbrochen über Wasser weht. Mit Windstärke und Wirkdauer beeinflusst er die Entwicklung der Windsee.',textEn:'Fetch is the distance over which wind blows continuously over water. Together with wind strength and duration it controls wind-sea development.',extraDe:'Kreuzsee kann entstehen, wenn unterschiedliche Wellensysteme zusammentreffen; flaches Wasser kann Wellen zusätzlich verformen und steiler machen.',extraEn:'Cross sea can develop when different wave systems meet; shallow water can further deform and steepen waves.'},
+{id:'freak-waves',de:'Freak Waves',en:'Freak waves',tag:'WAVES',textDe:'Deine Unterlagen nennen vor der US-Ostküste den Golfstrom, Gegenwind und sich überlagernde Wellensysteme als Faktoren für außergewöhnlich hohe Einzelwellen.',textEn:'Your notes identify the Gulf Stream, opposing wind and interacting wave systems off the US East Coast as factors favouring unusually high individual waves.',extraDe:'Besonders wichtig: Strömung gegen Seegang kann Wellen aufstauen und steiler machen.',extraEn:'Key idea: current opposing the waves can pile them up and make them steeper.'},
+{id:'grib',de:'GRIB-Daten',en:'GRIB data',tag:'DATA',textDe:'Messungen von Stationen, Satelliten, Bojen, Flugzeugen und Schiffen werden assimiliert und in numerischen Wettermodellen verarbeitet. Daraus entstehen Gitterdaten für Wind, Druck, Wellen und weitere Größen.',textEn:'Measurements from stations, satellites, buoys, aircraft and ships are assimilated into numerical weather models, producing gridded data for wind, pressure, waves and other variables.',extraDe:'Grenzen laut Unterlagen: grobe Gitterauflösung, zeitliche Auflösung und fehlende Darstellung komplexer Kreuzsee-/Dünungssysteme.',extraEn:'Limitations in the notes: coarse grid resolution, limited time resolution and incomplete representation of complex cross-sea/swell systems.'},
+{id:'ekman',de:'Ekman-Schicht',en:'Ekman layer',tag:'OCEAN',textDe:'Wind erzeugt über Reibung eine Wasserbewegung. Corioliskraft und Reibung bewirken mit der Tiefe eine Drehung und Abschwächung der Strömung.',textEn:'Wind drives water motion through friction. Coriolis force and friction cause the current to rotate and weaken with depth.',extraDe:'In den Unterlagen: an der Oberfläche maximale Geschwindigkeit, mit zunehmender Tiefe abnehmend; die Richtung dreht sich spiralförmig.',extraEn:'In the notes: surface speed is greatest and decreases with depth; direction rotates in a spiral.'},
+{id:'routing',de:'Wetter & Routenplanung',en:'Weather & route planning',tag:'ROUTING',textDe:'Wind, Niederschlag, Gewitter, Sicht, Drucksysteme, Fronten, Seegang, Strömung und Wassertiefe beeinflussen die Routenplanung.',textEn:'Wind, precipitation, thunderstorms, visibility, pressure systems, fronts, sea state, currents and water depth affect route planning.',extraDe:'Schiﬀsführung trifft taktische Entscheidungen; Fleet Management unterstützt strategische Routen-, Wetter- und Sicherheitsplanung.',extraEn:'Bridge teams make tactical decisions; fleet management supports strategic route, weather and safety planning.'},
+{id:'weather-chart',de:'Wetterkarte systematisch lesen',en:'Reading a weather chart',tag:'CHART',textDe:'Zuerst Drucksysteme und ihre Bewegung betrachten, dann Fronten, Windfelder, Druckgradienten und Wetterzonen. Anschließend die zeitliche Entwicklung vergleichen.',textEn:'Start with pressure systems and their movement, then fronts, wind fields, pressure gradients and weather zones. Finally compare the time evolution.',extraDe:'Fachbegriffe aus den Unterlagen: Zyklone, Antizyklone, Barokline Zone, Jetstream, Druckgradientkraft, Corioliskraft, Subtropenhoch, Islandtief.',extraEn:'Terms from the notes: cyclone, anticyclone, baroclinic zone, jet stream, pressure-gradient force, Coriolis force, subtropical high, Icelandic Low.'},
+{id:'climate-routing',de:'Witterungs- vs. Klimanavigation',en:'Weather vs. climate routing',tag:'ROUTING',textDe:'Witterungsnavigation arbeitet mit aktuellen bzw. prognostizierten Wetterbedingungen. Monatskarten beschreiben dagegen längerfristige klimatische Muster und sind nicht gleich präzise für einzelne Wetterlagen.',textEn:'Weather routing uses current and forecast conditions. Monthly charts describe longer-term climate patterns and are not equally precise for individual weather situations.',extraDe:'Die Unterlagen betonen, dass Prognose- und Modelldaten Unsicherheiten besitzen, besonders bei schnellen Systemen wie Randtiefs oder Gewittern.',extraEn:'The notes emphasize forecast and model uncertainty, especially for fast systems such as secondary lows or thunderstorms.'}
+];
+
+let lang=localStorage.getItem('navtoolWeatherLang')||'de';
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+const t=(de,en)=>lang==='de'?de:en;
+
+function imageHTML(path,alt,icon='☁️'){return `<img src="../pic/${path}" alt="${esc(alt)}" onerror="this.style.display='none';this.nextElementSibling.classList.remove('hidden')"><div class="fallback hidden">${icon}</div>`}
+function renderClouds(){
+ $('cloudGrid').innerHTML=clouds.map(c=>`<article class="cloud-card searchable" data-search="${esc((c.de+' '+c.en+' '+c.short+' '+c.height+' '+c.kindDe+' '+c.kindEn+' '+c.descDe).toLowerCase())}" data-cloud="${c.id}"><div class="thumb">${imageHTML(c.id+'.jpeg',c.de,'☁️')}</div><div class="cloud-body"><div class="type">${c.short} · ${c.height}</div><h3>${esc(t(c.de,c.en))}</h3><p>${esc(t(c.kindDe,c.kindEn))}</p></div></article>`).join('');
+ document.querySelectorAll('[data-cloud]').forEach(x=>x.onclick=()=>openCloud(x.dataset.cloud));
+}
+function openCloud(id){const c=clouds.find(x=>x.id===id);if(!c)return;const p1=`../pic/${c.id}.jpeg`,p2=`../pic/${c.id}2.jpeg`;$('modalContent').innerHTML=`<div class="kicker">${c.short} · ${c.height}</div><h2>${esc(t(c.de,c.en))}</h2><div class="largeimg">${imageHTML(c.id+'.jpeg',c.de,'☁️')}</div><div class="largeimg">${imageHTML(c.id+'2.jpeg',c.de+' reference','🖼️')}</div><p class="sub"><b>${esc(t(c.kindDe,c.kindEn))}</b><br>${esc(t(c.descDe,c.descEn))}</p><div class="chips"><span class="chip">${c.height}</span><span class="chip">${c.short}</span><span class="chip">${t('Hauptbild: '+p1,'Main image: '+p1)}</span><span class="chip">${t('Referenz: '+p2,'Reference: '+p2)}</span></div>`;$('modal').classList.add('open')}
+
+let currentFilter='all';
+function renderCurrents(){
+ $('currentGrid').innerHTML=currents.filter(c=>currentFilter==='all'||c.type===currentFilter).map(c=>`<article class="current-card ${c.type} searchable" data-search="${esc((c.de+' '+c.en+' '+c.type+' '+c.routeDe+' '+c.routeEn+' '+c.descDe+' '+c.descEn+' '+c.riskDe+' '+c.riskEn).toLowerCase())}"><div class="thumb">${imageHTML(c.img,c.de,'🌊')}</div><div class="current-body"><div class="type">${esc(c.en)}</div><h3>${esc(t(c.de,c.en))}</h3><p><b class="temp">${c.type==='warm'?t('WARM','WARM'):t('KALT','COLD')}</b> · ${esc(t(c.routeDe,c.routeEn))}</p><p style="margin-top:8px">${esc(t(c.descDe,c.descEn))}</p><p style="margin-top:8px;color:#6f8b86"><b>${t('Nautik','Maritime')}:</b> ${esc(t(c.riskDe,c.riskEn))}</p></div></article>`).join('');
+}
+function renderKnowledge(){
+ $('knowledgeGrid').innerHTML=knowledge.map(k=>`<article class="card knowledge-card searchable" data-search="${esc((k.de+' '+k.en+' '+k.tag+' '+k.textDe+' '+k.textEn+' '+k.extraDe+' '+k.extraEn).toLowerCase())}"><span class="tag">${k.tag}</span><h3>${esc(t(k.de,k.en))}</h3><p>${esc(t(k.textDe,k.textEn))}</p><p style="margin-top:10px;color:#6f8b86">${esc(t(k.extraDe,k.extraEn))}</p></article>`).join('');
+}
+
+function norm(d){return (d%360+360)%360}
+function vectorFrom(speed,bearing){const r=bearing*Math.PI/180;return {e:speed*Math.sin(r),n:speed*Math.cos(r)}}
+function bearingFrom(e,n){return norm(Math.atan2(e,n)*180/Math.PI)}
+function calculateWind(){
+ const courseRaw=parseFloat($('shipCourse').value),ship=parseFloat($('shipSpeed').value),app=parseFloat($('appSpeed').value),rel=parseFloat($('appAngle').value),side=$('appSide').value;
+ if(!Number.isFinite(courseRaw)||!Number.isFinite(ship)||!Number.isFinite(app)||!Number.isFinite(rel)||courseRaw<0||courseRaw>359||ship<0||app<0||rel<0||rel>180){$('windResult').classList.add('error');$('windResult').innerHTML=t('Bitte gültige Werte eingeben: Kurs 0–359°, Winkel 0–180°, Geschwindigkeiten ≥ 0 kn.','Enter valid values: heading 0–359°, angle 0–180°, speeds ≥ 0 kn.');return}
+ const course=norm(courseRaw), apparentFrom=norm(course+(side==='stb'?rel:-rel)), apparentTo=norm(apparentFrom+180);
+ const shipV=vectorFrom(ship,course), apparentV=vectorFrom(app,apparentTo);
+ const trueV={e:apparentV.e+shipV.e,n:apparentV.n+shipV.n};
+ const trueSpeed=Math.hypot(trueV.e,trueV.n),trueTo=bearingFrom(trueV.e,trueV.n),trueFrom=norm(trueTo+180);
+ $('windResult').classList.remove('error');
+ $('windResult').innerHTML=`<b>${t('Wahrer Wind','True wind')}: ${trueSpeed.toFixed(1)} kn</b><br>${t('Wahrer Wind aus','True wind from')}: <b>${String(Math.round(trueFrom)).padStart(3,'0')}°T</b><br>${t('Scheinbarer Wind aus','Apparent wind from')}: ${String(Math.round(apparentFrom)).padStart(3,'0')}°T · ${rel}° ${side==='stb'?t('Steuerbord','starboard'):t('Backbord','port')} · ${app.toFixed(1)} kn<br>${t('Schiffskurs','Vessel heading')}: ${String(Math.round(course)).padStart(3,'0')}°T · ${t('Fahrt durch Wasser','Speed through water')}: ${ship.toFixed(1)} kn`;
+ $('shipArrow').style.transform=`translate(-50%,-100%) rotate(${course}deg)`;
+ $('appArrow').style.transform=`translate(-50%,-100%) rotate(${apparentFrom}deg)`;
+ $('trueArrow').style.transform=`translate(-50%,-100%) rotate(${trueFrom}deg)`;
+}
+$('calcWind').onclick=calculateWind;
+['shipCourse','shipSpeed','appSpeed','appAngle','appSide'].forEach(id=>$(id).addEventListener('input',calculateWind));
+$('resetWind').onclick=()=>{$('shipCourse').value='090';$('shipSpeed').value='12';$('appSpeed').value='20';$('appAngle').value='45';$('appSide').value='stb';calculateWind()};
+
+function openPanel(id){document.querySelectorAll('.dict-panel').forEach(p=>p.classList.remove('open'));$(id).classList.add('open');$(id).scrollIntoView({behavior:'smooth',block:'start'})}
+document.querySelectorAll('[data-open]').forEach(b=>b.onclick=()=>openPanel(b.dataset.open));
+document.querySelectorAll('[data-close-panel]').forEach(b=>b.onclick=()=>{document.querySelectorAll('.dict-panel').forEach(p=>p.classList.remove('open'));$('dictionaries').scrollIntoView({behavior:'smooth',block:'start'})});
+document.querySelectorAll('.filter').forEach(b=>b.onclick=()=>{currentFilter=b.dataset.filter;document.querySelectorAll('.filter').forEach(x=>x.classList.remove('active'));b.classList.add('active');renderCurrents()});
+
+function applyLanguage(next=lang){lang=next;document.documentElement.lang=lang;document.querySelectorAll('[data-de]').forEach(el=>{el.textContent=lang==='de'?el.dataset.de:el.dataset.en});$('langBtn').textContent=lang==='de'?'DE / EN':'EN / DE';localStorage.setItem('navtoolWeatherLang',lang);renderClouds();renderCurrents();renderKnowledge();}
+$('langBtn').onclick=()=>applyLanguage(lang==='de'?'en':'de');
+
+function doSearch(){
+ const q=$('toolSearch').value.toLowerCase().trim();
+ document.querySelectorAll('.searchable').forEach(el=>el.classList.toggle('hidden',!!q&&!el.dataset.search.includes(q)));
+ if(!q){document.querySelectorAll('.dict-panel').forEach(p=>p.classList.remove('open'));return}
+ const cloudHit=[...document.querySelectorAll('#cloudGrid .searchable:not(.hidden)')].length>0;
+ const currentHit=[...document.querySelectorAll('#currentGrid .searchable:not(.hidden)')].length>0;
+ const knowledgeHit=[...document.querySelectorAll('#knowledgeGrid .searchable:not(.hidden)')].length>0;
+ if(cloudHit)openPanel('cloudPanel'); else if(currentHit)openPanel('currentPanel'); else if(knowledgeHit)$('knowledge').scrollIntoView({behavior:'smooth',block:'start'}); else if(q.includes('wind')||q.includes('true')||q.includes('wahr'))$('wind').scrollIntoView({behavior:'smooth',block:'start'});
+ const first=document.querySelector('.searchable:not(.hidden)');if(first)first.scrollIntoView({behavior:'smooth',block:'center'});
+}
+$('toolSearch').addEventListener('input',doSearch);$('toolSearch').addEventListener('keydown',e=>{if(e.key==='Enter')doSearch()});$('searchBtn').onclick=doSearch;
+$('closeModal').onclick=()=>$('modal').classList.remove('open');$('modal').onclick=e=>{if(e.target.id==='modal')$('modal').classList.remove('open')};document.addEventListener('keydown',e=>{if(e.key==='Escape')$('modal').classList.remove('open')});
+
+renderClouds();renderCurrents();renderKnowledge();applyLanguage(lang);calculateWind();
+</script>
+</body>
+</html>

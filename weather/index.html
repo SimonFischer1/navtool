@@ -207,12 +207,12 @@ const $=id=>document.getElementById(id);
 const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
 const t=(de,en)=>lang==='de'?de:en;
 
-function imageHTML(path,alt,icon='☁️'){return `<img src="../pic/${path}" alt="${esc(alt)}" onerror="this.style.display='none';this.nextElementSibling.classList.remove('hidden')"><div class="fallback hidden">${icon}</div>`}
+function imageHTML(path,alt,icon='☁️'){return `<img src="./pic/${path}" alt="${esc(alt)}" onerror="this.style.display='none';this.nextElementSibling.classList.remove('hidden')"><div class="fallback hidden">${icon}</div>`}
 function renderClouds(){
  $('cloudGrid').innerHTML=clouds.map(c=>`<article class="cloud-card searchable" data-search="${esc((c.de+' '+c.en+' '+c.short+' '+c.height+' '+c.kindDe+' '+c.kindEn+' '+c.descDe).toLowerCase())}" data-cloud="${c.id}"><div class="thumb">${imageHTML(c.id+'.jpeg',c.de,'☁️')}</div><div class="cloud-body"><div class="type">${c.short} · ${c.height}</div><h3>${esc(t(c.de,c.en))}</h3><p>${esc(t(c.kindDe,c.kindEn))}</p></div></article>`).join('');
  document.querySelectorAll('[data-cloud]').forEach(x=>x.onclick=()=>openCloud(x.dataset.cloud));
 }
-function openCloud(id){const c=clouds.find(x=>x.id===id);if(!c)return;const p1=`../pic/${c.id}.jpeg`,p2=`../pic/${c.id}2.jpeg`;$('modalContent').innerHTML=`<div class="kicker">${c.short} · ${c.height}</div><h2>${esc(t(c.de,c.en))}</h2><div class="largeimg">${imageHTML(c.id+'.jpeg',c.de,'☁️')}</div><div class="largeimg">${imageHTML(c.id+'2.jpeg',c.de+' reference','🖼️')}</div><p class="sub"><b>${esc(t(c.kindDe,c.kindEn))}</b><br>${esc(t(c.descDe,c.descEn))}</p><div class="chips"><span class="chip">${c.height}</span><span class="chip">${c.short}</span><span class="chip">${t('Hauptbild: '+p1,'Main image: '+p1)}</span><span class="chip">${t('Referenz: '+p2,'Reference: '+p2)}</span></div>`;$('modal').classList.add('open')}
+function openCloud(id){const c=clouds.find(x=>x.id===id);if(!c)return;const p1=`./pic/${c.id}.jpeg`,p2=`./pic/${c.id}2.jpeg`;$('modalContent').innerHTML=`<div class="kicker">${c.short} · ${c.height}</div><h2>${esc(t(c.de,c.en))}</h2><div class="largeimg">${imageHTML(c.id+'.jpeg',c.de,'☁️')}</div><div class="largeimg">${imageHTML(c.id+'2.jpeg',c.de+' reference','🖼️')}</div><p class="sub"><b>${esc(t(c.kindDe,c.kindEn))}</b><br>${esc(t(c.descDe,c.descEn))}</p><div class="chips"><span class="chip">${c.height}</span><span class="chip">${c.short}</span><span class="chip">${t('Hauptbild','Main image')}</span><span class="chip">${t('Referenzbild','Reference image')}</span></div>`;$('modal').classList.add('open')}
 
 let currentFilter='all';
 function renderCurrents(){

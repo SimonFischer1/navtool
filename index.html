@@ -1,0 +1,3214 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>NAVTOOL — Maritime Navigation Workspace</title>
+
+<meta
+  name="description"
+  content="NAVTOOL — Maritime Navigation Workspace für Map, Routing, NAVTEXT, COLREG, Weather und nautische Berechnungen."
+>
+
+<meta name="theme-color" content="#05090c">
+
+<style>
+
+/* =========================================================
+   NAVTOOL — MAIN HUB
+   ========================================================= */
+
+:root {
+  --bg: #05090c;
+  --bg2: #071116;
+  --panel: rgba(10, 21, 27, .82);
+  --panel2: rgba(13, 27, 34, .9);
+
+  --text: #ecfbf9;
+  --muted: #7e9697;
+  --muted2: #587071;
+
+  --teal: #55e5d1;
+  --teal2: #1eb9a8;
+  --cyan: #67dfff;
+
+  --line: rgba(85, 229, 209, .13);
+  --line2: rgba(85, 229, 209, .3);
+
+  --danger: #ff7070;
+  --yellow: #ffd166;
+
+  --radius: 18px;
+  --max: 1280px;
+}
+
+
+/* =========================================================
+   RESET
+   ========================================================= */
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  min-height: 100vh;
+  overflow-x: hidden;
+
+  color: var(--text);
+
+  background:
+    radial-gradient(
+      circle at 15% 10%,
+      rgba(30,185,168,.09),
+      transparent 30%
+    ),
+    radial-gradient(
+      circle at 85% 25%,
+      rgba(103,223,255,.05),
+      transparent 28%
+    ),
+    var(--bg);
+
+  font-family:
+    Inter,
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+}
+
+body::before {
+  content: "";
+
+  position: fixed;
+  inset: 0;
+
+  z-index: -3;
+  pointer-events: none;
+
+  background-image:
+    linear-gradient(
+      rgba(85,229,209,.025) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      90deg,
+      rgba(85,229,209,.025) 1px,
+      transparent 1px
+    );
+
+  background-size: 44px 44px;
+}
+
+body::after {
+  content: "";
+
+  position: fixed;
+  inset: 0;
+
+  z-index: -2;
+  pointer-events: none;
+
+  background:
+    linear-gradient(
+      180deg,
+      transparent,
+      rgba(85,229,209,.025),
+      transparent
+    );
+
+  animation: scanline 9s linear infinite;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+
+/* =========================================================
+   GLOBAL
+   ========================================================= */
+
+.container {
+  width: min(
+    var(--max),
+    calc(100% - 40px)
+  );
+
+  margin-inline: auto;
+}
+
+.section {
+  padding: 110px 0;
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+
+  color: var(--teal);
+
+  font-size: 10px;
+  font-weight: 900;
+
+  letter-spacing: .2em;
+  text-transform: uppercase;
+}
+
+.eyebrow::before {
+  content: "";
+
+  width: 25px;
+  height: 1px;
+
+  background: var(--teal);
+
+  box-shadow:
+    0 0 10px rgba(85,229,209,.5);
+}
+
+.section-title {
+  margin-top: 13px;
+
+  font-size:
+    clamp(38px, 5vw, 64px);
+
+  line-height: .95;
+
+  letter-spacing: -.055em;
+}
+
+.section-description {
+  max-width: 680px;
+
+  margin-top: 20px;
+
+  color: var(--muted);
+
+  font-size: 14px;
+  line-height: 1.8;
+}
+
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.site-header {
+  position: sticky;
+  top: 0;
+
+  z-index: 100;
+
+  border-bottom: 1px solid var(--line);
+
+  background:
+    rgba(5,9,12,.82);
+
+  backdrop-filter: blur(22px);
+}
+
+.navbar {
+  height: 76px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 20px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+
+  gap: 12px;
+
+  flex-shrink: 0;
+}
+
+.brand-mark {
+  width: 38px;
+  height: 38px;
+
+  display: grid;
+  place-items: center;
+
+  border: 1px solid var(--line2);
+  border-radius: 10px;
+
+  color: var(--teal);
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(85,229,209,.12),
+      rgba(85,229,209,.02)
+    );
+
+  box-shadow:
+    0 0 25px rgba(85,229,209,.07);
+}
+
+.brand-mark::before {
+  content: "N";
+
+  font-size: 17px;
+  font-weight: 950;
+
+  letter-spacing: -.1em;
+}
+
+.brand-name {
+  font-size: 14px;
+  font-weight: 950;
+
+  letter-spacing: .12em;
+}
+
+.brand-sub {
+  margin-top: 2px;
+
+  color: var(--muted2);
+
+  font-size: 8px;
+  font-weight: 800;
+
+  letter-spacing: .18em;
+  text-transform: uppercase;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+
+  gap: 3px;
+}
+
+.nav-links a {
+  padding: 9px 11px;
+
+  border: 1px solid transparent;
+  border-radius: 8px;
+
+  color: #9ab1b1;
+
+  font-size: 10px;
+  font-weight: 900;
+
+  letter-spacing: .1em;
+}
+
+.nav-links a:hover {
+  color: var(--teal);
+
+  border-color: var(--line);
+
+  background:
+    rgba(85,229,209,.04);
+}
+
+.nav-status {
+  display: flex;
+  align-items: center;
+
+  gap: 8px;
+
+  color: var(--muted);
+
+  font-size: 9px;
+  font-weight: 900;
+
+  letter-spacing: .1em;
+}
+
+.status-dot {
+  width: 7px;
+  height: 7px;
+
+  border-radius: 50%;
+
+  background: var(--teal);
+
+  box-shadow:
+    0 0 13px var(--teal);
+
+  animation: pulse 2s infinite;
+}
+
+
+/* =========================================================
+   HERO
+   ========================================================= */
+
+.hero {
+  min-height:
+    calc(100vh - 76px);
+
+  display: flex;
+  align-items: center;
+
+  padding: 95px 0 110px;
+
+  overflow: hidden;
+}
+
+.hero-grid {
+  display: grid;
+
+  grid-template-columns:
+    minmax(0, 1.15fr)
+    minmax(360px, .85fr);
+
+  align-items: center;
+
+  gap: 70px;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 3;
+}
+
+.hero-kicker {
+  display: flex;
+  align-items: center;
+
+  gap: 10px;
+
+  margin-bottom: 27px;
+
+  color: var(--teal);
+
+  font-size: 10px;
+  font-weight: 900;
+
+  letter-spacing: .2em;
+}
+
+.hero-kicker span {
+  padding: 6px 10px;
+
+  border: 1px solid var(--line2);
+  border-radius: 100px;
+
+  background:
+    rgba(85,229,209,.045);
+}
+
+.hero-title {
+  font-size:
+    clamp(70px, 11vw, 155px);
+
+  line-height: .8;
+
+  font-weight: 950;
+
+  letter-spacing: -.085em;
+}
+
+.hero-title span {
+  color: var(--teal);
+
+  text-shadow:
+    0 0 45px rgba(85,229,209,.12);
+}
+
+.hero-description {
+  max-width: 690px;
+
+  margin-top: 32px;
+
+  color: #91aaaa;
+
+  font-size: 16px;
+
+  line-height: 1.85;
+}
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+
+  gap: 10px;
+
+  margin-top: 32px;
+}
+
+.btn {
+  min-height: 48px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 9px;
+
+  padding: 0 19px;
+
+  border: 1px solid var(--line2);
+  border-radius: 10px;
+
+  font-size: 10px;
+  font-weight: 900;
+
+  letter-spacing: .13em;
+
+  transition:
+    transform .25s ease,
+    border-color .25s ease,
+    background .25s ease,
+    box-shadow .25s ease;
+}
+
+.btn:hover {
+  transform: translateY(-3px);
+}
+
+.btn-primary {
+  color: #03100e;
+
+  border-color: var(--teal);
+
+  background: var(--teal);
+
+  box-shadow:
+    0 12px 35px rgba(85,229,209,.12);
+}
+
+.btn-primary:hover {
+  box-shadow:
+    0 17px 50px rgba(85,229,209,.2);
+}
+
+.btn-secondary {
+  background:
+    rgba(255,255,255,.02);
+}
+
+.btn-secondary:hover {
+  color: var(--teal);
+
+  border-color: var(--teal);
+
+  background:
+    rgba(85,229,209,.04);
+}
+
+
+/* =========================================================
+   SEARCH
+   ========================================================= */
+
+.search-wrapper {
+  position: relative;
+
+  max-width: 760px;
+
+  margin-top: 40px;
+}
+
+.search-box {
+  min-height: 64px;
+
+  display: flex;
+  align-items: center;
+
+  border: 1px solid var(--line2);
+  border-radius: 15px;
+
+  background:
+    rgba(7,15,19,.94);
+
+  box-shadow:
+    0 20px 70px rgba(0,0,0,.25);
+
+  transition:
+    border-color .25s ease,
+    box-shadow .25s ease;
+}
+
+.search-box:focus-within {
+  border-color:
+    rgba(85,229,209,.65);
+
+  box-shadow:
+    0 0 0 4px rgba(85,229,209,.045),
+    0 25px 80px rgba(0,0,0,.35);
+}
+
+.search-icon {
+  width: 58px;
+
+  display: grid;
+  place-items: center;
+
+  color: var(--teal);
+
+  font-size: 22px;
+}
+
+#globalSearch {
+  width: 100%;
+
+  border: 0;
+  outline: 0;
+
+  color: var(--text);
+
+  background: transparent;
+
+  font-size: 14px;
+}
+
+#globalSearch::placeholder {
+  color: #5e7778;
+}
+
+.search-shortcut {
+  margin-right: 12px;
+
+  padding: 6px 9px;
+
+  border: 1px solid var(--line);
+  border-radius: 5px;
+
+  color: var(--muted2);
+
+  font-size: 8px;
+  font-weight: 900;
+
+  letter-spacing: .1em;
+}
+
+.search-results {
+  position: absolute;
+
+  left: 0;
+  right: 0;
+  top: calc(100% + 8px);
+
+  display: none;
+
+  overflow: hidden;
+
+  border: 1px solid var(--line2);
+  border-radius: 14px;
+
+  background:
+    rgba(6,13,17,.98);
+
+  box-shadow:
+    0 30px 90px rgba(0,0,0,.55);
+
+  z-index: 50;
+}
+
+.search-results.visible {
+  display: block;
+}
+
+.search-result {
+  width: 100%;
+
+  display: flex;
+  align-items: center;
+
+  gap: 14px;
+
+  padding: 15px;
+
+  border: 0;
+  border-bottom: 1px solid var(--line);
+
+  color: var(--text);
+
+  background: transparent;
+
+  text-align: left;
+
+  cursor: pointer;
+}
+
+.search-result:last-child {
+  border-bottom: 0;
+}
+
+.search-result:hover,
+.search-result.active {
+  background:
+    rgba(85,229,209,.055);
+}
+
+.result-icon {
+  width: 38px;
+  height: 38px;
+
+  display: grid;
+  place-items: center;
+
+  flex-shrink: 0;
+
+  border: 1px solid var(--line2);
+  border-radius: 9px;
+
+  color: var(--teal);
+
+  font-size: 13px;
+}
+
+.result-title {
+  font-size: 11px;
+  font-weight: 900;
+
+  letter-spacing: .07em;
+}
+
+.result-description {
+  margin-top: 4px;
+
+  color: var(--muted);
+
+  font-size: 10px;
+}
+
+.result-arrow {
+  margin-left: auto;
+
+  color: var(--teal);
+
+  font-size: 18px;
+}
+
+
+/* =========================================================
+   RADAR
+   ========================================================= */
+
+.hero-visual {
+  min-height: 470px;
+
+  display: grid;
+  place-items: center;
+
+  perspective: 900px;
+}
+
+.radar {
+  position: relative;
+
+  width: min(440px, 78vw);
+  aspect-ratio: 1;
+
+  border: 1px solid var(--line2);
+  border-radius: 50%;
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(85,229,209,.075),
+      transparent 58%
+    );
+
+  box-shadow:
+    inset 0 0 90px rgba(85,229,209,.035),
+    0 0 100px rgba(85,229,209,.04);
+
+  transition:
+    transform .2s ease;
+}
+
+.radar::before,
+.radar::after {
+  content: "";
+
+  position: absolute;
+
+  border: 1px solid var(--line);
+
+  border-radius: 50%;
+}
+
+.radar::before {
+  inset: 14%;
+}
+
+.radar::after {
+  inset: 29%;
+}
+
+.radar-x,
+.radar-y {
+  position: absolute;
+
+  background: var(--line);
+}
+
+.radar-x {
+  left: 5%;
+  right: 5%;
+
+  top: 50%;
+
+  height: 1px;
+}
+
+.radar-y {
+  top: 5%;
+  bottom: 5%;
+
+  left: 50%;
+
+  width: 1px;
+}
+
+.radar-sweep {
+  position: absolute;
+
+  left: 50%;
+  top: 50%;
+
+  width: 48%;
+  height: 2px;
+
+  transform-origin: left center;
+
+  background:
+    linear-gradient(
+      90deg,
+      var(--teal),
+      transparent
+    );
+
+  filter:
+    drop-shadow(0 0 8px var(--teal));
+
+  animation:
+    radarSweep 4s linear infinite;
+}
+
+.radar-dot {
+  position: absolute;
+
+  width: 8px;
+  height: 8px;
+
+  border-radius: 50%;
+
+  background: var(--teal);
+
+  box-shadow:
+    0 0 18px var(--teal);
+}
+
+.dot-a {
+  left: 65%;
+  top: 27%;
+}
+
+.dot-b {
+  left: 28%;
+  top: 60%;
+}
+
+.dot-c {
+  left: 68%;
+  top: 73%;
+}
+
+.ship-marker {
+  position: absolute;
+
+  left: 50%;
+  top: 50%;
+
+  width: 70px;
+  height: 70px;
+
+  display: grid;
+  place-items: center;
+
+  transform:
+    translate(-50%, -50%);
+
+  border: 1px solid var(--teal);
+  border-radius: 50%;
+
+  color: var(--teal);
+
+  background:
+    rgba(85,229,209,.07);
+
+  box-shadow:
+    0 0 45px rgba(85,229,209,.13);
+}
+
+.ship-marker::before {
+  content: "▲";
+
+  font-size: 24px;
+
+  filter:
+    drop-shadow(
+      0 0 8px
+      rgba(85,229,209,.5)
+    );
+}
+
+.radar-label {
+  position: absolute;
+
+  padding: 6px 8px;
+
+  border: 1px solid var(--line);
+  border-radius: 5px;
+
+  color: #688383;
+
+  background:
+    rgba(5,9,12,.8);
+
+  font-size: 8px;
+  font-weight: 900;
+
+  letter-spacing: .1em;
+}
+
+.label-n {
+  top: 5%;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.label-s {
+  bottom: 5%;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.label-w {
+  left: 3%;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.label-e {
+  right: 3%;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+
+/* =========================================================
+   SYSTEM STATUS
+   ========================================================= */
+
+.system-bar {
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+
+  background:
+    rgba(255,255,255,.012);
+}
+
+.system-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(4, 1fr);
+}
+
+.system-item {
+  min-height: 98px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  padding: 18px 24px;
+
+  border-right: 1px solid var(--line);
+}
+
+.system-item:last-child {
+  border-right: 0;
+}
+
+.system-label {
+  color: var(--muted2);
+
+  font-size: 8px;
+  font-weight: 900;
+
+  letter-spacing: .16em;
+  text-transform: uppercase;
+}
+
+.system-value {
+  margin-top: 8px;
+
+  font-size: 13px;
+  font-weight: 850;
+}
+
+.system-online {
+  color: var(--teal);
+}
+
+
+/* =========================================================
+   TOOLS
+   ========================================================= */
+
+.tools-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(2, 1fr);
+
+  gap: 15px;
+}
+
+.tool-card {
+  position: relative;
+
+  min-height: 275px;
+
+  display: flex;
+  flex-direction: column;
+
+  padding: 28px;
+
+  overflow: hidden;
+
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(12,25,31,.9),
+      rgba(6,13,17,.92)
+    );
+
+  transition:
+    transform .3s ease,
+    border-color .3s ease,
+    box-shadow .3s ease;
+}
+
+.tool-card::before {
+  content: "";
+
+  position: absolute;
+
+  left: -100%;
+  top: 0;
+
+  width: 100%;
+  height: 1px;
+
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      var(--teal),
+      transparent
+    );
+
+  transition:
+    left .7s ease;
+}
+
+.tool-card:hover {
+  transform: translateY(-7px);
+
+  border-color: var(--line2);
+
+  box-shadow:
+    0 25px 70px rgba(0,0,0,.38);
+}
+
+.tool-card:hover::before {
+  left: 100%;
+}
+
+.tool-number {
+  position: absolute;
+
+  top: 25px;
+  right: 27px;
+
+  color:
+    rgba(85,229,209,.25);
+
+  font-size: 10px;
+  font-weight: 900;
+
+  letter-spacing: .15em;
+}
+
+.tool-icon {
+  width: 52px;
+  height: 52px;
+
+  display: grid;
+  place-items: center;
+
+  margin-bottom: 29px;
+
+  border: 1px solid var(--line2);
+  border-radius: 12px;
+
+  color: var(--teal);
+
+  background:
+    rgba(85,229,209,.04);
+
+  font-size: 20px;
+}
+
+.tool-label {
+  color: var(--teal);
+
+  font-size: 8px;
+  font-weight: 900;
+
+  letter-spacing: .18em;
+}
+
+.tool-card h3 {
+  margin-top: 8px;
+
+  font-size: 29px;
+
+  letter-spacing: -.035em;
+}
+
+.tool-card p {
+  max-width: 520px;
+
+  margin-top: 11px;
+
+  color: var(--muted);
+
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+.tool-arrow {
+  margin-top: auto;
+  padding-top: 24px;
+
+  color: var(--teal);
+
+  font-size: 20px;
+
+  transition:
+    transform .25s ease;
+}
+
+.tool-card:hover .tool-arrow {
+  transform:
+    translateX(8px);
+}
+
+
+/* =========================================================
+   WORKFLOW
+   ========================================================= */
+
+.workflow-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(5, 1fr);
+
+  gap: 10px;
+}
+
+.workflow-card {
+  position: relative;
+
+  min-height: 190px;
+
+  padding: 23px;
+
+  border: 1px solid var(--line);
+  border-radius: 14px;
+
+  background:
+    rgba(255,255,255,.014);
+}
+
+.workflow-card:not(:last-child)::after {
+  content: "→";
+
+  position: absolute;
+
+  top: 50%;
+  right: -18px;
+
+  transform:
+    translateY(-50%);
+
+  color: var(--teal);
+
+  z-index: 5;
+}
+
+.workflow-number {
+  color: var(--teal);
+
+  font-size: 9px;
+  font-weight: 900;
+
+  letter-spacing: .15em;
+}
+
+.workflow-card h3 {
+  margin-top: 25px;
+
+  font-size: 18px;
+}
+
+.workflow-card p {
+  margin-top: 9px;
+
+  color: var(--muted);
+
+  font-size: 11px;
+  line-height: 1.6;
+}
+
+
+/* =========================================================
+   CLOCK
+   ========================================================= */
+
+.clock-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(2, 1fr);
+
+  gap: 15px;
+}
+
+.clock-card {
+  padding: 32px;
+
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(85,229,209,.045),
+      rgba(255,255,255,.012)
+    );
+}
+
+.clock-label {
+  color: var(--teal);
+
+  font-size: 8px;
+  font-weight: 900;
+
+  letter-spacing: .18em;
+}
+
+.clock-time {
+  margin-top: 12px;
+
+  font-family:
+    "SFMono-Regular",
+    Consolas,
+    monospace;
+
+  font-size:
+    clamp(40px, 6vw, 74px);
+
+  line-height: 1;
+
+  font-weight: 700;
+
+  letter-spacing: -.07em;
+}
+
+.clock-date {
+  margin-top: 12px;
+
+  color: var(--muted);
+
+  font-size: 11px;
+}
+
+
+/* =========================================================
+   FOOTER
+   ========================================================= */
+
+footer {
+  margin-top: 30px;
+
+  border-top: 1px solid var(--line);
+
+  background: #030708;
+}
+
+.footer-inner {
+  min-height: 125px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 30px;
+}
+
+.footer-brand {
+  color: var(--teal);
+
+  font-size: 13px;
+  font-weight: 950;
+
+  letter-spacing: .16em;
+}
+
+.footer-copy {
+  margin-top: 7px;
+
+  color: var(--muted2);
+
+  font-size: 9px;
+}
+
+.footer-links {
+  display: flex;
+  flex-wrap: wrap;
+
+  gap: 15px;
+}
+
+.footer-links a {
+  color: #71898a;
+
+  font-size: 9px;
+  font-weight: 900;
+
+  letter-spacing: .08em;
+}
+
+.footer-links a:hover {
+  color: var(--teal);
+}
+
+
+/* =========================================================
+   REVEAL
+   ========================================================= */
+
+.reveal {
+  opacity: 0;
+
+  transform:
+    translateY(24px);
+
+  transition:
+    opacity .75s ease,
+    transform .75s ease;
+}
+
+.reveal.visible {
+  opacity: 1;
+
+  transform:
+    translateY(0);
+}
+
+
+/* =========================================================
+   ANIMATIONS
+   ========================================================= */
+
+@keyframes pulse {
+
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: .45;
+    transform: scale(.75);
+  }
+}
+
+@keyframes radarSweep {
+
+  from {
+    transform:
+      rotate(0deg);
+  }
+
+  to {
+    transform:
+      rotate(360deg);
+  }
+}
+
+@keyframes scanline {
+
+  from {
+    transform:
+      translateY(-100%);
+  }
+
+  to {
+    transform:
+      translateY(100%);
+  }
+}
+
+
+/* =========================================================
+   TABLET
+   ========================================================= */
+
+@media (max-width: 1050px) {
+
+  .hero-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .hero-visual {
+    min-height: 390px;
+  }
+
+  .workflow-grid {
+    grid-template-columns:
+      repeat(3, 1fr);
+  }
+
+  .workflow-card::after {
+    display: none;
+  }
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 800px) {
+
+  .container {
+    width:
+      calc(100% - 28px);
+  }
+
+  .nav-links {
+    display: none;
+  }
+
+  .nav-status {
+    display: none;
+  }
+
+  .hero {
+    padding-top: 70px;
+  }
+
+  .hero-title {
+    font-size:
+      clamp(64px, 18vw, 110px);
+  }
+
+  .hero-description {
+    font-size: 14px;
+  }
+
+  .tools-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .workflow-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .clock-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .system-grid {
+    grid-template-columns:
+      repeat(2, 1fr);
+  }
+
+  .system-item:nth-child(2) {
+    border-right: 0;
+  }
+
+  .system-item:nth-child(-n+2) {
+    border-bottom:
+      1px solid var(--line);
+  }
+
+  .footer-inner {
+    flex-direction: column;
+
+    align-items: flex-start;
+
+    padding: 30px 0;
+  }
+}
+
+
+/* =========================================================
+   SMALL MOBILE
+   ========================================================= */
+
+@media (max-width: 520px) {
+
+  .section {
+    padding: 78px 0;
+  }
+
+  .hero-actions {
+    flex-direction: column;
+  }
+
+  .btn {
+    width: 100%;
+  }
+
+  .search-shortcut {
+    display: none;
+  }
+
+  .system-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .system-item {
+    border-right: 0;
+    border-bottom:
+      1px solid var(--line);
+  }
+
+  .system-item:last-child {
+    border-bottom: 0;
+  }
+
+  .hero-visual {
+    min-height: 330px;
+  }
+
+  .radar {
+    width: 300px;
+  }
+
+  .footer-links {
+    gap: 12px;
+  }
+}
+
+
+/* =========================================================
+   REDUCED MOTION
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .001ms !important;
+  }
+}
+
+</style>
+</head>
+
+
+<body>
+
+
+<!-- =======================================================
+     HEADER
+     ======================================================= -->
+
+<header class="site-header">
+
+  <div class="container navbar">
+
+    <a
+      class="brand"
+      href="./"
+      aria-label="NAVTOOL Startseite"
+    >
+
+      <div class="brand-mark"></div>
+
+      <div>
+        <div class="brand-name">
+          NAVTOOL
+        </div>
+
+        <div class="brand-sub">
+          Maritime Workspace
+        </div>
+      </div>
+
+    </a>
+
+
+    <nav class="nav-links">
+
+      <a href="./map/">
+        MAP
+      </a>
+
+      <a href="./navtext/">
+        NAVTEXT
+      </a>
+
+      <a href="./colreg/">
+        COLREG
+      </a>
+
+      <a href="./weather/">
+        WEATHER
+      </a>
+
+      <a href="./calc/">
+        CALC
+      </a>
+
+      <a href="#tools">
+        TOOLS
+      </a>
+
+    </nav>
+
+
+    <div class="nav-status">
+
+      <span class="status-dot"></span>
+
+      SYSTEM ONLINE
+
+    </div>
+
+  </div>
+
+</header>
+
+
+
+<!-- =======================================================
+     MAIN
+     ======================================================= -->
+
+<main>
+
+
+<!-- =======================================================
+     HERO
+     ======================================================= -->
+
+<section class="hero">
+
+  <div class="container hero-grid">
+
+
+    <div class="hero-content reveal">
+
+      <div class="hero-kicker">
+
+        <span>
+          NAVTOOL / 2026
+        </span>
+
+        DIGITAL MARITIME WORKSPACE
+
+      </div>
+
+
+      <h1 class="hero-title">
+
+        NAV<span>TOOL</span>
+
+      </h1>
+
+
+      <p class="hero-description">
+
+        Eine zentrale digitale Arbeitsumgebung
+        für maritime Navigation.
+
+        Karten, Routing, NAVTEXT, COLREG,
+        Wetter und nautische Berechnungen —
+        direkt aus einer Oberfläche erreichbar.
+
+      </p>
+
+
+      <div class="hero-actions">
+
+        <a
+          class="btn btn-primary"
+          href="./map/"
+        >
+          MAP ÖFFNEN →
+        </a>
+
+
+        <a
+          class="btn btn-secondary"
+          href="./navtext/"
+        >
+          NAVTEXT →
+        </a>
+
+
+        <a
+          class="btn btn-secondary"
+          href="./colreg/"
+        >
+          COLREG →
+        </a>
+
+      </div>
+
+
+      <!-- SEARCH -->
+
+      <div class="search-wrapper">
+
+        <div class="search-box">
+
+          <div class="search-icon">
+            ⌕
+          </div>
+
+
+          <input
+            id="globalSearch"
+            type="search"
+            autocomplete="off"
+            spellcheck="false"
+            placeholder="NAVTOOL durchsuchen – z. B. Map, COLREG, Wetter..."
+            aria-label="NAVTOOL durchsuchen"
+            aria-autocomplete="list"
+          >
+
+
+          <div class="search-shortcut">
+            ENTER
+          </div>
+
+        </div>
+
+
+        <div
+          id="searchResults"
+          class="search-results"
+          role="listbox"
+        ></div>
+
+      </div>
+
+    </div>
+
+
+
+    <!-- RADAR -->
+
+    <div class="hero-visual reveal">
+
+      <div class="radar">
+
+        <div class="radar-x"></div>
+        <div class="radar-y"></div>
+
+        <div class="radar-sweep"></div>
+
+        <div class="radar-dot dot-a"></div>
+        <div class="radar-dot dot-b"></div>
+        <div class="radar-dot dot-c"></div>
+
+        <div class="ship-marker"></div>
+
+
+        <div class="radar-label label-n">
+          N 000°
+        </div>
+
+        <div class="radar-label label-s">
+          S 180°
+        </div>
+
+        <div class="radar-label label-w">
+          W 270°
+        </div>
+
+        <div class="radar-label label-e">
+          E 090°
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+
+<!-- =======================================================
+     SYSTEM
+     ======================================================= -->
+
+<section class="system-bar">
+
+  <div class="container system-grid">
+
+
+    <div class="system-item">
+
+      <div class="system-label">
+        Network
+      </div>
+
+      <div class="system-value system-online">
+        ● ONLINE
+      </div>
+
+    </div>
+
+
+    <div class="system-item">
+
+      <div class="system-label">
+        Platform
+      </div>
+
+      <div class="system-value">
+        GitHub Pages
+      </div>
+
+    </div>
+
+
+    <div class="system-item">
+
+      <div class="system-label">
+        Interface
+      </div>
+
+      <div class="system-value">
+        NAVTOOL HUB
+      </div>
+
+    </div>
+
+
+    <div class="system-item">
+
+      <div class="system-label">
+        Modules
+      </div>
+
+      <div class="system-value">
+        05 ACTIVE
+      </div>
+
+    </div>
+
+
+  </div>
+
+</section>
+
+
+
+<!-- =======================================================
+     TOOLS
+     ======================================================= -->
+
+<section
+  id="tools"
+  class="section"
+>
+
+  <div class="container">
+
+
+    <div class="section-header reveal">
+
+      <div class="eyebrow">
+        NAVTOOL MODULES
+      </div>
+
+      <h2 class="section-title">
+        Die Werkzeuge.
+      </h2>
+
+      <p class="section-description">
+        Fünf zentrale Module für die tägliche
+        maritime Arbeit.
+      </p>
+
+    </div>
+
+
+    <div class="tools-grid">
+
+
+      <!-- MAP -->
+
+      <a
+        href="./map/"
+        class="tool-card reveal"
+      >
+
+        <div class="tool-number">
+          01
+        </div>
+
+        <div class="tool-icon">
+          ◉
+        </div>
+
+        <div class="tool-label">
+          NAVIGATION / ROUTING
+        </div>
+
+        <h3>
+          MAP
+        </h3>
+
+        <p>
+          Interaktive maritime Karte,
+          Positionen, Waypoints und
+          Routenplanung.
+        </p>
+
+        <div class="tool-arrow">
+          →
+        </div>
+
+      </a>
+
+
+
+      <!-- NAVTEXT -->
+
+      <a
+        href="./navtext/"
+        class="tool-card reveal"
+      >
+
+        <div class="tool-number">
+          02
+        </div>
+
+        <div class="tool-icon">
+          ≡
+        </div>
+
+        <div class="tool-label">
+          NAVIGATION / TEXT
+        </div>
+
+        <h3>
+          NAVTEXT
+        </h3>
+
+        <p>
+          Nautische Texte,
+          Navigationsinformationen und
+          strukturierte Informationen.
+        </p>
+
+        <div class="tool-arrow">
+          →
+        </div>
+
+      </a>
+
+
+
+      <!-- COLREG -->
+
+      <a
+        href="./colreg/"
+        class="tool-card reveal"
+      >
+
+        <div class="tool-number">
+          03
+        </div>
+
+        <div class="tool-icon">
+          ⚓
+        </div>
+
+        <div class="tool-label">
+          NAVIGATION / SAFETY
+        </div>
+
+        <h3>
+          COLREG
+        </h3>
+
+        <p>
+          Kollisionsverhütungsregeln,
+          Lichterführung, Signalkörper
+          und Schallsignale.
+        </p>
+
+        <div class="tool-arrow">
+          →
+        </div>
+
+      </a>
+
+
+
+      <!-- WEATHER -->
+
+      <a
+        href="./weather/"
+        class="tool-card reveal"
+      >
+
+        <div class="tool-number">
+          04
+        </div>
+
+        <div class="tool-icon">
+          ☁
+        </div>
+
+        <div class="tool-label">
+          METEO / SEA
+        </div>
+
+        <h3>
+          WEATHER
+        </h3>
+
+        <p>
+          Wetter, Wind, Temperatur
+          und maritime Wetterinformationen
+          für die Navigation.
+        </p>
+
+        <div class="tool-arrow">
+          →
+        </div>
+
+      </a>
+
+
+
+      <!-- CALC -->
+
+      <a
+        href="./calc/"
+        class="tool-card reveal"
+      >
+
+        <div class="tool-number">
+          05
+        </div>
+
+        <div class="tool-icon">
+          Σ
+        </div>
+
+        <div class="tool-label">
+          NAVIGATION / CALCULATION
+        </div>
+
+        <h3>
+          CALC
+        </h3>
+
+        <p>
+          Nautische Berechnungen,
+          Distanzen, Zeiten, Kurse,
+          ETA und weitere Funktionen.
+        </p>
+
+        <div class="tool-arrow">
+          →
+        </div>
+
+      </a>
+
+
+    </div>
+
+  </div>
+
+</section>
+
+
+
+<!-- =======================================================
+     WORKFLOW
+     ======================================================= -->
+
+<section class="section">
+
+  <div class="container">
+
+
+    <div class="section-header reveal">
+
+      <div class="eyebrow">
+        NAVIGATION WORKFLOW
+      </div>
+
+      <h2 class="section-title">
+        Ein Workflow.
+      </h2>
+
+      <p class="section-description">
+        Die einzelnen NAVTOOL-Module greifen
+        logisch ineinander.
+      </p>
+
+    </div>
+
+
+    <div class="workflow-grid">
+
+
+      <a
+        href="./map/"
+        class="workflow-card reveal"
+      >
+
+        <div class="workflow-number">
+          01 / MAP
+        </div>
+
+        <h3>
+          Route planen
+        </h3>
+
+        <p>
+          Positionen, Waypoints und
+          Routen auf der Karte.
+        </p>
+
+      </a>
+
+
+      <a
+        href="./navtext/"
+        class="workflow-card reveal"
+      >
+
+        <div class="workflow-number">
+          02 / NAVTEXT
+        </div>
+
+        <h3>
+          Informationen
+        </h3>
+
+        <p>
+          Nautische Informationen
+          strukturiert erfassen.
+        </p>
+
+      </a>
+
+
+      <a
+        href="./colreg/"
+        class="workflow-card reveal"
+      >
+
+        <div class="workflow-number">
+          03 / COLREG
+        </div>
+
+        <h3>
+          Situation prüfen
+        </h3>
+
+        <p>
+          Kollisionsverhütung,
+          Lichter und Signale.
+        </p>
+
+      </a>
+
+
+      <a
+        href="./weather/"
+        class="workflow-card reveal"
+      >
+
+        <div class="workflow-number">
+          04 / WEATHER
+        </div>
+
+        <h3>
+          Wetter prüfen
+        </h3>
+
+        <p>
+          Wind, Wetter und
+          maritime Bedingungen.
+        </p>
+
+      </a>
+
+
+      <a
+        href="./calc/"
+        class="workflow-card reveal"
+      >
+
+        <div class="workflow-number">
+          05 / CALC
+        </div>
+
+        <h3>
+          Berechnen
+        </h3>
+
+        <p>
+          Zeit, Distanz, Kurs,
+          ETA und weitere Werte.
+        </p>
+
+      </a>
+
+
+    </div>
+
+  </div>
+
+</section>
+
+
+
+<!-- =======================================================
+     CLOCK
+     ======================================================= -->
+
+<section class="section">
+
+  <div class="container">
+
+
+    <div class="section-header reveal">
+
+      <div class="eyebrow">
+        SHIP CLOCK
+      </div>
+
+      <h2 class="section-title">
+        Time & UTC.
+      </h2>
+
+      <p class="section-description">
+        Lokale Zeit und UTC direkt im
+        NAVTOOL Hub.
+      </p>
+
+    </div>
+
+
+    <div class="clock-grid">
+
+
+      <div class="clock-card reveal">
+
+        <div class="clock-label">
+          LOCAL TIME
+        </div>
+
+        <div
+          id="localTime"
+          class="clock-time"
+        >
+          --:--:--
+        </div>
+
+        <div
+          id="localDate"
+          class="clock-date"
+        >
+          --
+        </div>
+
+      </div>
+
+
+      <div class="clock-card reveal">
+
+        <div class="clock-label">
+          UTC
+        </div>
+
+        <div
+          id="utcTime"
+          class="clock-time"
+        >
+          --:--:--
+        </div>
+
+        <div
+          id="utcDate"
+          class="clock-date"
+        >
+          --
+        </div>
+
+      </div>
+
+
+    </div>
+
+  </div>
+
+</section>
+
+</main>
+
+
+
+<!-- =======================================================
+     FOOTER
+     ======================================================= -->
+
+<footer>
+
+  <div class="container footer-inner">
+
+
+    <div>
+
+      <div class="footer-brand">
+        NAVTOOL
+      </div>
+
+      <div class="footer-copy">
+        Maritime Navigation Workspace · navtool.de
+      </div>
+
+    </div>
+
+
+    <div class="footer-links">
+
+      <a href="./map/">
+        MAP
+      </a>
+
+      <a href="./navtext/">
+        NAVTEXT
+      </a>
+
+      <a href="./colreg/">
+        COLREG
+      </a>
+
+      <a href="./weather/">
+        WEATHER
+      </a>
+
+      <a href="./calc/">
+        CALC
+      </a>
+
+      <a href="#">
+        TOP ↑
+      </a>
+
+    </div>
+
+
+  </div>
+
+</footer>
+
+
+
+<script>
+
+/* =========================================================
+   NAVTOOL SEARCH
+   ========================================================= */
+
+const routes = [
+
+  {
+    title: "MAP & ROUTING",
+
+    description:
+      "Interaktive maritime Karte und Routenplanung.",
+
+    url: "./map/",
+
+    icon: "◉",
+
+    keywords: [
+      "map",
+      "karte",
+      "karten",
+      "routing",
+      "route",
+      "routen",
+      "navigation",
+      "waypoint",
+      "waypoints",
+      "searoute",
+      "sea route"
+    ]
+  },
+
+
+  {
+    title: "NAVTEXT",
+
+    description:
+      "Nautische Texte und Navigationsinformationen.",
+
+    url: "./navtext/",
+
+    icon: "≡",
+
+    keywords: [
+      "navtext",
+      "nav text",
+      "navigation text",
+      "navigationstext",
+      "text",
+      "nautischer text"
+    ]
+  },
+
+
+  {
+    title: "COLREG",
+
+    description:
+      "Kollisionsverhütungsregeln, Lichter und Signale.",
+
+    url: "./colreg/",
+
+    icon: "⚓",
+
+    keywords: [
+      "colreg",
+      "col regs",
+      "col-reg",
+      "collision",
+      "collision regulations",
+      "collision regulation",
+      "kollisionsverhütung",
+      "kollisionsverhuetung",
+      "kollisionsregeln",
+      "verkehrsregeln",
+      "verkehrsregel",
+      "lichterführung",
+      "lichterfuehrung",
+      "lichter",
+      "signalkörper",
+      "signalkoerper",
+      "schallsignale",
+      "sound signals",
+      "navigation rules"
+    ]
+  },
+
+
+  {
+    title: "WEATHER",
+
+    description:
+      "Wetter, Wind und maritime Bedingungen.",
+
+    url: "./weather/",
+
+    icon: "☁",
+
+    keywords: [
+      "weather",
+      "wetter",
+      "wind",
+      "regen",
+      "temperatur",
+      "forecast",
+      "vorhersage",
+      "seewetter",
+      "meteo",
+      "meteorologie"
+    ]
+  },
+
+
+  {
+    title: "CALC",
+
+    description:
+      "Nautische Berechnungen und Navigation Calculators.",
+
+    url: "./calc/",
+
+    icon: "Σ",
+
+    keywords: [
+      "calc",
+      "calculation",
+      "calculate",
+      "berechnung",
+      "berechnen",
+      "eta",
+      "distanz",
+      "distance",
+      "zeit",
+      "time",
+      "kurs",
+      "course",
+      "strom",
+      "tide",
+      "tides",
+      "großkreis",
+      "grosskreis",
+      "great circle"
+    ]
+  }
+
+];
+
+
+/* =========================================================
+   SEARCH
+   ========================================================= */
+
+const searchInput =
+  document.getElementById("globalSearch");
+
+const searchResults =
+  document.getElementById("searchResults");
+
+let activeIndex = -1;
+
+
+function normalize(text) {
+
+  return text
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .trim();
+
+}
+
+
+function findRoutes(query) {
+
+  const q =
+    normalize(query);
+
+  if (!q) {
+    return [];
+  }
+
+
+  return routes
+
+    .map(route => {
+
+      let score = 0;
+
+
+      if (
+        normalize(route.title)
+          .includes(q)
+      ) {
+        score += 20;
+      }
+
+
+      route.keywords.forEach(keyword => {
+
+        const k =
+          normalize(keyword);
+
+
+        if (k === q) {
+          score += 30;
+        }
+
+        else if (k.includes(q)) {
+          score += 10;
+        }
+
+        else if (q.includes(k)) {
+          score += 6;
+        }
+
+      });
+
+
+      return {
+        ...route,
+        score
+      };
+
+    })
+
+    .filter(route => route.score > 0)
+
+    .sort(
+      (a, b) =>
+        b.score - a.score
+    )
+
+    .slice(0, 5);
+
+}
+
+
+/* =========================================================
+   RENDER
+   ========================================================= */
+
+function renderSearch() {
+
+  const query =
+    searchInput.value;
+
+
+  searchResults.innerHTML = "";
+
+  activeIndex = -1;
+
+
+  if (!query.trim()) {
+
+    searchResults.classList.remove(
+      "visible"
+    );
+
+    return;
+
+  }
+
+
+  const matches =
+    findRoutes(query);
+
+
+  if (!matches.length) {
+
+    searchResults.innerHTML = `
+
+      <button
+        type="button"
+        class="search-result"
+        id="webSearchButton"
+      >
+
+        <div class="result-icon">
+          ⌕
+        </div>
+
+        <div>
+
+          <div class="result-title">
+            WEB-SUCHE
+          </div>
+
+          <div class="result-description">
+            Keine NAVTOOL-Seite gefunden.
+            Im Web suchen.
+          </div>
+
+        </div>
+
+        <div class="result-arrow">
+          →
+        </div>
+
+      </button>
+
+    `;
+
+
+    searchResults
+      .classList
+      .add("visible");
+
+
+    document
+      .getElementById("webSearchButton")
+      .addEventListener(
+        "click",
+        webSearch
+      );
+
+
+    return;
+  }
+
+
+  matches.forEach(
+    (route, index) => {
+
+      const button =
+        document.createElement(
+          "button"
+        );
+
+
+      button.type = "button";
+
+      button.className =
+        "search-result";
+
+      button.dataset.index =
+        index;
+
+
+      button.innerHTML = `
+
+        <div class="result-icon">
+          ${route.icon}
+        </div>
+
+        <div>
+
+          <div class="result-title">
+            ${route.title}
+          </div>
+
+          <div class="result-description">
+            ${route.description}
+          </div>
+
+        </div>
+
+        <div class="result-arrow">
+          →
+        </div>
+
+      `;
+
+
+      button.addEventListener(
+        "click",
+        () => {
+
+          window.location.href =
+            route.url;
+
+        }
+      );
+
+
+      searchResults.appendChild(
+        button
+      );
+
+    }
+  );
+
+
+  searchResults.classList.add(
+    "visible"
+  );
+
+}
+
+
+/* =========================================================
+   WEB SEARCH
+   ========================================================= */
+
+function webSearch() {
+
+  const query =
+    searchInput.value.trim();
+
+
+  if (!query) {
+    return;
+  }
+
+
+  const url =
+    "https://www.ecosia.org/search?q=" +
+    encodeURIComponent(query);
+
+
+  window.open(
+    url,
+    "_blank",
+    "noopener,noreferrer"
+  );
+
+}
+
+
+/* =========================================================
+   ENTER
+   ========================================================= */
+
+function executeSearch() {
+
+  const query =
+    searchInput.value.trim();
+
+
+  if (!query) {
+    return;
+  }
+
+
+  const matches =
+    findRoutes(query);
+
+
+  if (matches.length) {
+
+    window.location.href =
+      matches[0].url;
+
+    return;
+
+  }
+
+
+  webSearch();
+
+}
+
+
+/* =========================================================
+   INPUT
+   ========================================================= */
+
+searchInput.addEventListener(
+  "input",
+  renderSearch
+);
+
+
+searchInput.addEventListener(
+  "keydown",
+  event => {
+
+    const items =
+      [
+        ...searchResults.querySelectorAll(
+          ".search-result"
+        )
+      ];
+
+
+    if (
+      event.key === "ArrowDown"
+    ) {
+
+      event.preventDefault();
+
+
+      if (!items.length) {
+        return;
+      }
+
+
+      activeIndex =
+        Math.min(
+          activeIndex + 1,
+          items.length - 1
+        );
+
+
+      items.forEach(
+        (item, index) => {
+
+          item.classList.toggle(
+            "active",
+            index === activeIndex
+          );
+
+        }
+      );
+
+    }
+
+
+    else if (
+      event.key === "ArrowUp"
+    ) {
+
+      event.preventDefault();
+
+
+      if (!items.length) {
+        return;
+      }
+
+
+      activeIndex =
+        Math.max(
+          activeIndex - 1,
+          0
+        );
+
+
+      items.forEach(
+        (item, index) => {
+
+          item.classList.toggle(
+            "active",
+            index === activeIndex
+          );
+
+        }
+      );
+
+    }
+
+
+    else if (
+      event.key === "Enter"
+    ) {
+
+      event.preventDefault();
+
+
+      if (
+        activeIndex >= 0 &&
+        items[activeIndex]
+      ) {
+
+        items[activeIndex].click();
+
+      }
+
+      else {
+
+        executeSearch();
+
+      }
+
+    }
+
+
+    else if (
+      event.key === "Escape"
+    ) {
+
+      searchResults.classList.remove(
+        "visible"
+      );
+
+    }
+
+  }
+);
+
+
+/* =========================================================
+   CLOSE SEARCH
+   ========================================================= */
+
+document.addEventListener(
+  "click",
+  event => {
+
+    if (
+      !event.target.closest(
+        ".search-wrapper"
+      )
+    ) {
+
+      searchResults.classList.remove(
+        "visible"
+      );
+
+    }
+
+  }
+);
+
+
+/* =========================================================
+   "/" SEARCH SHORTCUT
+   ========================================================= */
+
+document.addEventListener(
+  "keydown",
+  event => {
+
+    if (
+      event.key === "/" &&
+      document.activeElement !== searchInput
+    ) {
+
+      event.preventDefault();
+
+      searchInput.focus();
+
+    }
+
+  }
+);
+
+
+/* =========================================================
+   CLOCK
+   ========================================================= */
+
+function updateClock() {
+
+  const now =
+    new Date();
+
+
+  const localTime =
+    now.toLocaleTimeString(
+      "de-DE",
+      {
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit"
+      }
+    );
+
+
+  const utcTime =
+    now.toLocaleTimeString(
+      "de-DE",
+      {
+        timeZone: "UTC",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit"
+      }
+    );
+
+
+  const localDate =
+    now.toLocaleDateString(
+      "de-DE",
+      {
+        weekday: "long",
+        day: "2-digit",
+        month: "long",
+        year: "numeric"
+      }
+    );
+
+
+  const utcDate =
+    now.toLocaleDateString(
+      "de-DE",
+      {
+        timeZone: "UTC",
+        weekday: "long",
+        day: "2-digit",
+        month: "long",
+        year: "numeric"
+      }
+    );
+
+
+  document.getElementById(
+    "localTime"
+  ).textContent =
+    localTime;
+
+
+  document.getElementById(
+    "utcTime"
+  ).textContent =
+    utcTime;
+
+
+  document.getElementById(
+    "localDate"
+  ).textContent =
+    localDate;
+
+
+  document.getElementById(
+    "utcDate"
+  ).textContent =
+    "UTC · " + utcDate;
+
+}
+
+
+updateClock();
+
+setInterval(
+  updateClock,
+  1000
+);
+
+
+/* =========================================================
+   SCROLL REVEAL
+   ========================================================= */
+
+const revealElements =
+  document.querySelectorAll(
+    ".reveal"
+  );
+
+
+if (
+  "IntersectionObserver" in window
+) {
+
+  const observer =
+    new IntersectionObserver(
+      entries => {
+
+        entries.forEach(
+          entry => {
+
+            if (
+              entry.isIntersecting
+            ) {
+
+              entry.target.classList.add(
+                "visible"
+              );
+
+              observer.unobserve(
+                entry.target
+              );
+
+            }
+
+          }
+        );
+
+      },
+      {
+        threshold: .12
+      }
+    );
+
+
+  revealElements.forEach(
+    element => {
+
+      observer.observe(
+        element
+      );
+
+    }
+  );
+
+}
+
+else {
+
+  revealElements.forEach(
+    element => {
+
+      element.classList.add(
+        "visible"
+      );
+
+    }
+  );
+
+}
+
+
+/* =========================================================
+   RADAR PARALLAX
+   ========================================================= */
+
+const radar =
+  document.querySelector(
+    ".radar"
+  );
+
+
+if (
+  radar &&
+  window.matchMedia(
+    "(pointer:fine)"
+  ).matches
+) {
+
+  document.addEventListener(
+    "mousemove",
+    event => {
+
+      const x =
+        (
+          event.clientX /
+          window.innerWidth -
+          .5
+        ) * 5;
+
+
+      const y =
+        (
+          event.clientY /
+          window.innerHeight -
+          .5
+        ) * -5;
+
+
+      radar.style.transform =
+        `perspective(900px)
+         rotateX(${y}deg)
+         rotateY(${x}deg)`;
+
+    }
+  );
+
+}
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,43 @@
+<!-- assets/navtex-map.svg -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid meet">
+  <rect width="100%" height="100%" fill="#f7f3e9" />
+  <!-- simplified land masses (invented silhouettes for demo) -->
+  <path d="M120 200 C80 180, 60 140, 120 110 C190 80, 260 120, 320 100 C380 80, 430 130, 520 150 C600 170, 640 220, 700 230 C760 240, 820 220, 880 200 C940 180, 980 130, 1040 110 C1100 90, 1140 120, 1160 160 L1160 380 C1140 420, 1100 440, 1040 460 C980 480, 930 470, 880 460 C820 450, 760 450, 700 470 C640 490, 600 540, 520 560 C430 580, 360 540, 300 560 C240 580, 160 560, 120 520 Z" fill="#f5d27a" stroke="#d4b35a" stroke-width="2" />
+  <!-- islands -->
+  <ellipse cx="160" cy="340" rx="40" ry="28" fill="#f5d27a" stroke="#d4b35a" />
+  <ellipse cx="280" cy="120" rx="26" ry="18" fill="#f5d27a" stroke="#d4b35a" />
+
+  <!-- decorative grid / lat lines -->
+  <g stroke="#e6e6e6" stroke-width="1" fill="none">
+    <path d="M0 100 H1200"/>
+    <path d="M0 200 H1200"/>
+    <path d="M0 300 H1200"/>
+    <path d="M0 400 H1200"/>
+    <path d="M0 500 H1200"/>
+    <path d="M0 600 H1200"/>
+  </g>
+
+  <!-- station markers (for visual reference) -->
+  <g id="markers">
+    <circle cx="320" cy="520" r="6" fill="#2b7cff" /> <!-- UK_SOUTH -->
+    <circle cx="300" cy="280" r="6" fill="#2b7cff" /> <!-- ICELAND -->
+    <circle cx="640" cy="140" r="6" fill="#2b7cff" /> <!-- NOR_NORTH -->
+    <circle cx="560" cy="340" r="6" fill="#2b7cff" /> <!-- NETHERLANDS -->
+    <circle cx="220" cy="420" r="6" fill="#2b7cff" /> <!-- IRELAND -->
+    <circle cx="440" cy="460" r="6" fill="#2b7cff" /> <!-- FRANCE_ATL -->
+    <circle cx="760" cy="380" r="6" fill="#2b7cff" /> <!-- BALTIC -->
+    <circle cx="900" cy="500" r="6" fill="#2b7cff" /> <!-- NOR_SOUTH -->
+    <circle cx="200" cy="180" r="6" fill="#2b7cff" /> <!-- ICELAND_NORTH -->
+    <circle cx="460" cy="220" r="6" fill="#2b7cff" /> <!-- UK_NORTH -->
+  </g>
+
+  <!-- title -->
+  <text x="24" y="36" font-family="Arial, Helvetica, sans-serif" font-size="22" fill="#0b2b4a">NAVTEX demo map — invented for demo purposes</text>
+
+  <!-- legend -->
+  <rect x="860" y="20" width="320" height="120" fill="#ffffffcc" stroke="#d6d6d6" rx="8"/>
+  <text x="880" y="48" font-family="Arial" font-size="14" fill="#0b2b4a">Legend</text>
+  <circle cx="900" cy="74" r="6" fill="#2b7cff" /> <text x="920" y="78" font-family="Arial" font-size="12" fill="#0b2b4a">Stations (demo)</text>
+  <rect x="900" y="86" width="12" height="12" fill="#d9534f" rx="2"/> <text x="920" y="96" font-family="Arial" font-size="12" fill="#0b2b4a">Storm warning</text>
+
+</svg>

@@ -1,0 +1,10 @@
+/* NAVTOOL GLOBAL HEADER CONTROLS */
+.nt-inline-actions{display:flex;align-items:center;gap:7px;margin-left:auto;flex-wrap:wrap;justify-content:flex-end}
+.nt-home,.nt-lang{appearance:none;border:1px solid rgba(85,229,209,.22);background:rgba(10,21,27,.82);color:#dff7f3;border-radius:999px;padding:8px 11px;font-size:9px;font-weight:900;letter-spacing:.08em;text-decoration:none;cursor:pointer;white-space:nowrap}
+.nt-home:hover,.nt-lang:hover{border-color:#55e5d1;color:#55e5d1}
+.nt-lang.active{background:rgba(85,229,209,.12);border-color:rgba(85,229,209,.5);color:#55e5d1}
+.nt-standalone-header{position:sticky;top:0;z-index:5000;width:100%;padding:10px 14px;background:rgba(3,9,11,.92);border-bottom:1px solid rgba(85,229,209,.14);backdrop-filter:blur(18px)}
+.nt-standalone-inner{width:min(1440px,100%);margin:auto;min-height:48px;display:flex;align-items:center;justify-content:space-between;gap:14px}
+.nt-global-brand{display:flex;align-items:center;gap:10px;font-weight:900;letter-spacing:.12em;color:#ecfbf9;font-size:12px;text-decoration:none}
+.nt-global-mark{width:31px;height:31px;border:1px solid rgba(85,229,209,.5);border-radius:9px;display:grid;place-items:center;color:#55e5d1;font-size:10px;background:rgba(85,229,209,.05)}
+@media(max-width:760px){.nt-inline-actions{width:100%;margin-left:0}.nt-home,.nt-lang{padding:7px 9px;font-size:8px}.nt-standalone-header{padding:8px 9px}.nt-standalone-inner{min-height:44px}}

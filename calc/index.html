@@ -1,250 +1,567 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>NavTool · Rechenblatt für Navigation und Schiffstheorie</title>
-<style>
-:root{
-  --paper:#05090c;
-  --paper-soft:#0a141b;
-  --panel:rgba(10,21,27,.82);
-  --panel-strong:rgba(12,27,34,.96);
-  --ink:#ecfbf9;
-  --mute:#7e9697;
-  --line:rgba(85,229,209,.14);
-  --line-strong:rgba(85,229,209,.32);
-  --green:#55e5d1;
-  --green-strong:#1eb9a8;
-  --ong:#03211d;
-  --mag:#ff7f7f;
-  --bg-grid:rgba(85,229,209,.025);
-}
-*{box-sizing:border-box;margin:0;padding:0}
-html{color-scheme:dark;background:var(--paper)}
-body{
-  margin:0;
-  min-height:100vh;
-  background:
-    radial-gradient(circle at 15% 10%, rgba(85,229,209,.08), transparent 24%),
-    radial-gradient(circle at 82% 18%, rgba(103,223,255,.05), transparent 26%),
-    var(--paper);
-  color:var(--ink);
-  font:400 16px/1.6 Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
-}
-body::before{
-  content:"";
-  position:fixed; inset:0;
-  pointer-events:none;
-  background-image:linear-gradient(var(--bg-grid) 1px,transparent 1px),linear-gradient(90deg,var(--bg-grid) 1px,transparent 1px);
-  background-size:44px 44px;
-}
-a{color:inherit}
-:focus-visible{outline:2px solid var(--green);outline-offset:2px}
-.top{
-  background:rgba(5,9,12,.86);
-  border-bottom:1px solid var(--line);
-  backdrop-filter:blur(18px);
-  -webkit-backdrop-filter:blur(18px);
-  color:var(--ink);
-  padding:0 max(20px,calc((100% - 1240px)/2));
-  position:sticky; top:0; z-index:50;
-}
-.top .inner{
-  min-height:76px;
-  display:flex; align-items:center; justify-content:space-between; gap:18px;
-}
-.top .brand{
-  display:flex; align-items:center; gap:12px;
-  font-weight:900; letter-spacing:.12em; text-transform:uppercase; font-size:12px;
-  text-decoration:none;
-}
-.top .brand-mark{
-  width:36px;height:36px;border-radius:10px;display:grid;place-items:center;
-  background: rgba(85,229,209,.08); border:1px solid var(--line-strong); color:var(--green);
-  font-size:18px; font-weight:900;
-}
-.top nav{display:flex;align-items:center;gap:6px;flex-wrap:wrap;justify-content:flex-end}
-.top nav a{
-  text-decoration:none; color:#9ab1b1; font-size:10px; font-weight:900; letter-spacing:.1em; text-transform:uppercase;
-  padding:9px 11px; border:1px solid transparent; border-radius:8px;
-}
-.top nav a:hover,.top nav a.on{color:var(--green);background:rgba(85,229,209,.05);border-color:var(--line)}
-.top .status{
-  display:inline-flex; align-items:center; gap:8px;
-  padding:7px 10px; border:1px solid var(--line-strong); border-radius:999px; background:rgba(10,21,27,.8);
-  color:var(--mute); font-size:9px; font-weight:800; letter-spacing:.12em; text-transform:uppercase;
-}
-.top .status i{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 12px var(--green)}
-.app{display:grid;grid-template-columns:290px minmax(0,1fr);gap:48px;width:min(1240px,calc(100% - 32px));margin:0 auto;padding:34px 20px 20px}
-aside{position:sticky;top:100px;align-self:start;max-height:calc(100vh - 120px);overflow:auto;padding-right:6px}
-.logo{font:900 22px/1.2 Inter,system-ui,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:var(--green);margin:0 0 8px}
-.tag{color:var(--mute);font-size:12.5px;line-height:1.5;margin:0 0 18px}
-#q{width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:rgba(10,21,27,.9);color:var(--ink);font:inherit}
-#q:focus{outline:none;border-color:var(--green);box-shadow:0 0 0 3px rgba(85,229,209,.08)}
-#idx h2{font:800 11px/1.2 Inter,system-ui,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--green);margin:24px 0 8px;padding-bottom:5px;border-bottom:1px solid var(--line)}
-#idx ul{list-style:none}
-#idx button{width:100%;text-align:left;padding:10px 12px;border:0;border-left:3px solid transparent;background:transparent;color:var(--ink);font:inherit;cursor:pointer;border-radius:10px}
-#idx button span{display:block;font-weight:700}
-#idx button small{display:block;color:var(--mute);font-size:12.5px;line-height:1.5}
-#idx button:hover{background:rgba(85,229,209,.05)}
-#idx button.on{background:rgba(85,229,209,.08);color:var(--ink);border-left-color:var(--green)}
-#idx button.on small{color:#d9efec}
-#idx button.soon{opacity:.45;font-style:italic;cursor:default;background:transparent}
-.tg{display:none}
-.cart{
-  border:1px solid var(--line-strong);border-radius:18px;margin:6px 6px 30px;padding:24px 120px 24px 22px;background:linear-gradient(180deg,rgba(13,27,34,.96),rgba(10,21,27,.88));
-  box-shadow:0 20px 40px rgba(0,0,0,.15);
-}
-.cart small{color:var(--green);font-weight:800;font-size:12px;letter-spacing:.12em;text-transform:uppercase}
-.cart h1{font:950 clamp(32px,4vw,50px)/1.02 Inter,system-ui,sans-serif;letter-spacing:-.055em;margin:10px 0 14px}
-.cart p{color:var(--mute);font-size:14px;line-height:1.7}
-.tool{display:none}
-.fg{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:20px 24px}
-label{display:block;font-size:13px;font-weight:700;margin-bottom:5px;color:#c4d9d5}
-input,select{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:12px;background:rgba(10,21,27,.9);color:var(--ink);font:inherit}
-input:focus,select:focus{outline:none;border-color:var(--green);box-shadow:0 0 0 3px rgba(85,229,209,.08)}
-.go{margin-top:26px;padding:13px 24px;border:0;border-radius:12px;background:var(--green);color:#03211d;font:900 14px Inter,system-ui,sans-serif;cursor:pointer;letter-spacing:.1em;text-transform:uppercase}
-.go:hover{background:#bffaf1}
-.go.ghost{background:transparent;color:var(--ink);border:1px solid var(--line);margin-right:10px}
-.go.ghost:hover{border-color:var(--green);background:rgba(85,229,209,.04)}
-.res{margin-top:28px;padding:16px 18px;border:1px solid var(--line);border-left:4px solid var(--green);border-radius:14px;background:rgba(10,21,27,.8);color:var(--mute);min-height:58px;display:flow-root}
-.res>:first-child{margin-top:0}
-.r{display:flex;align-items:baseline;gap:12px;padding:11px 0;color:var(--ink);border-bottom:1px dotted rgba(223,238,234,.18)}
-.r:last-of-type{border-bottom:0}
-.r span{color:var(--mute);font-size:14px}
-.r strong{margin-left:auto;font:800 22px/1.2 Inter,system-ui,sans-serif;font-variant-numeric:lining-nums tabular-nums;text-align:right;color:var(--green)}
-.res .err{color:var(--mag);font-weight:700}
-.res .note{margin-top:10px}
-.note{color:var(--mute);font-size:13px;line-height:1.6;margin-top:14px;max-width:72ch}
-.tw{overflow-x:auto;margin-bottom:8px}
-table{border-collapse:collapse;width:100%;min-width:780px}
-th{text-align:left;font-size:12.5px;color:var(--mute);padding:0 6px 4px}
-td{padding:6px 3px}td input{padding:8px}
-.x{border:0;background:transparent;color:var(--mag);font-size:22px;cursor:pointer}
-footer.nt-foot{margin-top:42px;border-top:1px solid var(--line);background:#030708;color:var(--ink)}
-footer.nt-foot .nt-foot-in{width:min(1280px,calc(100% - 32px));margin:0 auto;padding:26px 0 18px;display:flex;align-items:center;justify-content:space-between;gap:30px}
-footer.nt-foot .nt-foot-in img{height:22px;display:block}
-footer.nt-foot .nt-foot-copy{color:#587071;font-size:11px;margin-top:8px}
-footer.nt-foot .nt-foot-links{display:flex;flex-wrap:wrap;gap:6px 16px}
-footer.nt-foot .nt-foot-links a{color:#71898a;text-decoration:none;font-size:10px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;padding:6px 0}
-footer.nt-foot .nt-foot-links a:hover{color:var(--green)}
-@media(max-width:860px){
-  .app{grid-template-columns:1fr;gap:24px;padding-top:22px}
-  aside{position:static;max-height:none;overflow:visible}
-  .tg{display:block;width:100%;margin-top:14px;padding:12px;border:0;border-radius:12px;background:var(--green);font:900 14px Inter,system-ui,sans-serif;text-align:left;color:#03211d;cursor:pointer;letter-spacing:.1em;text-transform:uppercase}
-  #q,#idx{display:none}
-  aside.open #q,aside.open #idx{display:block}
-  .cart{padding-right:22px;background-image:none}
-  .top .inner{min-height:70px}
-  .top nav{display:none}
-}
-</style>
-<link rel="stylesheet" href="../assets/navtool-global.css">
-<link rel="icon" type="image/png" href="/pic/allgemein/icon-192.png"><link rel="apple-touch-icon" href="/pic/allgemein/icon-180.png"></head>
-<body>
-<div class="top">
-  <div class="inner">
-    <a class="brand" href="/" aria-label="NavTool Startseite">
-      <span class="brand-mark">N</span>
-      <span>NAVTOOL</span>
-    </a>
-    <nav aria-label="Hauptnavigation">
-      <a href="/map/" class="on">Map</a>
-      <a href="/navtext/">Navtext</a>
-      <a href="/colreg/">Colreg</a>
-      <a href="/weather/">Weather</a>
-      <a href="/calc/">Calc</a>
-      <a href="/simulator/">Simulator</a>
-      <a href="/status/">Status</a>
-    </nav>
-    <div class="status"><i></i> Online</div>
-  </div>
-</div>
-<div class="app">
-<aside id="side">
-  <div class="logo">Rechenblatt</div>
-  <p class="tag">Navigation, Kompass und Schiffstheorie</p>
-  <button class="tg" id="tg" type="button">Rechner wählen ▾</button>
-  <input id="q" placeholder="Rechner suchen" aria-label="Rechner suchen">
-  <div id="idx"></div>
-</aside>
-<main id="sheet"></main>
-</div>
-
-<script>
-const $=id=>document.getElementById(id), n=v=>parseFloat(v), f=(v,d=2)=>v.toFixed(d).replace('.',',');
-const CATS={nav:'Navigation',kompass:'Kompass',theorie:'Schiffstheorie'};
-const dirs=(a,b)=>['s',a,[a,b]];
-const pos=(g,m,d)=>{const x=n(g)+n(m)/60;return d==='S'||d==='W'?-x:x};
-const bad=t=>`<span class="err">${t}</span>`;
-const norm=a=>((a%360)+360)%360;
-
-/* Felder: [id, Label, Typ(n|t|dt|s), Optionen/Default] */
-const signed=x=>((x+180)%360+360)%360-180;
-function solarAz(date,lat,lon){const rad=Math.PI/180,jd=date.getTime()/86400000+2440587.5,T=(jd-2451545)/36525;
-const L0=norm(280.46646+T*(36000.76983+T*0.0003032)),M=norm(357.52911+T*(35999.05029-0.0001537*T));
-const C=Math.sin(M*rad)*(1.914602-T*(0.004817+0.000014*T))+Math.sin(2*M*rad)*(0.019993-0.000101*T)+Math.sin(3*M*rad)*0.000289;
-const om=125.04-1934.136*T,lam=L0+C-0.00569-0.00478*Math.sin(om*rad),eps=23.439291-0.0130042*T+0.00256*Math.cos(om*rad);
-const x=Math.cos(lam*rad)*Math.cos(eps*rad),y=Math.sin(lam*rad)*Math.cos(eps*rad),z=Math.sin(eps*rad),
-az=(Math.atan2(y,x)*180/Math.PI+360)%360;
-const dec=Math.atan2(z,Math.sqrt(x*x+y*y))*180/Math.PI;
-const H=(date.getUTCHours()+date.getUTCMinutes()/60+date.getUTCSeconds()/3600+lon/15)-12;
-const latr=lat*rad;
-const alt=Math.asin(Math.sin(latr)*Math.sin(dec*rad)+Math.cos(latr)*Math.cos(dec*rad)*Math.cos(H*15*rad));
-return (az+180)%360;
-}
-const variants={
-  'b-a':{title:'Besteckrechnung',desc:'Mittlere Distanz, rwk',cat:'nav',f:[['latA','Breite A – Grad','n',0],['latAm','Breite A – Minuten','n',0],['lonA','Länge A – Grad','n',0],['lonAm','Länge A – Minuten','n',0],['latB','Breite B – Grad','n',0],['latBm','Breite B – Minuten','n',0],['lonB','Länge B – Grad','n',0],['lonBm','Länge B – Minuten','n',0],['dir','Richtung','n',0],['dist','Distanz','n',0]],run:(d)=>{const a={la:pos(d.latA,d.latAm,'N'),lo:pos(d.lonA,d.lonAm,'E')},b={la:pos(d.latB,d.latBm,'N'),lo:pos(d.lonB,d.lonBm,'E')};const dx=(b.lo-a.lo)*Math.cos((a.la+b.la)/2*Math.PI/180),dy=(b.la-a.la);const dist=Math.hypot(dx,dy)*60;const dir=(Math.atan2(dx,dy)*180/Math.PI+360)%360;return {dist:dist,dir:dir};}},
-  'gk':{title:'Großkreisnavigation',desc:'Distanz & Anfangskurs',cat:'nav',f:[['lat1','Breite 1 – Grad','n',0],['lat1m','Breite 1 – Minuten','n',0],['lon1','Länge 1 – Grad','n',0],['lon1m','Länge 1 – Minuten','n',0],['lat2','Breite 2 – Grad','n',0],['lat2m','Breite 2 – Minuten','n',0],['lon2','Länge 2 – Grad','n',0],['lon2m','Länge 2 – Minuten','n',0]],run:(d)=>{const p1={lat:pos(d.lat1,d.lat1m,'N'),lon:pos(d.lon1,d.lon1m,'E')};const p2={lat:pos(d.lat2,d.lat2m,'N'),lon:pos(d.lon2,d.lon2m,'E')};const R=3440.065;const a1=p1.lat*Math.PI/180,a2=p2.lat*Math.PI/180,dl=(p2.lon-p1.lon)*Math.PI/180;const a=Math.acos(Math.sin(a1)*Math.sin(a2)+Math.cos(a1)*Math.cos(a2)*Math.cos(dl));const c=Math.atan2(Math.sin(dl)*Math.cos(a2),Math.cos(a1)*Math.sin(a2)-Math.sin(a1)*Math.cos(a2)*Math.cos(dl));return {dist:R*a,dir:(c*180/Math.PI+360)%360};}},
-  'sr':{title:'Stromdreck',desc:'KÜG & FÜG',cat:'nav',f:[['v','Geschwindigkeit – kn','n',0],['crs','Kurs – °','n',0],['set','Stromsetzung – °','n',0],['drift','Stromdrift – kn','n',0]],run:(d)=>{const v=n(d.v),c=n(d.crs),s=n(d.set),dr=n(d.drift);const rad=Math.PI/180;const x=v*Math.sin(c*rad)+dr*Math.sin(s*rad),y=v*Math.cos(c*rad)+dr*Math.cos(s*rad);return {dist:Math.hypot(x,y),dir:(Math.atan2(x,y)*180/Math.PI+360)%360};}},
-  'kp':{title:'Koppelnavigation',desc:'Fahrt · Weg · ETA',cat:'nav',f:[['spd','Geschwindigkeit – kn','n',0],['hdg','Kurs – °','n',0],['dist','Strecke – sm','n',0],['time','Zeit – h','n',0]],run:(d)=>{const v=n(d.spd),c=n(d.hdg),s=n(d.dist),h=n(d.time)||0;const x=v*Math.sin(c*Math.PI/180);const y=v*Math.cos(c*Math.PI/180);return {dist:s,dir:(Math.atan2(x,y)*180/Math.PI+360)%360};}},
-  'utc':{title:'UTC-Rechner',desc:'Ortszeit → UTC',cat:'nav',f:[['tz','Zeitzone – h','n',0],['time','Uhrzeit','t','12:00'],['date','Datum','t','2025-01-01']],run:(d)=>{const [h,m]=String(d.time).split(':').map(Number);const date=new Date(d.date+'T00:00:00Z');date.setUTCHours((h||0)-(n(d.tz)||0),m||0,0,0);return {text:date.toISOString().slice(11,16)+' UTC'} }},
-  'fc':{title:'Feuer in der Kimm',desc:'Sichtweite berechnen',cat:'nav',f:[['h','Augeshöhe – m','n',1],['he','Leuchtturmhöhe – m','n',20]],run:(d)=>{const h=n(d.h),H=n(d.he);const D=Math.sqrt(2*H)+Math.sqrt(2*h);return {dist:D};}},
-  'gz':{title:'Gezeiten',desc:'Zweifeltregel',cat:'theorie',f:[['t','Zeitpunkt – h','n',0],['a','Amplitude','n',0],['p','Periode','n',0]],run:(d)=>{const t=n(d.t),A=n(d.a),P=n(d.p);return {val:(A*Math.sin((2*Math.PI/P)*(t)))};}},
-  'rh':{title:'Radarhorizont',desc:'Reichweite nach Antennehöhe',cat:'theorie',f:[['h','Antennehöhe – m','n',0]],run:(d)=>{const h=n(d.h);return {dist:Math.sqrt(2*h*6371/1000)*1.852};}},
-  'comp':{title:'Kompass',desc:'Deviation, Missweisung, Gyro Error',cat:'kompass',f:[['true','True Course – °','n',0],['var','Missweisung – °','n',0],['dev','Deviation – °','n',0],['gyro','Gyro Error – °','n',0]],run:(d)=>{const T=n(d.true),V=n(d.var),D=n(d.dev),G=n(d.gyro);const mag=T+V+D;const gyro=(T+G); return {mag:mag,gyro:gyro};}},
-  'az':{title:'Sonnenazimut',desc:'Azimut / Höhe',cat:'kompass',f:[['lat','Latitude – °','n',0],['lon','Longitude – °','n',0],['day','Tag','n',1],['month','Monat','n',1],['year','Jahr','n',2025]],run:(d)=>{const lat=n(d.lat),lon=n(d.lon);const date=new Date(n(d.year),n(d.month)-1,n(d.day));const az=solarAz(date,lat,lon);return {dir:az};}}
-};
-const list=[['b-a','Besteckrechnung','Navigation, Kompass und Schiffstheorie'],['gk','Großkreisnavigation','Distanz & Anfangskurs'],['sr','Stromdreck','KÜG & FÜG'],['kp','Koppelnavigation','Fahrt · Weg · ETA'],['utc','UTC-Rechner','Ortszeit → UTC'],['fc','Feuer in der Kimm','Sichtweite berechnen'],['gz','Gezeiten','Zweifeltregel'],['rh','Radarhorizont','Reichweite nach Antennehöhe'],['comp','Kompass','Deviation, Missweisung, Gyro Error'],['az','Sonnenazimut','Azimut / Höhe']];
-const tools=Object.fromEntries(list.map(([id,title,desc])=>[id,{id,title,desc}]));
-const $list=$('#idx');
-function renderIndex(){
-  const html=['<h2>Navigation</h2>'];
-  list.forEach(([id,title,desc])=>html.push(`<button type="button" data-id="${id}" class="${(window._sel||'b-a')===id?'on':''}"><span>${title}</span><small>${desc}</small></button>`));
-  $list.innerHTML=html.join('');
-  $list.querySelectorAll('button').forEach(btn=>btn.onclick=()=>{window._sel=btn.dataset.id;render();renderIndex();});
-}
-function render(){
-  const id=window._sel||'b-a';
-  const v=variants[id];
-  if(!v)return;
-  const title=v.title,desc=v.desc;
-  const fields=v.f;
-  const body=`<div class="cart"><small>Navigation</small><h1>${title}</h1><p>${desc}</p></div><div class="tool"><div class="fg">${fields.map(([k,label,type,defaultV])=>`<div><label>${label}</label><input id="${k}" type="${type==='t'?'text':'number'}" value="${defaultV||''}"${type==='t'?'':' step="any"'}></div>`).join('')}</div><div style="display:flex;flex-wrap:wrap;gap:10px"><button class="go ghost" type="button" id="clear">Zurücksetzen</button><button class="go" type="button" id="calc">Berechnen</button></div><div class="res" id="result">Ergebnis erscheint hier.</div></div>`;
-  $('#sheet').innerHTML=body;
-  $('#clear').onclick=()=>{
-    fields.forEach(([k])=>{const el=document.getElementById(k);if(el)el.value='';});
-    $('#result').innerHTML='Ergebnis erscheint hier.';
-  };
-  $('#calc').onclick=()=>{
-    const vals={};
-    fields.forEach(([k,label,type,defaultV])=>{vals[k]=document.getElementById(k).value;});
-    const out=v.run(vals);
-    let html='';
-    if(out && out.text){ html=`<div>${out.text}</div>`; }
-    else {
-      const entries=[];
-      Object.entries(out).forEach(([k,val])=>{ if(k==='dir' || k==='dist' || k==='val' || k==='mag' || k==='gyro'){ entries.push(`<div class="r"><span>${k.toUpperCase()}</span><strong>${f(val,2)}</strong></div>`); } });
-      html = entries.join('');
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NavTool · Rechenblatt</title>
+  <meta name="theme-color" content="#05090c">
+  <link rel="icon" type="image/png" href="/pic/allgemein/icon-192.png">
+  <link rel="stylesheet" href="/assets/navtool-global.css">
+  <style>
+    :root {
+      --nt-bg: #05090c;
+      --nt-panel: rgba(10,21,27,.82);
+      --nt-panel-strong: rgba(12,27,34,.96);
+      --nt-text: #ecfbf9;
+      --nt-muted: #7e9697;
+      --nt-teal: #55e5d1;
+      --nt-line: rgba(85,229,209,.14);
+      --nt-line-strong: rgba(85,229,209,.32);
+      --nt-warn: #ffb454;
+      --nt-bad: #ff7070;
+      --nt-ok: #3fdc7e;
+      --nt-shadow: rgba(0,0,0,.18);
     }
-    $('#result').innerHTML=html||'Ergebnis erscheint hier.';
-  };
-}
-window._sel='b-a';
-renderIndex();
-render();
-if(document.getElementById('tg')) document.getElementById('tg').onclick=()=>document.getElementById('side').classList.toggle('open');
-</script>
+
+    * { box-sizing: border-box; }
+    html { background: var(--nt-bg); }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at 15% 8%, rgba(85,229,209,.06), transparent 22%),
+        radial-gradient(circle at 82% 18%, rgba(103,223,255,.05), transparent 20%),
+        var(--nt-bg);
+      color: var(--nt-text);
+      font: 400 16px/1.6 Inter, system-ui, sans-serif;
+    }
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background-image: linear-gradient(rgba(85,229,209,.02) 1px, transparent 1px), linear-gradient(90deg, rgba(85,229,209,.018) 1px, transparent 1px);
+      background-size: 42px 42px;
+    }
+    a { color: inherit; text-decoration: none; }
+    button, input, select { font: inherit; }
+    input, select {
+      width: 100%;
+      padding: 11px 12px;
+      border: 1px solid var(--nt-line);
+      border-radius: 12px;
+      background: rgba(10,21,27,.9);
+      color: var(--nt-text);
+    }
+    input:focus, select:focus { outline: none; border-color: var(--nt-teal); box-shadow: 0 0 0 3px rgba(85,229,209,.08); }
+
+    .calc-shell {
+      width: min(1240px, calc(100% - 28px));
+      margin: 0 auto;
+      padding: 28px 0 40px;
+    }
+    .calc-topbar {
+      width: min(1240px, calc(100% - 28px));
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      min-height: 74px;
+    }
+    .status-pill {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 7px 10px; border: 1px solid var(--nt-line-strong); border-radius: 999px;
+      background: rgba(10,21,27,.8); font-size: 9px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: var(--nt-muted);
+    }
+    .status-pill .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--nt-ok); box-shadow: 0 0 12px var(--nt-ok); }
+
+    .calc-layout {
+      display: grid;
+      grid-template-columns: 290px minmax(0,1fr);
+      gap: 36px;
+      margin-top: 18px;
+    }
+    .sidebar {
+      padding: 12px 0 0;
+    }
+    .calc-brand {
+      font-size: 14px;
+      font-weight: 900;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--nt-teal);
+      margin-bottom: 6px;
+    }
+    .sidebar h2 {
+      margin: 0;
+      font-size: clamp(32px, 3.5vw, 56px);
+      line-height: 1;
+      letter-spacing: -0.06em;
+    }
+    .sidebar p {
+      margin: 14px 0 18px;
+      color: var(--nt-muted);
+      font-size: 14px;
+      line-height: 1.7;
+    }
+    .tool-search {
+      width: 100%;
+      margin-bottom: 18px;
+    }
+    .tool-list {
+      display: grid;
+      gap: 8px;
+    }
+    .tool-item {
+      width: 100%;
+      border: 1px solid transparent;
+      border-left: 3px solid transparent;
+      background: transparent;
+      color: var(--nt-text);
+      text-align: left;
+      border-radius: 10px;
+      padding: 12px 12px 10px;
+      cursor: pointer;
+      transition: 0.2s ease;
+    }
+    .tool-item:hover { background: rgba(85,229,209,.04); }
+    .tool-item.active {
+      background: rgba(85,229,209,.08);
+      border-color: var(--nt-teal);
+      border-left-color: var(--nt-teal);
+    }
+    .tool-item strong { display: block; font-size: 15px; font-weight: 800; }
+    .tool-item small { display: block; color: var(--nt-muted); margin-top: 4px; font-size: 12px; }
+
+    .main-panel {
+      min-width: 0;
+    }
+    .top-card {
+      border: 1px solid var(--nt-line-strong);
+      border-radius: 18px;
+      padding: 20px 18px;
+      background: linear-gradient(180deg, rgba(13,27,34,.96), rgba(10,21,27,.82));
+      box-shadow: 0 18px 40px rgba(0,0,0,.12);
+      position: relative;
+      overflow: hidden;
+    }
+    .top-card::before {
+      content: "";
+      position: absolute;
+      right: -30px;
+      top: -26px;
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(85,229,209,.18), transparent 70%);
+    }
+    .top-card .eyebrow {
+      color: var(--nt-teal);
+      font-size: 10px;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      font-weight: 900;
+    }
+    .top-card h1 {
+      margin: 12px 0 0;
+      font-size: clamp(34px, 4vw, 56px);
+      letter-spacing: -0.06em;
+      line-height: 1;
+    }
+    .top-card p {
+      margin: 8px 0 0;
+      color: var(--nt-muted);
+      font-size: 14px;
+    }
+    .card-grid {
+      margin-top: 18px;
+      border: 1px solid var(--nt-line);
+      border-radius: 18px;
+      background: rgba(10,21,27,.82);
+      padding: 18px;
+    }
+    .calc-form {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0,1fr));
+      gap: 16px 18px;
+    }
+    .field label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 12px;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: #c4dad7;
+      font-weight: 700;
+    }
+    .result-box {
+      margin-top: 18px;
+      min-height: 70px;
+      border: 1px solid var(--nt-line);
+      border-radius: 14px;
+      background: rgba(5,9,12,.8);
+      padding: 16px 18px;
+      color: var(--nt-muted);
+    }
+    .result-box strong {
+      color: var(--nt-text);
+      font-size: 27px;
+      letter-spacing: -0.04em;
+      font-weight: 900;
+    }
+    .result-list {
+      display: grid;
+      gap: 8px;
+      margin-top: 10px;
+    }
+    .row-result {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      border-bottom: 1px dashed rgba(85,229,209,.12);
+      padding-bottom: 8px;
+      color: var(--nt-muted);
+    }
+    .row-result:last-child { border-bottom: 0; padding-bottom: 0; }
+    .row-result b {
+      color: var(--nt-teal);
+      font-size: 18px;
+      font-weight: 900;
+      letter-spacing: -0.03em;
+    }
+    .button-row {
+      margin-top: 18px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .button-row button {
+      border: 0;
+      border-radius: 12px;
+      background: var(--nt-teal);
+      color: #03211d;
+      min-height: 46px;
+      padding: 0 18px;
+      font-weight: 900;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+    .button-row .secondary {
+      background: transparent;
+      color: var(--nt-text);
+      border: 1px solid var(--nt-line);
+    }
+
+    @media (max-width: 980px) {
+      .calc-layout { grid-template-columns: 1fr; }
+      .calc-form { grid-template-columns: repeat(2, minmax(0,1fr)); }
+    }
+    @media (max-width: 620px) {
+      .calc-form { grid-template-columns: 1fr; }
+      .calc-topbar { min-height: 68px; }
+      .nt-nav { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <header class="nt-header">
+    <div class="calc-topbar">
+      <a class="nt-logo" href="/" aria-label="NavTool Startseite">
+        <img src="/pic/allgemein/logo.png" alt="NAVTOOL" style="height:24px; width:auto; display:block;">
+      </a>
+      <nav class="nt-nav" aria-label="Hauptnavigation">
+        <a href="/">Home</a>
+        <a href="/map/">Map</a>
+        <a href="/navtext/">Navtext</a>
+        <a href="/colreg/">Colreg</a>
+        <a href="/weather/">Weather</a>
+        <a href="/calc/" class="on">Calc</a>
+        <a href="/status/">Status</a>
+      </nav>
+      <div class="status-pill"><span class="dot"></span> Online</div>
+    </div>
+  </header>
+
+  <main class="calc-shell">
+    <div class="calc-layout">
+      <aside class="sidebar">
+        <div class="calc-brand">NavTool</div>
+        <h2>Rechenblatt</h2>
+        <p>Navigation, Kompass und Schiffstheorie.</p>
+
+        <input class="tool-search" id="toolSearch" type="search" placeholder="Rechner suchen" aria-label="Rechner suchen">
+
+        <div class="tool-list" id="toolList"></div>
+      </aside>
+
+      <section class="main-panel">
+        <div class="top-card">
+          <div class="eyebrow" id="toolEyebrow">Navigation</div>
+          <h1 id="toolTitle">Besteckrechnung</h1>
+          <p id="toolDesc">Mittlere Distanz, rwk</p>
+        </div>
+
+        <div class="card-grid">
+          <div id="form"></div>
+          <div class="button-row">
+            <button type="button" class="secondary" id="resetBtn">Zurücksetzen</button>
+            <button type="button" id="calcBtn">Berechnen</button>
+          </div>
+          <div class="result-box" id="resultBox">Ergebnis erscheint hier.</div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer class="nt-foot" role="contentinfo">
+    <div class="nt-foot-in">
+      <div>
+        <div class="nt-foot-brand"><img src="/pic/allgemein/logo.png" alt="NavTool"></div>
+        <div class="nt-foot-copy">Maritime Navigation Workspace · navtool.de · Navigation, Wetter, Regeln und Berechnung</div>
+      </div>
+      <div class="nt-foot-links">
+        <a href="/">Home</a>
+        <a href="/status/">Status</a>
+        <a href="/admin/">Admin</a>
+        <a href="/impressum/">Impressum</a>
+      </div>
+    </div>
+    <div class="nt-foot-bar">
+      <span>NavTool</span>
+      <span><a href="/status/">Status</a></span>
+    </div>
+  </footer>
+
+  <script>
+    const calculators = {
+      'besteck': {
+        label: 'Besteckrechnung',
+        group: 'Navigation',
+        description: 'Mittlere Distanz, rwk',
+        fields: [
+          {name: 'latA', label: 'Breite A – Grad', type: 'number', value: 0},
+          {name: 'latAm', label: 'Breite A – Minuten', type: 'number', value: 0},
+          {name: 'lonA', label: 'Länge A – Grad', type: 'number', value: 0},
+          {name: 'lonAm', label: 'Länge A – Minuten', type: 'number', value: 0},
+          {name: 'latB', label: 'Breite B – Grad', type: 'number', value: 0},
+          {name: 'latBm', label: 'Breite B – Minuten', type: 'number', value: 0},
+          {name: 'lonB', label: 'Länge B – Grad', type: 'number', value: 0},
+          {name: 'lonBm', label: 'Länge B – Minuten', type: 'number', value: 0}
+        ],
+        calc: (values) => {
+          const latA = Number(values.latA) + Number(values.latAm || 0)/60;
+          const lonA = Number(values.lonA) + Number(values.lonAm || 0)/60;
+          const latB = Number(values.latB) + Number(values.latBm || 0)/60;
+          const lonB = Number(values.lonB) + Number(values.lonBm || 0)/60;
+          const dLat = (latB - latA) * 60;
+          const dLon = (lonB - lonA) * 60;
+          const dist = Math.sqrt(dLat*dLat + dLon*dLon).toFixed(2);
+          const dir = (((Math.atan2(dLon, dLat) * 180 / Math.PI) + 360) % 360).toFixed(1);
+          return { items: [
+            { label: 'Distanz', value: dist + ' sm' },
+            { label: 'Richtung', value: dir + '°' }
+          ] };
+        }
+      },
+      'großkreis': {
+        label: 'Großkreisnavigation',
+        group: 'Navigation',
+        description: 'Distanz & Anfangskurs',
+        fields: [
+          {name: 'lat1', label: 'Breite 1 – Grad', type: 'number', value: 0},
+          {name: 'lat1m', label: 'Breite 1 – Minuten', type: 'number', value: 0},
+          {name: 'lon1', label: 'Länge 1 – Grad', type: 'number', value: 0},
+          {name: 'lon1m', label: 'Länge 1 – Minuten', type: 'number', value: 0},
+          {name: 'lat2', label: 'Breite 2 – Grad', type: 'number', value: 0},
+          {name: 'lat2m', label: 'Breite 2 – Minuten', type: 'number', value: 0},
+          {name: 'lon2', label: 'Länge 2 – Grad', type: 'number', value: 0},
+          {name: 'lon2m', label: 'Länge 2 – Minuten', type: 'number', value: 0}
+        ],
+        calc: (values) => {
+          const p1 = { lat: Number(values.lat1) + Number(values.lat1m || 0)/60, lon: Number(values.lon1) + Number(values.lon1m || 0)/60 };
+          const p2 = { lat: Number(values.lat2) + Number(values.lat2m || 0)/60, lon: Number(values.lon2) + Number(values.lon2m || 0)/60 };
+          const lat1 = p1.lat*Math.PI/180, lat2 = p2.lat*Math.PI/180;
+          const dLon = (p2.lon - p1.lon) * Math.PI / 180;
+          const a = Math.acos(Math.sin(lat1)*Math.sin(lat2) + Math.cos(lat1)*Math.cos(lat2)*Math.cos(dLon));
+          const dist = (3440.065 * a).toFixed(2);
+          const dir = (((Math.atan2(Math.sin(dLon)*Math.cos(lat2), Math.cos(lat1)*Math.sin(lat2)-Math.sin(lat1)*Math.cos(lat2)*Math.cos(dLon)) * 180 / Math.PI) + 360) % 360).toFixed(1);
+          return { items: [
+            { label: 'Distanz', value: dist + ' sm' },
+            { label: 'Anfangskurs', value: dir + '°' }
+          ] };
+        }
+      },
+      'strom': {
+        label: 'Stromdreck',
+        group: 'Navigation',
+        description: 'KÜG & FÜG',
+        fields: [
+          {name: 'v', label: 'Geschwindigkeit – kn', type: 'number', value: 0},
+          {name: 'crs', label: 'Kurs – °', type: 'number', value: 0},
+          {name: 'set', label: 'Stromsetzung – °', type: 'number', value: 0},
+          {name: 'drift', label: 'Stromdrift – kn', type: 'number', value: 0}
+        ],
+        calc: (values) => {
+          const v = Number(values.v), c = Number(values.crs), s = Number(values.set), d = Number(values.drift);
+          const x = v * Math.sin(c * Math.PI/180) + d * Math.sin(s * Math.PI/180);
+          const y = v * Math.cos(c * Math.PI/180) + d * Math.cos(s * Math.PI/180);
+          const speed = Math.hypot(x, y).toFixed(2);
+          const course = (((Math.atan2(x, y) * 180 / Math.PI) + 360) % 360).toFixed(1);
+          return { items: [
+            { label: 'Ergebnis', value: speed + ' kn' },
+            { label: 'Kurs über Grund', value: course + '°' }
+          ] };
+        }
+      },
+      'kompass': {
+        label: 'Kompass',
+        group: 'Kompass',
+        description: 'Deviation, Missweisung, Gyro Error',
+        fields: [
+          {name: 'trueCourse', label: 'True Course – °', type: 'number', value: 0},
+          {name: 'variation', label: 'Missweisung – °', type: 'number', value: 0},
+          {name: 'deviation', label: 'Deviation – °', type: 'number', value: 0},
+          {name: 'gyroError', label: 'Gyro Error – °', type: 'number', value: 0}
+        ],
+        calc: (values) => {
+          const trueCourse = Number(values.trueCourse);
+          const magnetic = trueCourse + Number(values.variation) + Number(values.deviation);
+          const gyro = trueCourse + Number(values.gyroError);
+          return { items: [
+            { label: 'Magnetisch', value: magnetic.toFixed(1) + '°' },
+            { label: 'Gyro', value: gyro.toFixed(1) + '°' }
+          ] };
+        }
+      },
+      'utc': {
+        label: 'UTC-Rechner',
+        group: 'Navigation',
+        description: 'Ortszeit → UTC',
+        fields: [
+          {name: 'timezone', label: 'Zeitzone – h', type: 'number', value: 1},
+          {name: 'time', label: 'Uhrzeit', type: 'time', value: '12:00'},
+          {name: 'date', label: 'Datum', type: 'date', value: '2025-01-01'}
+        ],
+        calc: (values) => {
+          const [h, m] = values.time.split(':').map(Number);
+          const date = new Date(values.date + 'T00:00:00Z');
+          date.setUTCHours((h || 0) - Number(values.timezone || 0), m || 0, 0, 0);
+          return { items: [{label: 'UTC', value: date.toISOString().slice(11,16) + ' Uhr'}] };
+        }
+      },
+      'sicht': {
+        label: 'Feuer in der Kimm',
+        group: 'Navigation',
+        description: 'Sichtweite berechnen',
+        fields: [
+          {name: 'aug', label: 'Augeshöhe – m', type: 'number', value: 2},
+          {name: 'licht', label: 'Leuchtturmhöhe – m', type: 'number', value: 35}
+        ],
+        calc: (values) => {
+          const aug = Number(values.aug);
+          const licht = Number(values.licht);
+          const dist = (Math.sqrt(2*licht) + Math.sqrt(2*aug)).toFixed(2);
+          return { items: [{ label: 'Sichtweite', value: dist + ' sm' }] };
+        }
+      },
+      'radar': {
+        label: 'Radarhorizont',
+        group: 'Navigation',
+        description: 'Reichweite nach Antennehöhe',
+        fields: [
+          {name: 'height', label: 'Antennehöhe – m', type: 'number', value: 15}
+        ],
+        calc: (values) => {
+          const h = Number(values.height);
+          const dist = (Math.sqrt(2 * h * 6371 / 1000) * 1.852).toFixed(2);
+          return { items: [{ label: 'Radarhorizont', value: dist + ' sm' }] };
+        }
+      }
+    };
+
+    const toolList = document.getElementById('toolList');
+    const formEl = document.getElementById('form');
+    const toolTitle = document.getElementById('toolTitle');
+    const toolDesc = document.getElementById('toolDesc');
+    const toolEyebrow = document.getElementById('toolEyebrow');
+    const resultBox = document.getElementById('resultBox');
+    const toolSearch = document.getElementById('toolSearch');
+
+    let currentTool = 'besteck';
+
+    function renderToolList(filter = '') {
+      const q = filter.trim().toLowerCase();
+      const entries = Object.entries(calculators).filter(([key, tool]) => {
+        const hay = `${tool.label} ${tool.description} ${tool.group}`.toLowerCase();
+        return !q || hay.includes(q);
+      });
+
+      toolList.innerHTML = entries.map(([key, tool]) => `
+        <button class="tool-item ${key === currentTool ? 'active' : ''}" data-key="${key}" type="button">
+          <strong>${tool.label}</strong>
+          <small>${tool.description}</small>
+        </button>
+      `).join('');
+
+      toolList.querySelectorAll('.tool-item').forEach(btn => {
+        btn.addEventListener('click', () => {
+          currentTool = btn.dataset.key;
+          renderCalculator();
+        });
+      });
+    }
+
+    function renderCalculator() {
+      const tool = calculators[currentTool];
+      toolTitle.textContent = tool.label;
+      toolDesc.textContent = tool.description;
+      toolEyebrow.textContent = tool.group;
+
+      formEl.innerHTML = '<div class="calc-form">' + tool.fields.map(field => `
+        <div class="field">
+          <label>${field.label}</label>
+          <input type="${field.type || 'number'}" value="${field.value ?? ''}" data-field="${field.name}" ${field.type === 'time' || field.type === 'date' ? '' : 'step="any"'}>
+        </div>
+      `).join('') + '</div>';
+
+      renderToolList(toolSearch.value);
+      resultBox.textContent = 'Ergebnis erscheint hier.';
+    }
+
+    function calculateCurrent() {
+      const tool = calculators[currentTool];
+      const values = {};
+      tool.fields.forEach(field => {
+        const input = formEl.querySelector(`[data-field="${field.name}"]`);
+        values[field.name] = input ? input.value : field.value;
+      });
+      const result = tool.calc(values);
+
+      if (result.items) {
+        resultBox.innerHTML = '<div class="result-list">' + result.items.map(item => `
+          <div class="row-result"><span>${item.label}</span><b>${item.value}</b></div>
+        `).join('') + '</div>';
+      } else {
+        resultBox.textContent = 'Ergebnis erscheint hier.';
+      }
+    }
+
+    document.getElementById('calcBtn').addEventListener('click', calculateCurrent);
+    document.getElementById('resetBtn').addEventListener('click', () => {
+      const tool = calculators[currentTool];
+      tool.fields.forEach(field => {
+        const input = formEl.querySelector(`[data-field="${field.name}"]`);
+        if (input) input.value = field.value ?? '';
+      });
+      resultBox.textContent = 'Ergebnis erscheint hier.';
+    });
+    toolSearch.addEventListener('input', (e) => renderToolList(e.target.value));
+
+    renderToolList();
+    renderCalculator();
+  </script>
 </body>
 </html>

@@ -1,0 +1,75 @@
+<!DOCTYPE html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>Admin · NavTool</title>
+<link rel="icon" href="/pic/allgemein/icon-192.png"><link rel="stylesheet" href="/assets/navtool-global.css">
+<style>:root{--a:#55e5d1;--pn:rgba(10,21,27,.85);--ln:rgba(85,229,209,.16);--mu:#7e9697}*{box-sizing:border-box}
+body{margin:0;background:#05090c;color:#ecfbf9;font:14px/1.5 Inter,ui-sans-serif,system-ui,sans-serif}main{width:min(1000px,100% - 28px);margin:0 auto;padding:30px 0 110px}
+h1{font-size:34px;letter-spacing:-.04em;margin:6px 0 18px}h2{font-size:12px;letter-spacing:.16em;color:var(--a);margin:0 0 12px}
+.card{background:var(--pn);border:1px solid var(--ln);border-radius:16px;padding:18px;margin-bottom:14px}
+input,select,button,textarea{font:inherit;color:#ecfbf9;background:#0b1a21;border:1px solid var(--ln);border-radius:10px;padding:9px 12px}input[type=color]{padding:2px;height:38px;width:64px}
+button{cursor:pointer;font-weight:800}button.p{background:var(--a);color:#03211d;border-color:var(--a)}button:hover{border-color:var(--a)}
+.tabs{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap}.tabs button.on{background:rgba(85,229,209,.16);border-color:var(--a);color:var(--a)}
+.g{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(180px,1fr))}label{display:block;font-size:12px;color:var(--mu);margin-bottom:4px}label input,label select{width:100%}
+.sw{display:inline-flex;align-items:center;gap:8px;cursor:pointer;font-weight:800;color:#ecfbf9}.sw input{width:20px;height:20px;accent-color:#55e5d1;padding:0}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}.chip{padding:6px 10px;border:1px solid var(--ln);border-radius:99px;font-size:12px}
+table{width:100%;border-collapse:collapse}th,td{text-align:left;padding:8px 6px;border-bottom:1px solid var(--ln)}th{color:var(--mu);font-size:11px;letter-spacing:.1em}td.n{font-variant-numeric:tabular-nums;font-weight:800}
+.bar{height:6px;border-radius:9px;background:var(--a);min-width:2px}.bot{position:fixed;left:0;right:0;bottom:0;padding:12px max(14px,env(safe-area-inset-left));background:rgba(5,9,12,.94);border-top:1px solid var(--ln);display:flex;gap:10px;align-items:center;justify-content:flex-end;z-index:50;backdrop-filter:blur(14px)}
+#msg{margin-right:auto;color:var(--mu);font-size:12px}.hint{color:var(--mu);font-size:12px;margin-top:10px}.hide{display:none!important}
+#login{max-width:360px;margin:12vh auto}#login .card{display:grid;gap:12px}</style></head><body>
+<div id="login"><div class="card"><img src="/pic/allgemein/logo.png" alt="NavTool" style="height:26px;justify-self:start"><h1 style="font-size:26px;margin:4px 0">Admin</h1>
+<label>Benutzername<input id="u" autocomplete="username"></label><label>Passwort<input id="p" type="password" autocomplete="current-password"></label><button class="p" id="lg">Anmelden</button><div id="le" style="color:#ff7070;font-size:12px"></div></div></div>
+<main id="app" class="hide"><div style="display:flex;justify-content:space-between;align-items:center"><h1>NavTool Admin</h1><button id="out">Abmelden</button></div>
+<div class="tabs" id="tabs"><button data-t="web" class="on">Websites</button><button data-t="stat">Statistik</button><button data-t="app">App</button><button data-t="des">Design &amp; Footer</button><button data-t="gh">GitHub</button></div>
+<section id="t-web"></section>
+<section id="t-stat" class="hide"><div class="card"><h2>BESUCHER</h2><table id="st"></table><div class="hint">Gezählt werden Besuche pro Bereich (einmal pro Browser-Sitzung und Tag). Admin-Besuche zählen nicht.</div></div><div class="card"><h2>HERKUNFT (DIESER MONAT)</h2><table id="rf"></table></div><div class="card"><h2>APP-DOWNLOADS</h2><table id="dl"></table></div></section>
+<section id="t-app" class="hide"><div class="card"><h2>APP-BEREICHE</h2><div class="chips" id="tabsCfg"></div><div class="g" style="margin-top:14px"><label>Ladebildschirm (Sekunden)<input type="number" id="splash" min="0" max="10" step="1"></label><label>App-Version<input id="ver"></label><label>Hinweis zum Update<input id="anote" placeholder="z. B. Neu: Steering Simulator"></label></div></div>
+<div class="card"><h2>OFFLINE-PAKET · WAS DIE APP HERUNTERLÄDT</h2><div class="chips" id="offCfg"></div><div class="hint">Antippen zum Ein-/Ausschalten, dann unten Speichern.</div></div></section>
+<section id="t-des" class="hide"><div class="card"><h2>FARBE &amp; LOGO</h2><div class="g"><label>Akzentfarbe<input type="color" id="acc"></label><label>Logo hochladen (PNG, wird als /pic/allgemein/logo.png gespeichert)<input type="file" id="logo" accept="image/png"></label></div><img id="lp" src="/pic/allgemein/logo.png" style="height:30px;margin-top:12px;background:#0b1a21;padding:8px;border-radius:8px"></div>
+<div class="card"><h2>FUSSZEILE (ANSTELLE DES IMPRESSUMS)</h2><label>Text unter dem Logo<textarea id="foot" rows="2" style="width:100%"></textarea></label></div></section>
+<section id="t-gh" class="hide"><div class="card"><h2>GITHUB-VERBINDUNG</h2><div class="g"><label>Benutzer / Organisation<input id="gho"></label><label>Repository<input id="ghr"></label><label>Branch<input id="ghb" value="main"></label><label>Personal Access Token<input id="ght" type="password" placeholder="ghp_… / github_pat_…"></label></div>
+<p class="hint">Das Token braucht Schreibrechte auf „Contents“ dieses Repositories und bleibt nur in diesem Browser gespeichert. Ohne Token lädt „Speichern“ die config.json zum manuellen Hochladen herunter.</p><button id="ghs">Verbindung speichern</button></div></section></main>
+<div class="bot hide" id="bot"><span id="msg"></span><button class="p" id="save">Speichern</button></div>
+<script>
+const H='d613feef55498a252633467b19b4336b4301f2f9c582257a0095cf1c9cb03a08',NS='navtool.de',AB='https://abacus.jasoncameron.dev',$=i=>document.getElementById(i);let cfg,logoB64=null;
+const st=l=>({aktiv:'Aktiv',stoerung:'Störung',wartung:'Wartung',planung:'In Planung'}[l]);
+async function sha(s){const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s));return[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')}
+async function login(){if($('u').value.trim()==='Simon'&&await sha('navtool:'+$('p').value)===H){sessionStorage.setItem('nt-adm','1');localStorage.setItem('nt-admin','1');start()}else $('le').textContent='Benutzername oder Passwort falsch.'}
+$('lg').onclick=login;$('p').onkeydown=e=>e.key==='Enter'&&login();$('out').onclick=()=>{sessionStorage.clear();localStorage.removeItem('nt-admin');location.reload()};
+if(sessionStorage.getItem('nt-adm')==='1')start();
+const msg=t=>$('msg').textContent=t;
+async function start(){$('login').classList.add('hide');$('app').classList.remove('hide');$('bot').classList.remove('hide');
+ try{cfg=await(await fetch('/data/config.json?'+Date.now(),{cache:'no-store'})).json()}catch(_){msg('config.json nicht gefunden.');return}
+ const g=JSON.parse(localStorage.getItem('nt-gh')||'{}');$('gho').value=g.o||'';$('ghr').value=g.r||'';$('ghb').value=g.b||'main';$('ght').value=g.t||'';
+ render();stats()}
+document.querySelectorAll('#tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('#tabs button').forEach(x=>x.classList.toggle('on',x===b));['web','stat','app','des','gh'].forEach(t=>$('t-'+t).classList.toggle('hide',t!==b.dataset.t))});
+$('ghs').onclick=()=>{localStorage.setItem('nt-gh',JSON.stringify({o:$('gho').value.trim(),r:$('ghr').value.trim(),b:$('ghb').value.trim()||'main',t:$('ght').value.trim()}));msg('GitHub-Verbindung gespeichert.')};
+function render(){
+ $('t-web').innerHTML=cfg.modules.map((m,i)=>`<div class="card"><div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:center"><b style="font-size:16px;letter-spacing:.1em">${m.name}</b><label class="sw"><input type="checkbox" data-i="${i}" data-k="enabled" ${m.enabled?'checked':''}>Online</label></div>
+ <div class="g" style="margin-top:12px"><label>Status<select data-i="${i}" data-k="status">${['aktiv','stoerung','wartung','planung'].map(s=>`<option value="${s}" ${m.status===s?'selected':''}>${st(s)}</option>`).join('')}</select></label><label>Hinweis auf der Status-Seite<input data-i="${i}" data-k="note" value="${(m.note||'').replace(/"/g,'&quot;')}"></label></div>
+ <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap"><button data-edit="${i}">Ich bearbeite gerade → Wartung</button><button data-done="${i}">Fertig → Aktiv</button></div>
+ ${(m.sections||[]).length?`<div class="chips">${m.sections.map((s,j)=>`<label class="sw chip"><input type="checkbox" data-i="${i}" data-s="${j}" ${s.enabled?'checked':''}>${s.name}</label>`).join('')}</div>`:''}</div>`).join('');
+ $('t-web').querySelectorAll('[data-k]').forEach(e=>e.onchange=()=>{cfg.modules[e.dataset.i][e.dataset.k]=e.type==='checkbox'?e.checked:e.value});
+ $('t-web').querySelectorAll('[data-k=note]').forEach(e=>e.oninput=()=>cfg.modules[e.dataset.i].note=e.value);
+ $('t-web').querySelectorAll('[data-s]').forEach(e=>e.onchange=()=>cfg.modules[e.dataset.i].sections[e.dataset.s].enabled=e.checked);
+ $('t-web').querySelectorAll('[data-edit]').forEach(b=>b.onclick=()=>{const m=cfg.modules[b.dataset.edit];m.status='wartung';m.note=m.note||'Wird gerade überarbeitet.';render()});
+ $('t-web').querySelectorAll('[data-done]').forEach(b=>b.onclick=()=>{const m=cfg.modules[b.dataset.done];m.status='aktiv';m.enabled=true;m.note='';render()});
+ const a=cfg.app;$('tabsCfg').innerHTML=[['home','Home'],['favorites','Favoriten'],['profile','Konto']].map(([k,n])=>`<label class="sw chip"><input type="checkbox" data-tab="${k}" ${a.tabs[k]?'checked':''}>${n}</label>`).join('');
+ $('offCfg').innerHTML=cfg.modules.filter(m=>m.id!=='app').map(m=>`<label class="sw chip"><input type="checkbox" data-off="${m.id}" ${a.offline[m.id]!==false?'checked':''}>${m.name}</label>`).join('');
+ document.querySelectorAll('[data-tab]').forEach(e=>e.onchange=()=>a.tabs[e.dataset.tab]=e.checked);document.querySelectorAll('[data-off]').forEach(e=>e.onchange=()=>a.offline[e.dataset.off]=e.checked);
+ $('splash').value=a.splashSeconds;$('ver').value=a.version;$('anote').value=a.note||'';$('splash').oninput=()=>a.splashSeconds=+$('splash').value;$('ver').oninput=()=>a.version=$('ver').value;$('anote').oninput=()=>a.note=$('anote').value;
+ $('acc').value=cfg.brand.accent;$('foot').value=cfg.brand.footer;$('acc').oninput=()=>cfg.brand.accent=$('acc').value;$('foot').oninput=()=>cfg.brand.footer=$('foot').value;}
+$('logo').onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{$('lp').src=r.result;logoB64=r.result.split(',')[1]};r.readAsDataURL(f)};
+const b64=s=>btoa(unescape(encodeURIComponent(s)));
+async function put(path,content,msgText){const g=JSON.parse(localStorage.getItem('nt-gh')||'{}'),u=`https://api.github.com/repos/${g.o}/${g.r}/contents/${path}`,h={Authorization:'Bearer '+g.t,Accept:'application/vnd.github+json'};
+ let sha;const r0=await fetch(u+'?ref='+g.b,{headers:h});if(r0.ok)sha=(await r0.json()).sha;
+ const r=await fetch(u,{method:'PUT',headers:h,body:JSON.stringify({message:msgText,content,branch:g.b,sha})});if(!r.ok)throw Error((await r.json()).message||r.status)}
+$('save').onclick=async()=>{const g=JSON.parse(localStorage.getItem('nt-gh')||'{}');cfg.updated=new Date().toISOString();if(logoB64)cfg.brand.logoVersion=(cfg.brand.logoVersion||1)+1;const txt=JSON.stringify(cfg,null,1);
+ if(!g.o||!g.r||!g.t){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([txt],{type:'application/json'}));a.download='config.json';a.click();msg('Kein GitHub-Token: config.json heruntergeladen. In den Ordner data/ hochladen.');return}
+ msg('Speichere …');try{if(logoB64){await put('pic/allgemein/logo.png',logoB64,'Admin: Logo');logoB64=null}await put('data/config.json',b64(txt),'Admin: Konfiguration');msg('Gespeichert. GitHub Pages braucht ca. 1 Minute, bis es live ist.')}catch(e){msg('Fehler: '+e.message)}};
+async function get(k){try{const r=await fetch(`${AB}/get/${NS}/${k}`);return r.ok?(await r.json()).value||0:0}catch(_){return null}}
+async function stats(){const d=new Date(),Y=d.getUTCFullYear(),M=String(d.getUTCMonth()+1).padStart(2,'0'),D=String(d.getUTCDate()).padStart(2,'0'),ids=['home',...cfg.modules.map(m=>m.id),'appstart'];
+ const rows=await Promise.all(ids.map(async id=>[id,await get(`v.${id}.d${Y}${M}${D}`),await get(`v.${id}.m${Y}${M}`),await get(`v.${id}.y${Y}`)]));
+ const f=v=>v===null?'–':v;$('st').innerHTML='<tr><th>BEREICH</th><th>HEUTE</th><th>MONAT</th><th>JAHR</th></tr>'+rows.map(r=>`<tr><td>${r[0]}</td><td class="n">${f(r[1])}</td><td class="n">${f(r[2])}</td><td class="n">${f(r[3])}</td></tr>`).join('');
+ const rs=['google','bing','duckduckgo','instagram','facebook','whatsapp','youtube','github','intern','app','direct','other'],rv=await Promise.all(rs.map(r=>get(`r.${r}.m${Y}${M}`))),mx=Math.max(1,...rv.map(x=>x||0));
+ $('rf').innerHTML=rs.map((r,i)=>`<tr><td>${r}</td><td class="n" style="width:60px">${f(rv[i])}</td><td><div class="bar" style="width:${(rv[i]||0)/mx*100}%"></div></td></tr>`).join('');
+ const dl=await Promise.all(['d'+Y+M+D,'m'+Y+M,'y'+Y].map(s=>get('dl.app.'+s))),pl=await Promise.all(['ios','android','pc'].map(p=>get(`dl.${p}.m${Y}${M}`)));
+ $('dl').innerHTML=`<tr><th>HEUTE</th><th>MONAT</th><th>JAHR</th></tr><tr><td class="n">${f(dl[0])}</td><td class="n">${f(dl[1])}</td><td class="n">${f(dl[2])}</td></tr><tr><th colspan="3">GERÄT (MONAT)</th></tr><tr><td>iOS: ${f(pl[0])}</td><td>Android: ${f(pl[1])}</td><td>Computer: ${f(pl[2])}</td></tr>`}
+</script><script src="/assets/navtool-global.js"></script></body></html>

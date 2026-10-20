@@ -1,23 +1,109 @@
-<!DOCTYPE html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>NavTool</title>
-<meta name="theme-color" content="#05090c"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="NavTool">
-<link rel="icon" type="image/png" href="/pic/allgemein/icon-192.png"><link rel="manifest" href="/manifest.webmanifest"><link rel="apple-touch-icon" href="/pic/allgemein/icon-180.png"><link rel="stylesheet" href="app.css"></head><body>
-<div id="splash"><img src="/pic/allgemein/logo.png" alt="NavTool"><i></i></div>
-<div id="shell">
-<header class="top"><span></span><img class="logo" src="/pic/allgemein/logo.png" alt="NavTool"><button id="net" class="pill" type="button"><i></i><span>Prüfe…</span></button></header>
-<section class="view" id="v-home">
-<label class="search"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l5 5"/></svg><input id="q" type="search" placeholder="Suchen: Kompassfehler, Tonnen, Wolken …" enterkeyhint="search" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Suche"></label>
-<div id="topics"></div>
-<button id="feat" class="feat" type="button"><span class="new">NEU</span><b>Steering Simulator</b><small>Ruder drehen, Kompass lesen, Telegraf bedienen. Jetzt üben.</small><i>→</i></button>
-<main class="tiles"><div class="grid" id="grid"></div><p class="none" id="none" hidden>Nichts gefunden. Versuche „KVR“, „Wolken“ oder „Kompass“.</p></main></section>
-<section class="view" id="v-fav" hidden><h2 class="vh">Favoriten</h2><div class="grid" id="favgrid"></div><p class="none" id="favnone">Noch keine Favoriten. Tippe auf ☆ bei einem Werkzeug, dann ist es hier schnell erreichbar.</p></section>
-<section class="view" id="v-me" hidden><h2 class="vh">Konto</h2>
-<div class="card" id="acctOut"><h3>Anmelden</h3><p class="mu">Mit Konto bleiben deine Favoriten gesichert.</p><input id="un" placeholder="Benutzername" autocomplete="username" autocapitalize="off"><input id="pw" type="password" placeholder="Passwort" autocomplete="current-password"><div class="two"><button class="btn" id="login" type="button">Anmelden</button><button class="btn again" id="signup" type="button">Konto erstellen</button></div><small id="am" class="err"></small><small class="mu">Das Konto wird auf diesem Gerät gespeichert.</small></div>
-<div class="card" id="acctIn" hidden><h3>Angemeldet als <span id="who"></span></h3><p class="mu">Deine Favoriten sind gesichert.</p><button class="btn again" id="logout" type="button">Abmelden</button></div>
-<div class="card"><h3>Version &amp; Updates</h3><p class="mu">Version <b id="ver">1.0</b></p><p id="anote" class="mu"></p><small id="stamp" class="mu"></small></div>
-<section class="off" aria-labelledby="offT"><div class="off-top"><div><h2 id="offT">Offline-Nutzung</h2><p id="offText">Wird geprüft…</p></div><span class="state" id="state">–</span></div><div class="meter"><i id="bar"></i></div><button id="prep" class="btn" type="button">Offline-Paket laden</button><details><summary>Was funktioniert ohne Netz?</summary><ul id="offList"></ul></details><a id="inst" class="inst" href="/app/" hidden>App auf dem Home-Bildschirm installieren →</a></section>
-<a class="card lnk" href="/status/" target="_blank">Status aller Bereiche →</a></section>
-</div>
-<nav id="tabbar"><i id="bub"></i><button data-v="home" class="on"><svg viewBox="0 0 24 24"><path d="M4 11l8-7 8 7v9h-5v-6H9v6H4z"/></svg><span>Home</span></button><button data-v="fav"><svg viewBox="0 0 24 24"><path d="M12 4l2.4 5 5.6.7-4.1 3.9 1 5.5-4.9-2.7-4.9 2.7 1-5.5L4 9.7 9.600 9z"/></svg><span>Favoriten</span></button><button data-v="me"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.6"/><path d="M5 20c.8-4 3.6-5.6 7-5.6s6.2 1.600 7 5.600"/></svg><span>Konto</span></button></nav>
-<div id="toast"></div>
-<div id="viewer" hidden><header class="vbar"><button id="back" type="button" aria-label="Zurück zur Startseite">‹ Start</button><b id="vtitle"></b><button id="reload" type="button" aria-label="Neu laden">↻</button></header><iframe id="frame" title="Werkzeug"></iframe></div>
-<script src="/assets/navtool-global.js"></script><script src="app.js"></script></body></html>
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#05090c">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>NavTool App</title>
+  <link rel="icon" type="image/png" href="/pic/allgemein/icon-192.png">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="apple-touch-icon" href="/pic/allgemein/icon-180.png">
+  <link rel="stylesheet" href="/assets/navtool-global.css">
+  <link rel="stylesheet" href="app.css">
+</head>
+<body>
+  <div id="splash"><img src="/pic/allgemein/logo.png" alt="NavTool"><i></i></div>
+
+  <div id="shell">
+    <header class="top">
+      <span></span>
+      <img class="logo" src="/pic/allgemein/logo.png" alt="NavTool">
+      <button id="net" class="pill" type="button"><i></i><span>Prüfe…</span></button>
+    </header>
+
+    <section class="view" id="v-home">
+      <label class="search">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l5 5"/></svg>
+        <input id="q" type="search" placeholder="Suchen: Kompassfehler, Tonnen, Wetter, Karte…">
+      </label>
+      <div id="topics"></div>
+      <button id="feat" class="feat" type="button">
+        <span class="new">NEU</span>
+        <b>Steering Simulator</b>
+        <small>Ruder drehen, Kompass lesen, Telegraf bedienen. Jetzt üben.</small>
+        <i>→</i>
+      </button>
+      <main class="tiles"><div class="grid" id="grid"></div><p class="none" id="none" hidden>Nichts gefunden. Versuche „KVR“, „Wolken“ oder „Kompass“.</p></main>
+    </section>
+
+    <section class="view" id="v-fav" hidden>
+      <h2 class="vh">Favoriten</h2>
+      <div class="grid" id="favgrid"></div>
+      <p class="none" id="favnone">Noch keine Favoriten. Tippe auf ☆ bei einem Werkzeug, dann erscheint es hier.</p>
+    </section>
+
+    <section class="view" id="v-me" hidden>
+      <h2 class="vh">Konto</h2>
+      <div class="card" id="acctOut">
+        <h3>Anmelden</h3>
+        <p class="mu">Mit deinem Konto bleiben die Favoriten gesichert.</p>
+        <input id="un" placeholder="Benutzername" autocomplete="username" autocapitalize="off">
+        <input id="pw" type="password" placeholder="Passwort" autocomplete="current-password">
+        <div class="two">
+          <button class="btn" id="login" type="button">Login</button>
+          <button class="btn again" id="signup" type="button">Registrieren</button>
+        </div>
+        <p class="err" id="am"></p>
+      </div>
+      <div class="card" id="acctIn" hidden>
+        <h3>Angemeldet als <span id="who"></span></h3>
+        <p class="mu">Deine Favoriten sind auf diesem Gerät gesichert.</p>
+        <button class="btn again" id="logout" type="button">Abmelden</button>
+      </div>
+      <div class="card">
+        <h3>Version &amp; Updates</h3>
+        <p class="mu">Version <b id="ver">2.1</b></p>
+        <p id="anote" class="mu">Keine neuen Hinweise.</p>
+        <small id="stamp" class="mu"></small>
+      </div>
+      <div class="off" aria-labelledby="offT">
+        <div class="off-top">
+          <div><h2 id="offT">Offline-Nutzung</h2><p id="offText">Wird geprüft…</p></div>
+          <span class="state" id="state">–</span>
+        </div>
+        <div class="meter"><i id="bar"></i></div>
+        <button class="btn again" id="prep" type="button">Offline-Paket laden</button>
+        <small id="inst" class="inst">App läuft ohne Netz, sobald das Paket geladen wurde.</small>
+        <details>
+          <summary>Details</summary>
+          <ul id="offList"></ul>
+        </details>
+      </div>
+      <a class="card lnk" href="/status/" target="_blank">Status aller Bereiche →</a>
+    </section>
+
+    <nav id="tabbar">
+      <i id="bub"></i>
+      <button data-v="home" class="on" type="button"><svg viewBox="0 0 24 24"><path d="M4 11l8-7 8 7v9h-5v-6H9v6H4z"/></svg><span>Home</span></button>
+      <button data-v="fav" type="button"><svg viewBox="0 0 24 24"><path d="M12 17.3L5.8 21l1.5-7.2L1 8.9l7.3-.9L12 2l3.7 6 7.3.9-6.3 4.9L18.2 21z"/></svg><span>Favoriten</span></button>
+      <button data-v="me" type="button"><svg viewBox="0 0 24 24"><path d="M12 12a4 4 0 1 0-4-4 4 4 0 0 0 4 4zm-7 8a7 7 0 0 1 14 0"/></svg><span>Konto</span></button>
+    </nav>
+  </div>
+
+  <div id="toast"></div>
+
+  <div id="viewer" hidden>
+    <header class="vbar">
+      <button id="back" type="button" aria-label="Zurück zur Startseite">‹ Start</button>
+      <b id="vtitle"></b>
+      <button id="reload" type="button" aria-label="Neu laden">Neu laden</button>
+    </header>
+    <iframe id="frame" src="about:blank" title="NavTool App Inhalt"></iframe>
+  </div>
+
+  <script src="/assets/navtool-global.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

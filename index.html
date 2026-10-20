@@ -1,2976 +1,612 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>NAVTOOL — Maritime Navigation Workspace</title>
-
-<meta
-  name="description"
-  content="NAVTOOL — Maritime Navigation Workspace für Map, Routing, NAVTEXT, COLREG, Weather und nautische Berechnungen."
->
-
-<meta name="theme-color" content="#05090c">
-
-<style>
-
-/* =========================================================
-   NAVTOOL — MAIN HUB
-   ========================================================= */
-
-:root {
-  --bg: #05090c;
-  --bg2: #071116;
-  --panel: rgba(10, 21, 27, .82);
-  --panel2: rgba(13, 27, 34, .9);
-
-  --text: #ecfbf9;
-  --muted: #7e9697;
-  --muted2: #587071;
-
-  --teal: #55e5d1;
-  --teal2: #1eb9a8;
-  --cyan: #67dfff;
-
-  --line: rgba(85, 229, 209, .13);
-  --line2: rgba(85, 229, 209, .3);
-
-  --danger: #ff7070;
-  --yellow: #ffd166;
-
-  --radius: 18px;
-  --max: 1280px;
-}
-
-
-/* =========================================================
-   RESET
-   ========================================================= */
-
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
-html {
-  scroll-behavior: smooth;
-}
-
-body {
-  min-height: 100vh;
-  overflow-x: hidden;
-
-  color: var(--text);
-
-  background:
-    radial-gradient(
-      circle at 15% 10%,
-      rgba(30,185,168,.09),
-      transparent 30%
-    ),
-    radial-gradient(
-      circle at 85% 25%,
-      rgba(103,223,255,.05),
-      transparent 28%
-    ),
-    var(--bg);
-
-  font-family:
-    Inter,
-    ui-sans-serif,
-    system-ui,
-    -apple-system,
-    BlinkMacSystemFont,
-    "Segoe UI",
-    sans-serif;
-}
-
-body::before {
-  content: "";
-
-  position: fixed;
-  inset: 0;
-
-  z-index: -3;
-  pointer-events: none;
-
-  background-image:
-    linear-gradient(
-      rgba(85,229,209,.025) 1px,
-      transparent 1px
-    ),
-    linear-gradient(
-      90deg,
-      rgba(85,229,209,.025) 1px,
-      transparent 1px
-    );
-
-  background-size: 44px 44px;
-}
-
-body::after {
-  content: "";
-
-  position: fixed;
-  inset: 0;
-
-  z-index: -2;
-  pointer-events: none;
-
-  background:
-    linear-gradient(
-      180deg,
-      transparent,
-      rgba(85,229,209,.025),
-      transparent
-    );
-
-  animation: scanline 9s linear infinite;
-}
-
-a {
-  color: inherit;
-  text-decoration: none;
-}
-
-button,
-input {
-  font: inherit;
-}
-
-
-/* =========================================================
-   GLOBAL
-   ========================================================= */
-
-.container {
-  width: min(
-    var(--max),
-    calc(100% - 40px)
-  );
-
-  margin-inline: auto;
-}
-
-.section {
-  padding: 110px 0;
-}
-
-.eyebrow {
-  display: inline-flex;
-  align-items: center;
-  gap: 9px;
-
-  color: var(--teal);
-
-  font-size: 10px;
-  font-weight: 900;
-
-  letter-spacing: .2em;
-  text-transform: uppercase;
-}
-
-.eyebrow::before {
-  content: "";
-
-  width: 25px;
-  height: 1px;
-
-  background: var(--teal);
-
-  box-shadow:
-    0 0 10px rgba(85,229,209,.5);
-}
-
-.section-title {
-  margin-top: 13px;
-
-  font-size:
-    clamp(38px, 5vw, 64px);
-
-  line-height: .95;
-
-  letter-spacing: -.055em;
-}
-
-.section-description {
-  max-width: 680px;
-
-  margin-top: 20px;
-
-  color: var(--muted);
-
-  font-size: 14px;
-  line-height: 1.8;
-}
-
-
-/* =========================================================
-   HEADER
-   ========================================================= */
-
-.site-header {
-  position: sticky;
-  top: 0;
-
-  z-index: 100;
-
-  border-bottom: 1px solid var(--line);
-
-  background:
-    rgba(5,9,12,.82);
-
-  backdrop-filter: blur(22px);
-}
-
-.navbar {
-  height: 76px;
-
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-
-  gap: 20px;
-}
-
-.brand {
-  display: flex;
-  align-items: center;
-
-  gap: 12px;
-
-  flex-shrink: 0;
-}
-
-.brand-mark {
-  width: 38px;
-  height: 38px;
-
-  display: grid;
-  place-items: center;
-
-  border: 1px solid var(--line2);
-  border-radius: 10px;
-
-  color: var(--teal);
-
-  background:
-    linear-gradient(
-      135deg,
-      rgba(85,229,209,.12),
-      rgba(85,229,209,.02)
-    );
-
-  box-shadow:
-    0 0 25px rgba(85,229,209,.07);
-}
-
-.brand-mark::before {
-  content: "N";
-
-  font-size: 17px;
-  font-weight: 950;
-
-  letter-spacing: -.1em;
-}
-
-.brand-name {
-  font-size: 14px;
-  font-weight: 950;
-
-  letter-spacing: .12em;
-}
-
-.brand-sub {
-  margin-top: 2px;
-
-  color: var(--muted2);
-
-  font-size: 8px;
-  font-weight: 800;
-
-  letter-spacing: .18em;
-  text-transform: uppercase;
-}
-
-.nav-links {
-  display: flex;
-  align-items: center;
-
-  gap: 3px;
-}
-
-.nav-links a {
-  padding: 9px 11px;
-
-  border: 1px solid transparent;
-  border-radius: 8px;
-
-  color: #9ab1b1;
-
-  font-size: 10px;
-  font-weight: 900;
-
-  letter-spacing: .1em;
-}
-
-.nav-links a:hover {
-  color: var(--teal);
-
-  border-color: var(--line);
-
-  background:
-    rgba(85,229,209,.04);
-}
-
-.nav-status {
-  display: flex;
-  align-items: center;
-
-  gap: 8px;
-
-  color: var(--muted);
-
-  font-size: 9px;
-  font-weight: 900;
-
-  letter-spacing: .1em;
-}
-
-.status-dot {
-  width: 7px;
-  height: 7px;
-
-  border-radius: 50%;
-
-  background: var(--teal);
-
-  box-shadow:
-    0 0 13px var(--teal);
-
-  animation: pulse 2s infinite;
-}
-
-
-/* =========================================================
-   HERO
-   ========================================================= */
-
-.hero {
-  min-height:
-    calc(100vh - 76px);
-
-  display: flex;
-  align-items: center;
-
-  padding: 95px 0 110px;
-
-  overflow: hidden;
-}
-
-.hero-grid {
-  display: grid;
-
-  grid-template-columns:
-    minmax(0, 1.15fr)
-    minmax(360px, .85fr);
-
-  align-items: center;
-
-  gap: 70px;
-}
-
-.hero-content {
-  position: relative;
-  z-index: 3;
-}
-
-.hero-kicker {
-  display: flex;
-  align-items: center;
-
-  gap: 10px;
-
-  margin-bottom: 27px;
-
-  color: var(--teal);
-
-  font-size: 10px;
-  font-weight: 900;
-
-  letter-spacing: .2em;
-}
-
-.hero-kicker span {
-  padding: 6px 10px;
-
-  border: 1px solid var(--line2);
-  border-radius: 100px;
-
-  background:
-    rgba(85,229,209,.045);
-}
-
-.hero-title {
-  font-size:
-    clamp(70px, 11vw, 155px);
-
-  line-height: .8;
-
-  font-weight: 950;
-
-  letter-spacing: -.085em;
-}
-
-.hero-title span {
-  color: var(--teal);
-
-  text-shadow:
-    0 0 45px rgba(85,229,209,.12);
-}
-
-.hero-description {
-  max-width: 690px;
-
-  margin-top: 32px;
-
-  color: #91aaaa;
-
-  font-size: 16px;
-
-  line-height: 1.85;
-}
-
-.hero-actions {
-  display: flex;
-  flex-wrap: wrap;
-
-  gap: 10px;
-
-  margin-top: 32px;
-}
-
-.btn {
-  min-height: 48px;
-
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-
-  gap: 9px;
-
-  padding: 0 19px;
-
-  border: 1px solid var(--line2);
-  border-radius: 10px;
-
-  font-size: 10px;
-  font-weight: 900;
-
-  letter-spacing: .13em;
-
-  transition:
-    transform .25s ease,
-    border-color .25s ease,
-    background .25s ease,
-    box-shadow .25s ease;
-}
-
-.btn:hover {
-  transform: translateY(-3px);
-}
-
-.btn-primary {
-  color: #03100e;
-
-  border-color: var(--teal);
-
-  background: var(--teal);
-
-  box-shadow:
-    0 12px 35px rgba(85,229,209,.12);
-}
-
-.btn-primary:hover {
-  box-shadow:
-    0 17px 50px rgba(85,229,209,.2);
-}
-
-.btn-secondary {
-  background:
-    rgba(255,255,255,.02);
-}
-
-.btn-secondary:hover {
-  color: var(--teal);
-
-  border-color: var(--teal);
-
-  background:
-    rgba(85,229,209,.04);
-}
-
-
-/* =========================================================
-   SEARCH
-   ========================================================= */
-
-.search-wrapper {
-  position: relative;
-
-  max-width: 760px;
-
-  margin-top: 40px;
-}
-
-.search-box {
-  min-height: 64px;
-
-  display: flex;
-  align-items: center;
-
-  border: 1px solid var(--line2);
-  border-radius: 15px;
-
-  background:
-    rgba(7,15,19,.94);
-
-  box-shadow:
-    0 20px 70px rgba(0,0,0,.25);
-
-  transition:
-    border-color .25s ease,
-    box-shadow .25s ease;
-}
-
-.search-box:focus-within {
-  border-color:
-    rgba(85,229,209,.65);
-
-  box-shadow:
-    0 0 0 4px rgba(85,229,209,.045),
-    0 25px 80px rgba(0,0,0,.35);
-}
-
-.search-icon {
-  width: 58px;
-
-  display: grid;
-  place-items: center;
-
-  color: var(--teal);
-
-  font-size: 22px;
-}
-
-#globalSearch {
-  width: 100%;
-
-  border: 0;
-  outline: 0;
-
-  color: var(--text);
-
-  background: transparent;
-
-  font-size: 14px;
-}
-
-#globalSearch::placeholder {
-  color: #5e7778;
-}
-
-.search-shortcut {
-  margin-right: 12px;
-
-  padding: 6px 9px;
-
-  border: 1px solid var(--line);
-  border-radius: 5px;
-
-  color: var(--muted2);
-
-  font-size: 8px;
-  font-weight: 900;
-
-  letter-spacing: .1em;
-}
-
-.search-results {
-  position: absolute;
-
-  left: 0;
-  right: 0;
-  top: calc(100% + 8px);
-
-  display: none;
-
-  overflow: hidden;
-
-  border: 1px solid var(--line2);
-  border-radius: 14px;
-
-  background:
-    rgba(6,13,17,.98);
-
-  box-shadow:
-    0 30px 90px rgba(0,0,0,.55);
-
-  z-index: 50;
-}
-
-.search-results.visible {
-  display: block;
-}
-
-.search-result {
-  width: 100%;
-
-  display: flex;
-  align-items: center;
-
-  gap: 14px;
-
-  padding: 15px;
-
-  border: 0;
-  border-bottom: 1px solid var(--line);
-
-  color: var(--text);
-
-  background: transparent;
-
-  text-align: left;
-
-  cursor: pointer;
-}
-
-.search-result:last-child {
-  border-bottom: 0;
-}
-
-.search-result:hover,
-.search-result.active {
-  background:
-    rgba(85,229,209,.055);
-}
-
-.result-icon {
-  width: 38px;
-  height: 38px;
-
-  display: grid;
-  place-items: center;
-
-  flex-shrink: 0;
-
-  border: 1px solid var(--line2);
-  border-radius: 9px;
-
-  color: var(--teal);
-
-  font-size: 13px;
-}
-
-.result-title {
-  font-size: 11px;
-  font-weight: 900;
-
-  letter-spacing: .07em;
-}
-
-.result-description {
-  margin-top: 4px;
-
-  color: var(--muted);
-
-  font-size: 10px;
-}
-
-.result-arrow {
-  margin-left: auto;
-
-  color: var(--teal);
-
-  font-size: 18px;
-}
-
-
-/* =========================================================
-   RADAR
-   ========================================================= */
-
-.hero-visual {
-  min-height: 470px;
-
-  display: grid;
-  place-items: center;
-
-  perspective: 900px;
-}
-
-.radar {
-  position: relative;
-
-  width: min(440px, 78vw);
-  aspect-ratio: 1;
-
-  border: 1px solid var(--line2);
-  border-radius: 50%;
-
-  background:
-    radial-gradient(
-      circle,
-      rgba(85,229,209,.075),
-      transparent 58%
-    );
-
-  box-shadow:
-    inset 0 0 90px rgba(85,229,209,.035),
-    0 0 100px rgba(85,229,209,.04);
-
-  transition:
-    transform .2s ease;
-}
-
-.radar::before,
-.radar::after {
-  content: "";
-
-  position: absolute;
-
-  border: 1px solid var(--line);
-
-  border-radius: 50%;
-}
-
-.radar::before {
-  inset: 14%;
-}
-
-.radar::after {
-  inset: 29%;
-}
-
-.radar-x,
-.radar-y {
-  position: absolute;
-
-  background: var(--line);
-}
-
-.radar-x {
-  left: 5%;
-  right: 5%;
-
-  top: 50%;
-
-  height: 1px;
-}
-
-.radar-y {
-  top: 5%;
-  bottom: 5%;
-
-  left: 50%;
-
-  width: 1px;
-}
-
-.radar-sweep {
-  position: absolute;
-
-  left: 50%;
-  top: 50%;
-
-  width: 48%;
-  height: 2px;
-
-  transform-origin: left center;
-
-  background:
-    linear-gradient(
-      90deg,
-      var(--teal),
-      transparent
-    );
-
-  filter:
-    drop-shadow(0 0 8px var(--teal));
-
-  animation:
-    radarSweep 4s linear infinite;
-}
-
-.radar-dot {
-  position: absolute;
-
-  width: 8px;
-  height: 8px;
-
-  border-radius: 50%;
-
-  background: var(--teal);
-
-  box-shadow:
-    0 0 18px var(--teal);
-}
-
-.dot-a {
-  left: 65%;
-  top: 27%;
-}
-
-.dot-b {
-  left: 28%;
-  top: 60%;
-}
-
-.dot-c {
-  left: 68%;
-  top: 73%;
-}
-
-.ship-marker {
-  position: absolute;
-
-  left: 50%;
-  top: 50%;
-
-  width: 70px;
-  height: 70px;
-
-  display: grid;
-  place-items: center;
-
-  transform:
-    translate(-50%, -50%);
-
-  border: 1px solid var(--teal);
-  border-radius: 50%;
-
-  color: var(--teal);
-
-  background:
-    rgba(85,229,209,.07);
-
-  box-shadow:
-    0 0 45px rgba(85,229,209,.13);
-}
-
-.ship-marker::before {
-  content: "▲";
-
-  font-size: 24px;
-
-  filter:
-    drop-shadow(
-      0 0 8px
-      rgba(85,229,209,.5)
-    );
-}
-
-.radar-label {
-  position: absolute;
-
-  padding: 6px 8px;
-
-  border: 1px solid var(--line);
-  border-radius: 5px;
-
-  color: #688383;
-
-  background:
-    rgba(5,9,12,.8);
-
-  font-size: 8px;
-  font-weight: 900;
-
-  letter-spacing: .1em;
-}
-
-.label-n {
-  top: 5%;
-  left: 50%;
-  transform: translateX(-50%);
-}
-
-.label-s {
-  bottom: 5%;
-  left: 50%;
-  transform: translateX(-50%);
-}
-
-.label-w {
-  left: 3%;
-  top: 50%;
-  transform: translateY(-50%);
-}
-
-.label-e {
-  right: 3%;
-  top: 50%;
-  transform: translateY(-50%);
-}
-
-
-/* =========================================================
-   SYSTEM STATUS
-   ========================================================= */
-
-.system-bar {
-  border-top: 1px solid var(--line);
-  border-bottom: 1px solid var(--line);
-
-  background:
-    rgba(255,255,255,.012);
-}
-
-.system-grid {
-  display: grid;
-
-  grid-template-columns:
-    repeat(4, 1fr);
-}
-
-.system-item {
-  min-height: 98px;
-
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-
-  padding: 18px 24px;
-
-  border-right: 1px solid var(--line);
-}
-
-.system-item:last-child {
-  border-right: 0;
-}
-
-.system-label {
-  color: var(--muted2);
-
-  font-size: 8px;
-  font-weight: 900;
-
-  letter-spacing: .16em;
-  text-transform: uppercase;
-}
-
-.system-value {
-  margin-top: 8px;
-
-  font-size: 13px;
-  font-weight: 850;
-}
-
-.system-online {
-  color: var(--teal);
-}
-
-
-/* =========================================================
-   TOOLS
-   ========================================================= */
-
-.tools-grid {
-  display: grid;
-
-  grid-template-columns:
-    repeat(2, 1fr);
-
-  gap: 15px;
-}
-
-.tool-card {
-  position: relative;
-
-  min-height: 275px;
-
-  display: flex;
-  flex-direction: column;
-
-  padding: 28px;
-
-  overflow: hidden;
-
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-
-  background:
-    linear-gradient(
-      145deg,
-      rgba(12,25,31,.9),
-      rgba(6,13,17,.92)
-    );
-
-  transition:
-    transform .3s ease,
-    border-color .3s ease,
-    box-shadow .3s ease;
-}
-
-.tool-card::before {
-  content: "";
-
-  position: absolute;
-
-  left: -100%;
-  top: 0;
-
-  width: 100%;
-  height: 1px;
-
-  background:
-    linear-gradient(
-      90deg,
-      transparent,
-      var(--teal),
-      transparent
-    );
-
-  transition:
-    left .7s ease;
-}
-
-.tool-card:hover {
-  transform: translateY(-7px);
-
-  border-color: var(--line2);
-
-  box-shadow:
-    0 25px 70px rgba(0,0,0,.38);
-}
-
-.tool-card:hover::before {
-  left: 100%;
-}
-
-.tool-number {
-  position: absolute;
-
-  top: 25px;
-  right: 27px;
-
-  color:
-    rgba(85,229,209,.25);
-
-  font-size: 10px;
-  font-weight: 900;
-
-  letter-spacing: .15em;
-}
-
-.tool-icon {
-  width: 52px;
-  height: 52px;
-
-  display: grid;
-  place-items: center;
-
-  margin-bottom: 29px;
-
-  border: 1px solid var(--line2);
-  border-radius: 12px;
-
-  color: var(--teal);
-
-  background:
-    rgba(85,229,209,.04);
-
-  font-size: 20px;
-}
-
-.tool-label {
-  color: var(--teal);
-
-  font-size: 8px;
-  font-weight: 900;
-
-  letter-spacing: .18em;
-}
-
-.tool-card h3 {
-  margin-top: 8px;
-
-  font-size: 29px;
-
-  letter-spacing: -.035em;
-}
-
-.tool-card p {
-  max-width: 520px;
-
-  margin-top: 11px;
-
-  color: var(--muted);
-
-  font-size: 12px;
-  line-height: 1.7;
-}
-
-.tool-arrow {
-  margin-top: auto;
-  padding-top: 24px;
-
-  color: var(--teal);
-
-  font-size: 20px;
-
-  transition:
-    transform .25s ease;
-}
-
-.tool-card:hover .tool-arrow {
-  transform:
-    translateX(8px);
-}
-
-
-/* =========================================================
-   WORKFLOW
-   ========================================================= */
-
-.workflow-grid {
-  display: grid;
-
-  grid-template-columns:
-    repeat(5, 1fr);
-
-  gap: 10px;
-}
-
-.workflow-card {
-  position: relative;
-
-  min-height: 190px;
-
-  padding: 23px;
-
-  border: 1px solid var(--line);
-  border-radius: 14px;
-
-  background:
-    rgba(255,255,255,.014);
-}
-
-.workflow-card:not(:last-child)::after {
-  content: "→";
-
-  position: absolute;
-
-  top: 50%;
-  right: -18px;
-
-  transform:
-    translateY(-50%);
-
-  color: var(--teal);
-
-  z-index: 5;
-}
-
-.workflow-number {
-  color: var(--teal);
-
-  font-size: 9px;
-  font-weight: 900;
-
-  letter-spacing: .15em;
-}
-
-.workflow-card h3 {
-  margin-top: 25px;
-
-  font-size: 18px;
-}
-
-.workflow-card p {
-  margin-top: 9px;
-
-  color: var(--muted);
-
-  font-size: 11px;
-  line-height: 1.6;
-}
-
-
-/* =========================================================
-   CLOCK
-   ========================================================= */
-
-.clock-grid {
-  display: grid;
-
-  grid-template-columns:
-    repeat(2, 1fr);
-
-  gap: 15px;
-}
-
-.clock-card {
-  padding: 32px;
-
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-
-  background:
-    linear-gradient(
-      135deg,
-      rgba(85,229,209,.045),
-      rgba(255,255,255,.012)
-    );
-}
-
-.clock-label {
-  color: var(--teal);
-
-  font-size: 8px;
-  font-weight: 900;
-
-  letter-spacing: .18em;
-}
-
-.clock-time {
-  margin-top: 12px;
-
-  font-family:
-    "SFMono-Regular",
-    Consolas,
-    monospace;
-
-  font-size:
-    clamp(40px, 6vw, 74px);
-
-  line-height: 1;
-
-  font-weight: 700;
-
-  letter-spacing: -.07em;
-}
-
-.clock-date {
-  margin-top: 12px;
-
-  color: var(--muted);
-
-  font-size: 11px;
-}
-
-
-/* =========================================================
-   FOOTER
-   ========================================================= */
-
-footer {
-  margin-top: 30px;
-
-  border-top: 1px solid var(--line);
-
-  background: #030708;
-}
-
-.footer-inner {
-  min-height: 125px;
-
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-
-  gap: 30px;
-}
-
-.footer-brand {
-  color: var(--teal);
-
-  font-size: 13px;
-  font-weight: 950;
-
-  letter-spacing: .16em;
-}
-
-.footer-copy {
-  margin-top: 7px;
-
-  color: var(--muted2);
-
-  font-size: 9px;
-}
-
-.footer-links {
-  display: flex;
-  flex-wrap: wrap;
-
-  gap: 15px;
-}
-
-.footer-links a {
-  color: #71898a;
-
-  font-size: 9px;
-  font-weight: 900;
-
-  letter-spacing: .08em;
-}
-
-.footer-links a:hover {
-  color: var(--teal);
-}
-
-
-/* =========================================================
-   REVEAL
-   ========================================================= */
-
-.reveal {
-  opacity: 0;
-
-  transform:
-    translateY(24px);
-
-  transition:
-    opacity .75s ease,
-    transform .75s ease;
-}
-
-.reveal.visible {
-  opacity: 1;
-
-  transform:
-    translateY(0);
-}
-
-
-/* =========================================================
-   ANIMATIONS
-   ========================================================= */
-
-@keyframes pulse {
-
-  0%,
-  100% {
-    opacity: 1;
-    transform: scale(1);
-  }
-
-  50% {
-    opacity: .45;
-    transform: scale(.75);
-  }
-}
-
-@keyframes radarSweep {
-
-  from {
-    transform:
-      rotate(0deg);
-  }
-
-  to {
-    transform:
-      rotate(360deg);
-  }
-}
-
-@keyframes scanline {
-
-  from {
-    transform:
-      translateY(-100%);
-  }
-
-  to {
-    transform:
-      translateY(100%);
-  }
-}
-
-
-/* =========================================================
-   TABLET
-   ========================================================= */
-
-@media (max-width: 1050px) {
-
-  .hero-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .hero-visual {
-    min-height: 390px;
-  }
-
-  .workflow-grid {
-    grid-template-columns:
-      repeat(3, 1fr);
-  }
-
-  .workflow-card::after {
-    display: none;
-  }
-}
-
-
-/* =========================================================
-   MOBILE
-   ========================================================= */
-
-@media (max-width: 800px) {
-
-  .container {
-    width:
-      calc(100% - 28px);
-  }
-
-  .nav-links {
-    display: none;
-  }
-
-  .nav-status {
-    display: none;
-  }
-
-  .hero {
-    padding-top: 70px;
-  }
-
-  .hero-title {
-    font-size:
-      clamp(64px, 18vw, 110px);
-  }
-
-  .hero-description {
-    font-size: 14px;
-  }
-
-  .tools-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .workflow-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .clock-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .system-grid {
-    grid-template-columns:
-      repeat(2, 1fr);
-  }
-
-  .system-item:nth-child(2) {
-    border-right: 0;
-  }
-
-  .system-item:nth-child(-n+2) {
-    border-bottom:
-      1px solid var(--line);
-  }
-
-  .footer-inner {
-    flex-direction: column;
-
-    align-items: flex-start;
-
-    padding: 30px 0;
-  }
-}
-
-
-/* =========================================================
-   SMALL MOBILE
-   ========================================================= */
-
-@media (max-width: 520px) {
-
-  .section {
-    padding: 78px 0;
-  }
-
-  .hero-actions {
-    flex-direction: column;
-  }
-
-  .btn {
-    width: 100%;
-  }
-
-  .search-shortcut {
-    display: none;
-  }
-
-  .system-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .system-item {
-    border-right: 0;
-    border-bottom:
-      1px solid var(--line);
-  }
-
-  .system-item:last-child {
-    border-bottom: 0;
-  }
-
-  .hero-visual {
-    min-height: 330px;
-  }
-
-  .radar {
-    width: 300px;
-  }
-
-  .footer-links {
-    gap: 12px;
-  }
-}
-
-
-/* =========================================================
-   REDUCED MOTION
-   ========================================================= */
-
-@media (prefers-reduced-motion: reduce) {
-
-  html {
-    scroll-behavior: auto;
-  }
-
-  *,
-  *::before,
-  *::after {
-    animation-duration: .001ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: .001ms !important;
-  }
-}
-
-</style>
-<link rel="stylesheet" href="/assets/navtool-global.css"><style>.promo{padding:42px 0 0}.promo-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:16px}.promo-card{position:relative;overflow:hidden;display:flex;flex-direction:column;gap:11px;padding:28px;min-height:230px;border:1px solid var(--line2);border-radius:var(--radius);background:linear-gradient(135deg,rgba(30,185,168,.2),rgba(10,21,27,.92));transition:.25s}.promo-card:hover{transform:translateY(-3px);border-color:var(--teal)}.promo-card .tag{align-self:flex-start;padding:4px 10px;border-radius:99px;background:var(--teal);color:#03211d;font-size:9px;font-weight:900;letter-spacing:.14em}.promo-card h3{font-size:30px;letter-spacing:-.04em;line-height:1}.promo-card p{max-width:430px;color:var(--muted);font-size:14px;line-height:1.7}.promo-card .go{margin-top:auto;color:var(--teal);font-size:11px;font-weight:900;letter-spacing:.12em}.promo-card .deco{position:absolute;right:-26px;bottom:-26px;width:190px;opacity:.15}</style>
-<link rel="icon" type="image/png" href="/pic/allgemein/icon-192.png"><link rel="manifest" href="/manifest.webmanifest"><link rel="apple-touch-icon" href="/pic/allgemein/icon-180.png"><meta name="theme-color" content="#03090b"><meta name="apple-mobile-web-app-title" content="NavTool"><style>
-.app-banner{display:flex;align-items:center;justify-content:center;gap:10px 14px;flex-wrap:wrap;padding:calc(10px + env(safe-area-inset-top,0px)) 18px 10px;background:linear-gradient(90deg,#0d3b36,#0a2a33);border-bottom:1px solid rgba(85,229,209,.32);color:#ecfbf9;font-size:12px;line-height:1.35;font-weight:800;letter-spacing:.09em;text-align:center;text-decoration:none;text-transform:uppercase}
-.app-banner b{color:#55e5d1}.app-banner .go{padding:6px 14px;border-radius:99px;background:#55e5d1;color:#03211d;white-space:nowrap}
-.app-banner:hover .go{background:#8ff2e3}
-</style></head>
-
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NAVTOOL — Maritime Navigation Workspace</title>
+  <meta name="description" content="NAVTOOL — Maritime Navigation Workspace für Map, NAVTEXT, COLREG, Weather und nautische Berechnungen.">
+  <meta name="theme-color" content="#05090c">
+  <link rel="icon" type="image/png" href="/pic/allgemein/icon-192.png">
+  <link rel="stylesheet" href="/assets/navtool-global.css">
+  <style>
+    .hero {
+      padding: 72px 0 32px;
+    }
+    .hero-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.15fr) minmax(340px, 0.85fr);
+      align-items: center;
+      gap: 56px;
+    }
+    .hero-title {
+      margin: 18px 0 22px;
+      font-size: clamp(68px, 11vw, 156px);
+      line-height: 0.8;
+      letter-spacing: -0.09em;
+      font-weight: 950;
+    }
+    .hero-title span { color: var(--nt-teal); }
+    .hero-sub {
+      max-width: 680px;
+      color: #a3c0c0;
+      font-size: 18px;
+      line-height: 1.8;
+    }
+    .hero-actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 24px;
+    }
+    .nt-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 48px;
+      padding: 0 20px;
+      border-radius: 12px;
+      border: 1px solid rgba(85, 229, 209, 0.28);
+      background: rgba(85, 229, 209, 0.04);
+      color: var(--nt-text);
+      font-size: 10px;
+      font-weight: 900;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease;
+    }
+    .nt-btn:hover { transform: translateY(-2px); border-color: rgba(85,229,209,.45); }
+    .nt-btn.primary {
+      background: var(--nt-teal);
+      color: #03211d;
+      box-shadow: 0 16px 34px rgba(85, 229, 209, 0.12);
+      border-color: var(--nt-teal);
+    }
+    .search-shell {
+      position: relative;
+      max-width: 760px;
+      margin-top: 32px;
+    }
+    .search-box {
+      min-height: 64px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 0 14px 0 18px;
+      border: 1px solid rgba(85, 229, 209, 0.25);
+      border-radius: 16px;
+      background: rgba(7, 15, 19, 0.94);
+      box-shadow: 0 18px 40px rgba(0,0,0,0.24);
+    }
+    .search-box input {
+      flex: 1;
+      min-width: 0;
+      border: 0;
+      outline: 0;
+      background: transparent;
+      color: var(--nt-text);
+      font-size: 16px;
+    }
+    .search-box input::placeholder { color: #5f7878; }
+    .search-shortcut {
+      padding: 7px 8px;
+      border: 1px solid var(--nt-line);
+      border-radius: 7px;
+      color: var(--nt-muted-2);
+      font-size: 8px;
+      font-weight: 900;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+    .search-results {
+      position: absolute;
+      top: calc(100% + 8px);
+      left: 0;
+      right: 0;
+      display: none;
+      overflow: hidden;
+      border: 1px solid rgba(85, 229, 209, 0.22);
+      border-radius: 14px;
+      background: rgba(6, 13, 17, 0.98);
+      box-shadow: 0 24px 80px rgba(0,0,0,0.52);
+      z-index: 40;
+    }
+    .search-results.visible { display: block; }
+    .search-result {
+      width: 100%;
+      padding: 14px 16px;
+      border: 0;
+      border-bottom: 1px solid rgba(85,229,209,.08);
+      background: transparent;
+      color: var(--nt-text);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-align: left;
+      cursor: pointer;
+    }
+    .search-result:last-child { border-bottom: 0; }
+    .search-result:hover { background: rgba(85, 229, 209, 0.04); }
+    .result-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      border: 1px solid rgba(85, 229, 209, 0.17);
+      background: rgba(85,229,209,.05);
+      display: grid;
+      place-items: center;
+      color: var(--nt-teal);
+      font-weight: 900;
+      flex-shrink: 0;
+    }
+    .result-title {
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .result-copy {
+      margin-top: 2px;
+      font-size: 10px;
+      color: var(--nt-muted);
+    }
+    .result-arrow {
+      margin-left: auto;
+      color: var(--nt-teal);
+      font-size: 18px;
+    }
+    .radar-wrap {
+      position: relative;
+      min-height: 470px;
+      display: grid;
+      place-items: center;
+    }
+    .radar {
+      position: relative;
+      width: min(440px, 78vw);
+      aspect-ratio: 1;
+      border-radius: 50%;
+      border: 1px solid rgba(85,229,209,.2);
+      background: radial-gradient(circle, rgba(85, 229, 209, 0.06), transparent 58%);
+      box-shadow: inset 0 0 90px rgba(85,229,209,.04), 0 0 80px rgba(85,229,209,.04);
+    }
+    .radar::before, .radar::after {
+      content: "";
+      position: absolute;
+      border: 1px solid rgba(85,229,209,.12);
+      border-radius: 50%;
+    }
+    .radar::before { inset: 14%; }
+    .radar::after { inset: 29%; }
+    .radar-x, .radar-y {
+      position: absolute;
+      background: rgba(85,229,209,.14);
+    }
+    .radar-x { left: 5%; right: 5%; top: 50%; height: 1px; }
+    .radar-y { top: 5%; bottom: 5%; left: 50%; width: 1px; }
+    .radar-sweep {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 48%;
+      height: 2px;
+      transform-origin: left center;
+      background: linear-gradient(90deg, var(--nt-teal), transparent);
+      filter: drop-shadow(0 0 8px var(--nt-teal));
+      animation: sweep 4s linear infinite;
+    }
+    @keyframes sweep { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+    .radar-dot {
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--nt-teal);
+      box-shadow: 0 0 18px var(--nt-teal);
+    }
+    .dot-a { left: 65%; top: 27%; }
+    .dot-b { left: 28%; top: 60%; }
+    .dot-c { left: 68%; top: 73%; }
+    .ship-marker {
+      position: absolute;
+      left: 50%; top: 50%;
+      width: 72px; height: 72px;
+      transform: translate(-50%, -50%);
+      display: grid; place-items: center;
+      border-radius: 50%; border: 1px solid var(--nt-teal);
+      background: rgba(85,229,209,.06);
+      color: var(--nt-teal);
+      box-shadow: 0 0 40px rgba(85,229,209,.1);
+    }
+    .ship-marker::before { content: "▲"; font-size: 24px; }
+    .radar-label {
+      position: absolute;
+      padding: 6px 8px;
+      border-radius: 5px;
+      border: 1px solid var(--nt-line);
+      background: rgba(5,9,12,.8);
+      color: #688383;
+      font-size: 8px;
+      font-weight: 900;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+    .label-n { top: 5%; left: 50%; transform: translateX(-50%); }
+    .label-s { bottom: 5%; left: 50%; transform: translateX(-50%); }
+    .label-w { left: 3%; top: 50%; transform: translateY(-50%); }
+    .label-e { right: 3%; top: 50%; transform: translateY(-50%); }
+
+    .status-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      border-top: 1px solid var(--nt-line);
+      border-bottom: 1px solid var(--nt-line);
+      background: rgba(255,255,255,0.01);
+      margin-top: 28px;
+    }
+    .status-item {
+      min-height: 96px;
+      padding: 18px 24px;
+      border-right: 1px solid var(--nt-line);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .status-item:last-child { border-right: 0; }
+    .status-label {
+      font-size: 8px;
+      font-weight: 900;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--nt-muted-2);
+    }
+    .status-value {
+      margin-top: 8px;
+      font-size: 13px;
+      font-weight: 850;
+    }
+    .status-online { color: var(--nt-teal); }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0,1fr));
+      gap: 18px;
+      margin-top: 26px;
+    }
+    .tool-card {
+      position: relative;
+      min-height: 268px;
+      padding: 24px;
+      border: 1px solid rgba(85,229,209,.14);
+      border-radius: 22px;
+      background: linear-gradient(180deg, rgba(15, 29, 37, 0.92), rgba(9, 17, 21, 0.88));
+      overflow: hidden;
+    }
+    .tool-card::after {
+      content: "";
+      position: absolute;
+      right: -32px;
+      top: -28px;
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(85,229,209,.12), transparent 65%);
+    }
+    .tool-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .tool-icon {
+      width: 52px;
+      height: 52px;
+      display: grid;
+      place-items: center;
+      border-radius: 14px;
+      border: 1px solid rgba(85,229,209,.2);
+      background: rgba(85,229,209,.04);
+      color: var(--nt-teal);
+      font-size: 22px;
+      font-weight: 900;
+    }
+    .tool-badge {
+      font-size: 8px;
+      font-weight: 900;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--nt-teal);
+      background: rgba(85,229,209,.04);
+      border: 1px solid rgba(85,229,209,.22);
+      border-radius: 999px;
+      padding: 6px 8px;
+    }
+    .tool-card h3 {
+      margin: 18px 0 8px;
+      font-size: 14px;
+      font-weight: 900;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+    .tool-card p {
+      color: var(--nt-muted);
+      line-height: 1.7;
+      font-size: 14px;
+    }
+    .tool-card a {
+      display: inline-flex;
+      align-items: center;
+      margin-top: 18px;
+      color: var(--nt-teal);
+      font-size: 10px;
+      font-weight: 900;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+    .section-head {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 18px;
+      margin: 50px 0 18px;
+      align-items: end;
+    }
+    .section-head h2 {
+      font-size: clamp(34px, 4vw, 56px);
+      line-height: 0.96;
+      letter-spacing: -0.06em;
+      margin: 12px 0 0;
+    }
+    .section-head p {
+      max-width: 620px;
+      color: var(--nt-muted);
+      line-height: 1.8;
+      margin-top: 12px;
+      font-size: 15px;
+    }
+    .leadn {
+      width: min(100%, 620px);
+      color: var(--nt-muted);
+      line-height: 1.8;
+    }
+    @media (max-width: 980px) {
+      .hero-grid { grid-template-columns: 1fr; }
+      .status-row { grid-template-columns: repeat(2, 1fr); }
+      .grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 560px) {
+      .status-row { grid-template-columns: 1fr; }
+      .status-item { border-right: 0; border-bottom: 1px solid var(--nt-line); }
+      .status-item:last-child { border-bottom: 0; }
+      .hero { padding-top: 42px; }
+      .hero-sub { font-size: 15px; }
+    }
+  </style>
+</head>
 <body>
+  <header class="nt-header">
+    <div class="nt-hin">
+      <a class="nt-logo" href="/" aria-label="NavTool Startseite">
+        <img src="/pic/allgemein/logo.png" alt="NAVTOOL">
+      </a>
+      <nav class="nt-nav" aria-label="Hauptnavigation">
+        <a href="/map/">Map</a>
+        <a href="/navtext/">Navtext</a>
+        <a href="/colreg/">Colreg</a>
+        <a href="/weather/">Weather</a>
+        <a href="/calc/">Calc</a>
+        <a href="/simulator/">Simulator</a>
+        <a href="/status/">Status</a>
+        <a href="/admin/">Admin</a>
+      </nav>
+      <div class="nt-status-pill"><span class="dot"></span> Online</div>
+    </div>
+  </header>
 
+  <main class="nt-main">
+    <div class="nt-shell">
+      <section class="hero">
+        <div class="hero-grid">
+          <div>
+            <div class="nt-kicker">Maritime navigation workspace</div>
+            <h1 class="hero-title">NAV<span>TOOL</span></h1>
+            <p class="hero-sub">Alles für die Seefahrt an einem Ort: Karten, NAVTEXT, COLREG, Wetter, Berechnungen, Simulator und App. Sauber, schnell und mit einem durchgängigen Design für den ganzen nautischen Alltag.</p>
+            <div class="hero-actions">
+              <a class="nt-btn primary" href="/map/">Zur Startseite</a>
+              <a class="nt-btn" href="/status/">Status prüfen</a>
+            </div>
 
-
-<!-- =======================================================
-     HEADER
-     ======================================================= -->
-
-
-
-
-
-<!-- =======================================================
-     MAIN
-     ======================================================= -->
-
-<main>
-
-
-<!-- =======================================================
-     HERO
-     ======================================================= -->
-
-<section class="hero">
-
-  <div class="container hero-grid">
-
-
-    <div class="hero-content reveal">
-
-      <div class="hero-kicker">
-
-        <span>
-          NAVTOOL / 2026
-        </span>
-
-        DIGITAL MARITIME WORKSPACE
-
-      </div>
-
-
-      <h1 class="hero-title">
-
-        NAV<span>TOOL</span>
-
-      </h1>
-
-
-      <p class="hero-description">
-
-        Eine zentrale digitale Arbeitsumgebung
-        für maritime Navigation.
-
-        Karten, Routing, NAVTEXT, COLREG,
-        Wetter und nautische Berechnungen —
-        direkt aus einer Oberfläche erreichbar.
-
-      </p>
-
-
-      <div class="hero-actions">
-
-        <a
-          class="btn btn-primary"
-          href="./map/"
-        >
-          MAP ÖFFNEN →
-        </a>
-
-
-        <a
-          class="btn btn-secondary"
-          href="./navtext/"
-        >
-          NAVTEXT →
-        </a>
-
-
-        <a
-          class="btn btn-secondary"
-          href="./colreg/"
-        >
-          COLREG →
-        </a>
-
-      <a class="btn btn-secondary" href="./simulator/">SIMULATOR →</a>
-        <a class="btn btn-secondary" href="./app/">APP LADEN →</a>
-      </div>
-
-
-      <!-- SEARCH -->
-
-      <div class="search-wrapper">
-
-        <div class="search-box">
-
-          <div class="search-icon">
-            ⌕
+            <div class="search-shell">
+              <div class="search-box">
+                <span aria-hidden="true">⌕</span>
+                <input id="globalSearch" type="search" placeholder="Kompassfehler, Backbord, Karte, Kumulus, Karibikstrom…" autocomplete="off">
+                <span class="search-shortcut">Enter</span>
+              </div>
+              <div id="searchResults" class="search-results" aria-live="polite"></div>
+            </div>
           </div>
 
-
-          <input
-            id="globalSearch"
-            type="search"
-            autocomplete="off"
-            spellcheck="false"
-            placeholder="NAVTOOL durchsuchen – z. B. Map, COLREG, Wetter..."
-            aria-label="NAVTOOL durchsuchen"
-            aria-autocomplete="list"
-          >
-
-
-          <div class="search-shortcut">
-            ENTER
+          <div class="radar-wrap" aria-hidden="true">
+            <div class="radar">
+              <div class="radar-x"></div>
+              <div class="radar-y"></div>
+              <div class="radar-sweep"></div>
+              <div class="radar-dot dot-a"></div>
+              <div class="radar-dot dot-b"></div>
+              <div class="radar-dot dot-c"></div>
+              <div class="ship-marker"></div>
+              <div class="radar-label label-n">N</div>
+              <div class="radar-label label-e">E</div>
+              <div class="radar-label label-s">S</div>
+              <div class="radar-label label-w">W</div>
+            </div>
           </div>
-
         </div>
+      </section>
 
-
-        <div
-          id="searchResults"
-          class="search-results"
-          role="listbox"
-        ></div>
-
+      <div class="status-row" aria-label="Systemstatus">
+        <div class="status-item">
+          <span class="status-label">System</span>
+          <span class="status-value status-online">Online</span>
+        </div>
+        <div class="status-item">
+          <span class="status-label">Bereiche</span>
+          <span class="status-value">6 Module</span>
+        </div>
+        <div class="status-item">
+          <span class="status-label">Offline</span>
+          <span class="status-value status-online">Vorbereitet</span>
+        </div>
+        <div class="status-item">
+          <span class="status-label">Status</span>
+          <span class="status-value">Aktiv</span>
+        </div>
       </div>
 
-    </div>
-
-
-
-    <!-- RADAR -->
-
-    <div class="hero-visual reveal">
-
-      <div class="radar">
-
-        <div class="radar-x"></div>
-        <div class="radar-y"></div>
-
-        <div class="radar-sweep"></div>
-
-        <div class="radar-dot dot-a"></div>
-        <div class="radar-dot dot-b"></div>
-        <div class="radar-dot dot-c"></div>
-
-        <div class="ship-marker"></div>
-
-
-        <div class="radar-label label-n">
-          N 000°
-        </div>
-
-        <div class="radar-label label-s">
-          S 180°
-        </div>
-
-        <div class="radar-label label-w">
-          W 270°
-        </div>
-
-        <div class="radar-label label-e">
-          E 090°
-        </div>
-
-      </div>
-
-    </div>
-
-  </div>
-
-</section>
-
-
-
-<!-- =======================================================
-     SYSTEM
-     ======================================================= -->
-
-<section class="system-bar">
-
-  <div class="container system-grid">
-
-
-    <div class="system-item">
-
-      <div class="system-label">
-        Network
-      </div>
-
-      <div class="system-value system-online">
-        ● ONLINE
-      </div>
-
-    </div>
-
-
-    <div class="system-item">
-
-      <div class="system-label">
-        Platform
-      </div>
-
-      <div class="system-value">
-        GitHub Pages
-      </div>
-
-    </div>
-
-
-    <div class="system-item">
-
-      <div class="system-label">
-        Interface
-      </div>
-
-      <div class="system-value">
-        NAVTOOL HUB
-      </div>
-
-    </div>
-
-
-    <div class="system-item">
-
-      <div class="system-label">
-        Modules
-      </div>
-
-      <div class="system-value">
-        07 ACTIVE
-      </div>
-
-    </div>
-
-
-  </div>
-
-</section>
-
-
-
-<!-- =======================================================
-     TOOLS
-     ======================================================= -->
-
-<section class="promo"><div class="container"><div class="promo-grid">
-<a class="promo-card" href="./simulator/"><span class="tag">NEU</span><h3>Steering Simulator</h3><p>Ruder von Hand drehen, Kreiselkompass und Rate of Turn lesen, Maschinentelegraf bedienen. Mit Übungskursen von Anfänger bis Experte.</p><span class="go">JETZT STEUERN →</span><svg class="deco" viewBox="0 0 100 100" fill="none" stroke="#55e5d1" stroke-width="3"><circle cx="50" cy="50" r="40"/><circle cx="50" cy="50" r="10"/><path d="M50 10v30M50 60v30M10 50h30M60 50h30"/></svg></a>
-<a class="promo-card" href="./app/"><span class="tag">NEU</span><h3>NavTool App</h3><p>Alle Werkzeuge auf iPhone, iPad und Computer. Auch ohne Netz, mit Favoriten, Suche und eigenem Konto.</p><span class="go">APP LADEN →</span><svg class="deco" viewBox="0 0 100 100" fill="none" stroke="#55e5d1" stroke-width="3"><rect x="28" y="8" width="44" height="84" rx="9"/><path d="M42 80h16"/></svg></a>
-<a class="promo-card" href="./status/"><span class="tag" style="background:#1eb9a8">LIVE</span><h3>Status</h3><p>Was läuft gerade, was ist in Wartung oder Planung? Der Überblick über alle Bereiche.</p><span class="go">STATUS ANSEHEN →</span><svg class="deco" viewBox="0 0 100 100" fill="none" stroke="#55e5d1" stroke-width="3"><path d="M8 54h20l10-30 18 52 10-22h26"/></svg></a>
-</div></div></section>
-<section
-  id="tools"
-  class="section"
->
-
-  <div class="container">
-
-
-    <div class="section-header reveal">
-
-      <div class="eyebrow">
-        NAVTOOL MODULES
-      </div>
-
-      <h2 class="section-title">
-        Die Werkzeuge.
-      </h2>
-
-      <p class="section-description">
-        Sieben Module für die tägliche
-        maritime Arbeit.
-      </p>
-
-    </div>
-
-
-    <div class="tools-grid">
-
-
-      <!-- MAP -->
-
-      <a
-        href="./map/"
-        class="tool-card reveal"
-      >
-
-        <div class="tool-number">
-          01
-        </div>
-
-        <div class="tool-icon">
-          ◉
-        </div>
-
-        <div class="tool-label">
-          NAVIGATION / ROUTING
-        </div>
-
-        <h3>
-          MAP
-        </h3>
-
-        <p>
-          Interaktive maritime Karte,
-          Positionen, Waypoints und
-          Routenplanung.
-        </p>
-
-        <div class="tool-arrow">
-          →
-        </div>
-
-      </a>
-
-
-
-      <!-- NAVTEXT -->
-
-      <a
-        href="./navtext/"
-        class="tool-card reveal"
-      >
-
-        <div class="tool-number">
-          02
-        </div>
-
-        <div class="tool-icon">
-          ≡
-        </div>
-
-        <div class="tool-label">
-          NAVIGATION / TEXT
-        </div>
-
-        <h3>
-          NAVTEXT
-        </h3>
-
-        <p>
-          Nautische Texte,
-          Navigationsinformationen und
-          strukturierte Informationen.
-        </p>
-
-        <div class="tool-arrow">
-          →
-        </div>
-
-      </a>
-
-
-
-      <!-- COLREG -->
-
-      <a
-        href="./colreg/"
-        class="tool-card reveal"
-      >
-
-        <div class="tool-number">
-          03
-        </div>
-
-        <div class="tool-icon">
-          ⚓
-        </div>
-
-        <div class="tool-label">
-          NAVIGATION / SAFETY
-        </div>
-
-        <h3>
-          COLREG
-        </h3>
-
-        <p>
-          Kollisionsverhütungsregeln,
-          Lichterführung, Signalkörper
-          und Schallsignale.
-        </p>
-
-        <div class="tool-arrow">
-          →
-        </div>
-
-      </a>
-
-
-
-      <!-- WEATHER -->
-
-      <a
-        href="./weather/"
-        class="tool-card reveal"
-      >
-
-        <div class="tool-number">
-          04
-        </div>
-
-        <div class="tool-icon">
-          ☁
-        </div>
-
-        <div class="tool-label">
-          METEO / SEA
-        </div>
-
-        <h3>
-          WEATHER
-        </h3>
-
-        <p>
-          Wetter, Wind, Temperatur
-          und maritime Wetterinformationen
-          für die Navigation.
-        </p>
-
-        <div class="tool-arrow">
-          →
-        </div>
-
-      </a>
-
-
-
-      <!-- CALC -->
-
-      <a
-        href="./calc/"
-        class="tool-card reveal"
-      >
-
-        <div class="tool-number">
-          05
-        </div>
-
-        <div class="tool-icon">
-          Σ
-        </div>
-
-        <div class="tool-label">
-          NAVIGATION / CALCULATION
-        </div>
-
-        <h3>
-          CALC
-        </h3>
-
-        <p>
-          Nautische Berechnungen,
-          Distanzen, Zeiten, Kurse,
-          ETA und weitere Funktionen.
-        </p>
-
-        <div class="tool-arrow">
-          →
-        </div>
-
-      </a>
-<a href="./simulator/" class="tool-card reveal"><div class="tool-number">06</div><div class="tool-icon">◎</div><div class="tool-label">TRAINING / STEERING</div><h3>SIMULATOR</h3><p>Steuern üben mit Handrad, Kreiselkompass, Rate of Turn und Maschinentelegraf.</p><div class="tool-arrow">→</div></a><a href="./app/" class="tool-card reveal"><div class="tool-number">07</div><div class="tool-icon">▢</div><div class="tool-label">OFFLINE / MOBILE</div><h3>APP</h3><p>NavTool als App für iPhone, iPad und Computer, auch ohne Netz.</p><div class="tool-arrow">→</div></a>
-
-
-    </div>
-
-  </div>
-
-</section>
-
-
-
-<!-- =======================================================
-     WORKFLOW
-     ======================================================= -->
-
-<section class="section">
-
-  <div class="container">
-
-
-    <div class="section-header reveal">
-
-      <div class="eyebrow">
-        NAVIGATION WORKFLOW
-      </div>
-
-      <h2 class="section-title">
-        Ein Workflow.
-      </h2>
-
-      <p class="section-description">
-        Die einzelnen NAVTOOL-Module greifen
-        logisch ineinander.
-      </p>
-
-    </div>
-
-
-    <div class="workflow-grid">
-
-
-      <a
-        href="./map/"
-        class="workflow-card reveal"
-      >
-
-        <div class="workflow-number">
-          01 / MAP
-        </div>
-
-        <h3>
-          Route planen
-        </h3>
-
-        <p>
-          Positionen, Waypoints und
-          Routen auf der Karte.
-        </p>
-
-      </a>
-
-
-      <a
-        href="./navtext/"
-        class="workflow-card reveal"
-      >
-
-        <div class="workflow-number">
-          02 / NAVTEXT
-        </div>
-
-        <h3>
-          Informationen
-        </h3>
-
-        <p>
-          Nautische Informationen
-          strukturiert erfassen.
-        </p>
-
-      </a>
-
-
-      <a
-        href="./colreg/"
-        class="workflow-card reveal"
-      >
-
-        <div class="workflow-number">
-          03 / COLREG
-        </div>
-
-        <h3>
-          Situation prüfen
-        </h3>
-
-        <p>
-          Kollisionsverhütung,
-          Lichter und Signale.
-        </p>
-
-      </a>
-
-
-      <a
-        href="./weather/"
-        class="workflow-card reveal"
-      >
-
-        <div class="workflow-number">
-          04 / WEATHER
-        </div>
-
-        <h3>
-          Wetter prüfen
-        </h3>
-
-        <p>
-          Wind, Wetter und
-          maritime Bedingungen.
-        </p>
-
-      </a>
-
-
-      <a
-        href="./calc/"
-        class="workflow-card reveal"
-      >
-
-        <div class="workflow-number">
-          05 / CALC
-        </div>
-
-        <h3>
-          Berechnen
-        </h3>
-
-        <p>
-          Zeit, Distanz, Kurs,
-          ETA und weitere Werte.
-        </p>
-
-      </a>
-<a href="./simulator/" class="workflow-card reveal"><div class="workflow-number">06 / SIMULATOR</div><h3>Steuern üben</h3><p>Ruder, Kompass und Telegraf trainieren.</p></a><a href="./app/" class="workflow-card reveal"><div class="workflow-number">07 / APP</div><h3>Unterwegs nutzen</h3><p>Alles offline auf dem Gerät.</p></a>
-
-
-    </div>
-
-  </div>
-
-</section>
-
-
-
-<!-- =======================================================
-     CLOCK
-     ======================================================= -->
-
-<section class="section">
-
-  <div class="container">
-
-
-    <div class="section-header reveal">
-
-      <div class="eyebrow">
-        SHIP CLOCK
-      </div>
-
-      <h2 class="section-title">
-        Time & UTC.
-      </h2>
-
-      <p class="section-description">
-        Lokale Zeit und UTC direkt im
-        NAVTOOL Hub.
-      </p>
-
-    </div>
-
-
-    <div class="clock-grid">
-
-
-      <div class="clock-card reveal">
-
-        <div class="clock-label">
-          LOCAL TIME
-        </div>
-
-        <div
-          id="localTime"
-          class="clock-time"
-        >
-          --:--:--
-        </div>
-
-        <div
-          id="localDate"
-          class="clock-date"
-        >
-          --
-        </div>
-
-      </div>
-
-
-      <div class="clock-card reveal">
-
-        <div class="clock-label">
-          UTC
-        </div>
-
-        <div
-          id="utcTime"
-          class="clock-time"
-        >
-          --:--:--
-        </div>
-
-        <div
-          id="utcDate"
-          class="clock-date"
-        >
-          --
-        </div>
-
-      </div>
-
-
-    </div>
-
-  </div>
-
-</section>
-
-</main>
-
-
-
-<!-- =======================================================
-     FOOTER
-     ======================================================= -->
-
-
-
-
-
-<script>
-
-/* =========================================================
-   NAVTOOL SEARCH
-   ========================================================= */
-
-const routes = [{"title": "MAP & ROUTING", "description": "Interaktive Seekarte und Routenplanung.", "url": "/map/", "icon": "◉", "keywords": ["map", "karte", "karten", "seekarte", "routing", "route", "routen", "waypoint", "waypoints", "position", "searoute"]}, {"title": "NAVTEXT", "description": "Stationen und Meldungen.", "url": "/navtext/", "icon": "≡", "keywords": ["navtext", "navtex", "nav text", "funk", "warnung", "warnungen", "stationen", "meldungen", "sicherheitsmeldungen"]}, {"title": "COLREG / KVR", "description": "Kollisionsverhütungsregeln im Überblick.", "url": "/colreg/", "icon": "⚓", "keywords": ["colreg", "kvr", "kollision", "kollisionsverhütung", "kollisionsverhuetung", "verkehrsregeln", "regeln", "collision regulations"]}, {"title": "Tonnen: Backbord & Steuerbord", "description": "IALA-Seezeichen, laterale und Kardinaltonnen.", "url": "/colreg/#buoys", "icon": "⚓", "keywords": ["backbord", "steuerbord", "tonne", "tonnen", "backbordtonne", "steuerbordtonne", "seezeichen", "kardinal", "kardinalzeichen", "iala", "lateral", "fahrwasser"]}, {"title": "Lichterführung", "description": "Positionslichter, Signalkörper und Tageszeichen.", "url": "/colreg/#lights", "icon": "⚓", "keywords": ["lichter", "lichterführung", "lichterfuehrung", "positionslichter", "topplicht", "seitenlicht", "heck", "signalkörper", "signalkoerper"]}, {"title": "Schallsignale", "description": "Manöver- und Nebelsignale.", "url": "/colreg/#sounds", "icon": "⚓", "keywords": ["schallsignale", "schallsignal", "nebelsignal", "nebelhorn", "manöversignal", "pfeifen", "sound signals"]}, {"title": "Was muss ich jetzt tun?", "description": "Kreuzen, Überholen, Gegenkurs, Nebel mit je 3 Grafiken.", "url": "/colreg/#scenarios", "icon": "⚓", "keywords": ["ausweichen", "ausweichpflicht", "kreuzen", "kreuzende kurse", "überholen", "ueberholen", "gegenkurs", "begegnung", "nebel", "kurshalter", "situation", "was muss ich tun"]}, {"title": "Knoten", "description": "Palstek, Webleinenstek, Achtknoten und mehr.", "url": "/colreg/#knots", "icon": "⚓", "keywords": ["knoten", "palstek", "webleinenstek", "achtknoten", "kreuzknoten", "schotstek", "stek"]}, {"title": "WEATHER", "description": "Wetter, Wolken, Wind und Strömungen.", "url": "/weather/", "icon": "☁", "keywords": ["weather", "wetter", "seewetter", "meteo", "meteorologie", "vorhersage", "forecast", "radar"]}, {"title": "Wolken (Wolkenatlas)", "description": "Wolkengattungen mit Bildern.", "url": "/weather/#cloudPanel", "icon": "☁", "keywords": ["wolken", "wolke", "wolkenatlas", "kumulus", "cumulus", "cirrus", "zirrus", "stratus", "altocumulus", "altostratus", "cirrostratus", "cirrocumulus", "cumulonimbus", "nimbostratus", "stratocumulus", "gewitterwolke", "schäfchenwolken"]}, {"title": "Meeresströmungen", "description": "Karibikstrom, Golfstrom und weitere Strömungen.", "url": "/weather/#currentPanel", "icon": "☁", "keywords": ["strömung", "strömungen", "stroemung", "karibikstrom", "karibik", "golfstrom", "humboldtstrom", "kuroshio", "meeresströmung", "ozeanströmung"]}, {"title": "Wind & Windberechnung", "description": "Wahrer und scheinbarer Wind.", "url": "/weather/#wind", "icon": "☁", "keywords": ["wind", "windberechnung", "wahrer wind", "scheinbarer wind", "beaufort", "bft", "windstärke", "windstaerke"]}, {"title": "Luftdruck", "description": "Isobaren, Hoch, Tief und Fronten.", "url": "/weather/#pressure", "icon": "☁", "keywords": ["luftdruck", "isobaren", "hoch", "tief", "front", "fronten", "druck"]}, {"title": "CALC", "description": "Nautische Berechnungen.", "url": "/calc/", "icon": "Σ", "keywords": ["calc", "rechner", "rechenblatt", "berechnung", "berechnen", "schiffstheorie"]}, {"title": "Gyro Error · Kompassfehler", "description": "Kreiselfehler aus dem Sonnenazimut.", "url": "/calc/#gyro", "icon": "Σ", "keywords": ["kompasserror", "kompassfehler", "kompass error", "gyro", "gyro error", "gyroerror", "kreiselfehler", "kreisel", "azimut", "sonnenazimut", "deviation", "missweisung", "sonne"]}, {"title": "Steering Simulator", "description": "Ruder, Kreiselkompass, Rate of Turn, Telegraf.", "url": "/simulator/", "icon": "◎", "keywords": ["simulator", "steuern", "steuern üben", "ruder", "rudern", "rudergänger", "telegraf", "maschinentelegraf", "kreiselkompass", "rate of turn", "rot", "üben", "handrad", "training"]}, {"title": "NavTool App", "description": "Offline auf iPhone, iPad und Computer.", "url": "/app/", "icon": "▢", "keywords": ["app", "offline", "download", "installieren", "iphone", "ipad", "android", "herunterladen"]}, {"title": "Status", "description": "Was läuft gerade, was ist in Wartung?", "url": "/status/", "icon": "●", "keywords": ["status", "störung", "stoerung", "wartung", "online", "funktioniert", "planung"]}, {"title": "Besteckrechnung", "description": "Mittelbreite, Distanz, rwK", "url": "/calc/#besteck", "icon": "Σ", "keywords": ["besteckrechnung", "besteckrechnung", "mittelbreite", "distanz"]}, {"title": "Großkreisnavigation", "description": "Distanz & Anfangskurs", "url": "/calc/#gk", "icon": "Σ", "keywords": ["großkreisnavigation", "großkreisnavigation", "distanz", "anfangskurs"]}, {"title": "Stromdreieck", "description": "KÜG & FÜG", "url": "/calc/#strom", "icon": "Σ", "keywords": ["stromdreieck", "stromdreieck"]}, {"title": "Koppelnavigation", "description": "Fahrt · Weg · ETA", "url": "/calc/#koppeln", "icon": "Σ", "keywords": ["koppelnavigation", "koppelnavigation", "fahrt"]}, {"title": "UTC-Rechner", "description": "Ortszeit → UTC", "url": "/calc/#utc", "icon": "Σ", "keywords": ["utc-rechner", "rechner", "ortszeit"]}, {"title": "Feuer in der Kimm", "description": "Sichtweite berechnen", "url": "/calc/#feuer", "icon": "Σ", "keywords": ["feuer in der kimm", "feuer", "kimm", "sichtweite", "berechnen"]}, {"title": "Gezeiten", "description": "Zwölftelregel", "url": "/calc/#tide", "icon": "Σ", "keywords": ["gezeiten", "gezeiten", "zwölftelregel"]}, {"title": "Radarhorizont", "description": "Reichweite nach Antennenhöhe", "url": "/calc/#radar", "icon": "Σ", "keywords": ["radarhorizont", "radarhorizont", "reichweite", "nach", "antennenhöhe"]}, {"title": "Kompassfehler", "description": "KK ⇄ MgK ⇄ rwK mit Missweisung & Ablenkung", "url": "/calc/#kompass", "icon": "Σ", "keywords": ["kompassfehler", "kompassfehler", "missweisung", "ablenkung"]}, {"title": "Schwerpunktverschiebung", "description": "Verschieben, Zuladen, Entladen, Anheben", "url": "/calc/#sv", "icon": "Σ", "keywords": ["schwerpunktverschiebung", "schwerpunktverschiebung", "verschieben", "zuladen", "entladen", "anheben"]}, {"title": "Gesamtschwerpunkt", "description": "Körper mit L×B×H, Masse und Lage", "url": "/calc/#sp", "icon": "Σ", "keywords": ["gesamtschwerpunkt", "gesamtschwerpunkt", "körper", "masse", "lage"]}, {"title": "Anfangsstabilität (GM)", "description": "In Planung", "url": "/calc/#s1", "icon": "Σ", "keywords": ["anfangsstabilität (gm)", "anfangsstabilität", "planung"]}, {"title": "Trimm & Tiefgang", "description": "In Planung", "url": "/calc/#s2", "icon": "Σ", "keywords": ["trimm & tiefgang", "trimm", "tiefgang", "planung"]}];
-
-
-/* =========================================================
-   SEARCH
-   ========================================================= */
-
-const searchInput =
-  document.getElementById("globalSearch");
-
-const searchResults =
-  document.getElementById("searchResults");
-
-let activeIndex = -1;
-
-
-function normalize(text) {
-
-  return text
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .trim();
-
-}
-
-
-function findRoutes(query) {
-
-  const q =
-    normalize(query);
-
-  if (!q) {
-    return [];
-  }
-
-
-  return routes
-
-    .map(route => {
-
-      let score = 0;
-
-
-      if (
-        normalize(route.title)
-          .includes(q)
-      ) {
-        score += 20;
-      }
-
-
-      route.keywords.forEach(keyword => {
-
-        const k =
-          normalize(keyword);
-
-
-        if (k === q) {
-          score += 30;
-        }
-
-        else if (k.includes(q)) {
-          score += 10;
-        }
-
-        else if (q.includes(k)) {
-          score += 6;
-        }
-
-      });
-
-
-      return {
-        ...route,
-        score
-      };
-
-    })
-
-    .filter(route => route.score > 0)
-
-    .sort(
-      (a, b) =>
-        b.score - a.score
-    )
-
-    .slice(0, 5);
-
-}
-
-
-/* =========================================================
-   RENDER
-   ========================================================= */
-
-function renderSearch() {
-
-  const query =
-    searchInput.value;
-
-
-  searchResults.innerHTML = "";
-
-  activeIndex = -1;
-
-
-  if (!query.trim()) {
-
-    searchResults.classList.remove(
-      "visible"
-    );
-
-    return;
-
-  }
-
-
-  const matches =
-    findRoutes(query);
-
-
-  if (!matches.length) {
-
-    searchResults.innerHTML = `
-
-      <button
-        type="button"
-        class="search-result"
-        id="webSearchButton"
-      >
-
-        <div class="result-icon">
-          ⌕
-        </div>
-
-        <div>
-
-          <div class="result-title">
-            WEB-SUCHE
+      <section class="nt-section">
+        <div class="section-head">
+          <div>
+            <div class="nt-kicker">Tools</div>
+            <h2>Alles auf einen Blick.</h2>
           </div>
-
-          <div class="result-description">
-            Keine NAVTOOL-Seite gefunden.
-            Im Web suchen.
-          </div>
-
+          <p class="leadn">Von der Karte bis zum Rechenblatt – alle Bereiche nutzen dasselbe Design, dieselben Farben und dieselbe Logik, damit die Navigation klar, schnell und einheitlich bleibt.</p>
         </div>
 
-        <div class="result-arrow">
-          →
+        <div class="grid">
+          <article class="tool-card">
+            <div class="tool-meta">
+              <div class="tool-icon">M</div>
+              <span class="tool-badge">Map</span>
+            </div>
+            <h3>Map</h3>
+            <p>Karten, routingrelevante Informationen und navigationsnahe Workflows für eine schnelle Lagebeurteilung im Einsatz.</p>
+            <a href="/map/">Öffnen →</a>
+          </article>
+
+          <article class="tool-card">
+            <div class="tool-meta">
+              <div class="tool-icon">N</div>
+              <span class="tool-badge">Navtext</span>
+            </div>
+            <h3>Navtext</h3>
+            <p>Stationen, Meldungen, Warnungen und kritische Informationen kompakt in einer klaren, nutzbaren Oberfläche.</p>
+            <a href="/navtext/">Öffnen →</a>
+          </article>
+
+          <article class="tool-card">
+            <div class="tool-meta">
+              <div class="tool-icon">C</div>
+              <span class="tool-badge">Colreg</span>
+            </div>
+            <h3>Colreg</h3>
+            <p>Regeln, Lichter, Schallsignale, Tonnen und Situationstypen für die sichere Begegnung auf See – grafisch verständlich.</p>
+            <a href="/colreg/">Öffnen →</a>
+          </article>
+
+          <article class="tool-card">
+            <div class="tool-meta">
+              <div class="tool-icon">W</div>
+              <span class="tool-badge">Weather</span>
+            </div>
+            <h3>Weather</h3>
+            <p>Wetterlage, Wind, Druck, Wolken und tragfähige Infos in einem übersichtlichen nautischen Dashboard.</p>
+            <a href="/weather/">Öffnen →</a>
+          </article>
+
+          <article class="tool-card">
+            <div class="tool-meta">
+              <div class="tool-icon">∑</div>
+              <span class="tool-badge">Calc</span>
+            </div>
+            <h3>Calc</h3>
+            <p>Kompassfehler, Besteck, Stromdreieck, Sichtweiten und Schiffstheorie – alles auf einem verständlichen Rechenblatt.</p>
+            <a href="/calc/">Öffnen →</a>
+          </article>
+
+          <article class="tool-card">
+            <div class="tool-meta">
+              <div class="tool-icon">S</div>
+              <span class="tool-badge">App</span>
+            </div>
+            <h3>App</h3>
+            <p>Mobile Startseite, Suche, Favoriten, Login, offline-taugliche Nutzung und ein konsistentes NavTool-Erlebnis im Handy-Format.</p>
+            <a href="/app/start/">Öffnen →</a>
+          </article>
         </div>
+      </section>
+    </div>
+  </main>
 
-      </button>
-
-    `;
-
-
-    searchResults
-      .classList
-      .add("visible");
-
-
-    document
-      .getElementById("webSearchButton")
-      .addEventListener(
-        "click",
-        webSearch
-      );
-
-
-    return;
-  }
-
-
-  matches.forEach(
-    (route, index) => {
-
-      const button =
-        document.createElement(
-          "button"
-        );
-
-
-      button.type = "button";
-
-      button.className =
-        "search-result";
-
-      button.dataset.index =
-        index;
-
-
-      button.innerHTML = `
-
-        <div class="result-icon">
-          ${route.icon}
+  <footer class="nt-foot" role="contentinfo">
+    <div class="nt-foot-in">
+      <div>
+        <div class="nt-foot-brand">
+          <img src="/pic/allgemein/logo.png" alt="NavTool">
         </div>
+        <div class="nt-foot-copy">Maritime Navigation Workspace · navtool.de · Navigation, Wetter, Regeln und Berechnung</div>
+      </div>
+      <div class="nt-foot-links">
+        <a href="/">Home</a>
+        <a href="/status/">Status</a>
+        <a href="/admin/">Admin</a>
+        <a href="/impressum/">Impressum</a>
+      </div>
+    </div>
+    <div class="nt-foot-bar">
+      <span>NavTool</span>
+      <span><a href="/status/">Status</a></span>
+    </div>
+  </footer>
 
-        <div>
-
-          <div class="result-title">
-            ${route.title}
-          </div>
-
-          <div class="result-description">
-            ${route.description}
-          </div>
-
-        </div>
-
-        <div class="result-arrow">
-          →
-        </div>
-
-      `;
-
-
-      button.addEventListener(
-        "click",
-        () => {
-
-          window.location.href =
-            route.url;
-
-        }
-      );
-
-
-      searchResults.appendChild(
-        button
-      );
-
+  <script>
+    const data = [
+      { label: 'Kompassfehler', url: '/calc/#gyro', icon: 'K', text: 'Gyro Error / Kompassfehler' },
+      { label: 'Backbord', url: '/colreg/#buoys', icon: 'B', text: 'Tonnen und Karten' },
+      { label: 'Karte', url: '/map/', icon: 'M', text: 'Karten und Lage' },
+      { label: 'Kumulus', url: '/weather/', icon: 'W', text: 'Wolken / Wetterlage' },
+      { label: 'Karibikstrom', url: '/weather/', icon: 'S', text: 'Strömungen und Wetter' },
+      { label: 'Lichter', url: '/colreg/#lights', icon: 'L', text: 'Schiffslichter' },
+      { label: 'Schallsignale', url: '/colreg/#sounds', icon: 'S', text: 'Schallsignal erkennen' },
+      { label: 'Status', url: '/status/', icon: '✓', text: 'Systemstatus' }
+    ];
+    const input = document.getElementById('globalSearch');
+    const results = document.getElementById('searchResults');
+    function getMatches(value) {
+      const q = value.trim().toLowerCase();
+      if (!q) return [];
+      return data.filter(item => {
+        return item.label.toLowerCase().includes(q) || item.text.toLowerCase().includes(q) || q.includes(item.label.toLowerCase().split(' ')[0]);
+      }).slice(0, 6);
     }
-  );
-
-
-  searchResults.classList.add(
-    "visible"
-  );
-
-}
-
-
-/* =========================================================
-   WEB SEARCH
-   ========================================================= */
-
-function webSearch() {
-
-  const query =
-    searchInput.value.trim();
-
-
-  if (!query) {
-    return;
-  }
-
-
-  const url =
-    "https://www.ecosia.org/search?q=" +
-    encodeURIComponent(query);
-
-
-  window.open(
-    url,
-    "_blank",
-    "noopener,noreferrer"
-  );
-
-}
-
-
-/* =========================================================
-   ENTER
-   ========================================================= */
-
-function executeSearch() {
-
-  const query =
-    searchInput.value.trim();
-
-
-  if (!query) {
-    return;
-  }
-
-
-  const matches =
-    findRoutes(query);
-
-
-  if (matches.length) {
-
-    window.location.href =
-      matches[0].url;
-
-    return;
-
-  }
-
-
-  webSearch();
-
-}
-
-
-/* =========================================================
-   INPUT
-   ========================================================= */
-
-searchInput.addEventListener(
-  "input",
-  renderSearch
-);
-
-
-searchInput.addEventListener(
-  "keydown",
-  event => {
-
-    const items =
-      [
-        ...searchResults.querySelectorAll(
-          ".search-result"
-        )
-      ];
-
-
-    if (
-      event.key === "ArrowDown"
-    ) {
-
-      event.preventDefault();
-
-
-      if (!items.length) {
+    input.addEventListener('input', () => {
+      const matches = getMatches(input.value);
+      if (!matches.length) {
+        results.classList.remove('visible');
+        results.innerHTML = '';
         return;
       }
-
-
-      activeIndex =
-        Math.min(
-          activeIndex + 1,
-          items.length - 1
-        );
-
-
-      items.forEach(
-        (item, index) => {
-
-          item.classList.toggle(
-            "active",
-            index === activeIndex
-          );
-
-        }
-      );
-
-    }
-
-
-    else if (
-      event.key === "ArrowUp"
-    ) {
-
-      event.preventDefault();
-
-
-      if (!items.length) {
-        return;
+      results.innerHTML = matches.map(item => `
+        <button class="search-result" type="button" onclick="location.href='${item.url}'">
+          <span class="result-icon">${item.icon}</span>
+          <span>
+            <span class="result-title">${item.label}</span>
+            <span class="result-copy">${item.text}</span>
+          </span>
+          <span class="result-arrow">→</span>
+        </button>
+      `).join('');
+      results.classList.add('visible');
+    });
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.search-box') && !e.target.closest('.search-result')) {
+        results.classList.remove('visible');
       }
-
-
-      activeIndex =
-        Math.max(
-          activeIndex - 1,
-          0
-        );
-
-
-      items.forEach(
-        (item, index) => {
-
-          item.classList.toggle(
-            "active",
-            index === activeIndex
-          );
-
-        }
-      );
-
-    }
-
-
-    else if (
-      event.key === "Enter"
-    ) {
-
-      event.preventDefault();
-
-
-      if (
-        activeIndex >= 0 &&
-        items[activeIndex]
-      ) {
-
-        items[activeIndex].click();
-
+    });
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        const matches = getMatches(input.value);
+        if (matches.length) location.href = matches[0].url;
       }
-
-      else {
-
-        executeSearch();
-
-      }
-
-    }
-
-
-    else if (
-      event.key === "Escape"
-    ) {
-
-      searchResults.classList.remove(
-        "visible"
-      );
-
-    }
-
-  }
-);
-
-
-/* =========================================================
-   CLOSE SEARCH
-   ========================================================= */
-
-document.addEventListener(
-  "click",
-  event => {
-
-    if (
-      !event.target.closest(
-        ".search-wrapper"
-      )
-    ) {
-
-      searchResults.classList.remove(
-        "visible"
-      );
-
-    }
-
-  }
-);
-
-
-/* =========================================================
-   "/" SEARCH SHORTCUT
-   ========================================================= */
-
-document.addEventListener(
-  "keydown",
-  event => {
-
-    if (
-      event.key === "/" &&
-      document.activeElement !== searchInput
-    ) {
-
-      event.preventDefault();
-
-      searchInput.focus();
-
-    }
-
-  }
-);
-
-
-/* =========================================================
-   CLOCK
-   ========================================================= */
-
-function updateClock() {
-
-  const now =
-    new Date();
-
-
-  const localTime =
-    now.toLocaleTimeString(
-      "de-DE",
-      {
-        hour: "2-digit",
-        minute: "2-digit",
-        second: "2-digit"
-      }
-    );
-
-
-  const utcTime =
-    now.toLocaleTimeString(
-      "de-DE",
-      {
-        timeZone: "UTC",
-        hour: "2-digit",
-        minute: "2-digit",
-        second: "2-digit"
-      }
-    );
-
-
-  const localDate =
-    now.toLocaleDateString(
-      "de-DE",
-      {
-        weekday: "long",
-        day: "2-digit",
-        month: "long",
-        year: "numeric"
-      }
-    );
-
-
-  const utcDate =
-    now.toLocaleDateString(
-      "de-DE",
-      {
-        timeZone: "UTC",
-        weekday: "long",
-        day: "2-digit",
-        month: "long",
-        year: "numeric"
-      }
-    );
-
-
-  document.getElementById(
-    "localTime"
-  ).textContent =
-    localTime;
-
-
-  document.getElementById(
-    "utcTime"
-  ).textContent =
-    utcTime;
-
-
-  document.getElementById(
-    "localDate"
-  ).textContent =
-    localDate;
-
-
-  document.getElementById(
-    "utcDate"
-  ).textContent =
-    "UTC · " + utcDate;
-
-}
-
-
-updateClock();
-
-setInterval(
-  updateClock,
-  1000
-);
-
-
-/* =========================================================
-   SCROLL REVEAL
-   ========================================================= */
-
-const revealElements =
-  document.querySelectorAll(
-    ".reveal"
-  );
-
-
-if (
-  "IntersectionObserver" in window
-) {
-
-  const observer =
-    new IntersectionObserver(
-      entries => {
-
-        entries.forEach(
-          entry => {
-
-            if (
-              entry.isIntersecting
-            ) {
-
-              entry.target.classList.add(
-                "visible"
-              );
-
-              observer.unobserve(
-                entry.target
-              );
-
-            }
-
-          }
-        );
-
-      },
-      {
-        threshold: .12
-      }
-    );
-
-
-  revealElements.forEach(
-    element => {
-
-      observer.observe(
-        element
-      );
-
-    }
-  );
-
-}
-
-else {
-
-  revealElements.forEach(
-    element => {
-
-      element.classList.add(
-        "visible"
-      );
-
-    }
-  );
-
-}
-
-
-/* =========================================================
-   RADAR PARALLAX
-   ========================================================= */
-
-const radar =
-  document.querySelector(
-    ".radar"
-  );
-
-
-if (
-  radar &&
-  window.matchMedia(
-    "(pointer:fine)"
-  ).matches
-) {
-
-  document.addEventListener(
-    "mousemove",
-    event => {
-
-      const x =
-        (
-          event.clientX /
-          window.innerWidth -
-          .5
-        ) * 5;
-
-
-      const y =
-        (
-          event.clientY /
-          window.innerHeight -
-          .5
-        ) * -5;
-
-
-      radar.style.transform =
-        `perspective(900px)
-         rotateX(${y}deg)
-         rotateY(${x}deg)`;
-
-    }
-  );
-
-}
-
-</script>
-
-<script src="/assets/navtool-global.js"></script><script>if("serviceWorker"in navigator)navigator.serviceWorker.register("/sw.js");</script></body>
+    });
+  </script>
+</body>
 </html>

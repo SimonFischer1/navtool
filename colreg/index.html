@@ -4,843 +4,174 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#07110f">
-
-  <meta
-    name="description"
-    content="COLREG Navigator – KVR einfach erklärt, interaktiv und zweisprachig."
-  >
-
+  <meta name="description" content="COLREG Navigator – KVR einfach erklärt, interaktiv und zweisprachig.">
   <title>NavTool - COLREG</title>
-
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
-  <link
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
-    rel="stylesheet"
-  >
-
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --nt-bg: #05090c;
+      --nt-panel: rgba(10,21,27,.82);
+      --nt-panel-strong: rgba(12,27,34,.96);
+      --nt-text: #ecfbf9;
+      --nt-muted: #7e9697;
+      --nt-teal: #55e5d1;
+      --nt-line: rgba(85,229,209,.14);
+      --nt-line-strong: rgba(85,229,209,.32);
+      --nt-warn: #ffb454;
+      --nt-bad: #ff7070;
+      --nt-ok: #3fdc7e;
+      --shadow: rgba(0,0,0,.24);
+    }
+    body {
+      background: var(--nt-bg);
+      color: var(--nt-text);
+      font-family: Inter, system-ui, sans-serif;
+    }
+    .top-strip, .topbar, .hero, .section, .quick-grid, .source-list, .notice, .searchbar, .card-grid, .scenario-grid, .buoy-layout, .sound-grid, .feature-image {
+      background: transparent;
+    }
+    .top-strip { border-bottom: 1px solid var(--nt-line); background: rgba(10,21,27,.78); }
+    .topbar { border-bottom: 1px solid var(--nt-line); background: rgba(5,9,12,.85); }
+    .main-nav a:hover, .main-nav a:focus-visible { color: var(--nt-teal); }
+    .btn.primary, .chip.active, .submit { background: var(--nt-teal); color: #03211d; }
+    .btn.ghost, .chip { border-color: var(--nt-line-strong); color: var(--nt-text); }
+    .hero-copy h1 span { color: var(--nt-teal); }
+    .hero-console, .feature-card, .rule-card, .sound-card, .buoy-card, .scenario-card, .knot-card {
+      border: 1px solid var(--nt-line);
+      background: linear-gradient(180deg, rgba(13,27,34,.94), rgba(10,21,27,.82));
+      box-shadow: 0 16px 40px rgba(0,0,0,.14);
+    }
+    .hero-console { background: rgba(10,21,27,.86); }
+    .scene-grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:14px; }
+    .scene-example {
+      border: 1px solid var(--nt-line); border-radius: 18px; overflow:hidden; background: rgba(10,21,27,.84);
+    }
+    .scene-example .art {
+      height: 150px; display:grid; place-items:center; background: linear-gradient(135deg, rgba(85,229,209,.08), rgba(10,21,27,.8));
+      border-bottom: 1px solid var(--nt-line);
+      font-size: 52px; color: var(--nt-teal);
+    }
+    .scene-example .txt { padding: 14px 16px; }
+    .scene-example .txt h4 { margin: 0 0 6px; font-size: 13px; letter-spacing: .12em; text-transform: uppercase; }
+    .scene-example .txt p { margin:0; color: var(--nt-muted); line-height:1.6; font-size: 14px; }
+    .section-head .eyebrow { color: var(--nt-teal); }
+    .outline-link { color: var(--nt-teal); }
+    .source-list a { border:1px solid var(--nt-line); border-radius:16px; background: rgba(10,21,27,.8); }
+    .notice { border: 1px solid rgba(85,229,209,.2); background: rgba(85,229,209,.04); }
+  </style>
   <link rel="stylesheet" href="styles.css">
-<link rel="stylesheet" href="../assets/navtool-global.css">
-<link rel="icon" type="image/png" href="/pic/allgemein/icon-192.png"><link rel="apple-touch-icon" href="/pic/allgemein/icon-180.png"></head>
-
+  <link rel="stylesheet" href="../assets/navtool-global.css">
+  <link rel="icon" type="image/png" href="/pic/allgemein/icon-192.png">
+  <link rel="apple-touch-icon" href="/pic/allgemein/icon-180.png">
+</head>
 <body>
-
-<div id="scrollProgress"></div>
-
-<div class="top-strip">
-  <span>COLREG NAVIGATOR</span>
-  <span>KVR · COLREG · SEAMANSHIP</span>
-</div>
-
-
-<header class="topbar" id="topbar">
-
-  <a class="brand" href="#home" aria-label="COLREG Navigator">
-
-    <span class="brand-mark">N</span>
-
-    <span class="brand-copy">
-      <strong>COLREG</strong>
-      <small>NAVIGATOR</small>
-    </span>
-
-  </a>
-
-
-  <nav class="main-nav" aria-label="Main navigation">
-
-    <a href="#rules" data-i18n="nav.rules">
-      KVR / COLREG
-    </a>
-
-    <a href="#lights" data-i18n="nav.lights">
-      LICHTER
-    </a>
-
-    <a href="#sounds" data-i18n="nav.sounds">
-      SCHALL
-    </a>
-
-    <a href="#buoys" data-i18n="nav.buoys">
-      TONNEN
-    </a>
-
-    <a href="#scenarios" data-i18n="nav.practice">
-      PRAXIS
-    </a>
-
-    <a href="#knots" data-i18n="nav.knots">
-      KNOTEN
-    </a>
-
-  </nav>
-
-
-  <div class="header-actions">
-
-    <button
-      id="langToggle"
-      class="lang-toggle"
-      type="button"
-      aria-label="Switch language"
-    >
-      <b>DE</b>
-      <span>/</span>
-      <b>EN</b>
-    </button>
-
-    <a
-      class="imo-link"
-      href="https://www.imo.org/en/about/conventions/pages/colreg.aspx"
-      target="_blank"
-      rel="noopener"
-    >
-      IMO ↗
-    </a>
-
-  </div>
-
-</header>
-
-
-<main id="home">
-
-
-<!-- =========================================================
-     HERO
-========================================================= -->
-
-<section class="hero">
-
-  <div class="hero-grid">
-
-
-    <div class="hero-copy reveal">
-
-      <div
-        class="eyebrow"
-        data-i18n="hero.eyebrow"
-      >
-        MARITIME KNOWLEDGE SYSTEM
-      </div>
-
-
-      <h1>
-        COLREG.<br>
-        <span data-i18n="hero.title">
-          EINFACH VERSTANDEN.
-        </span>
-      </h1>
-
-
-      <p
-        class="hero-lead"
-        data-i18n="hero.lead"
-      >
-        Regeln, Lichter, Tonnen, Ausweichsituationen und Knoten –
-        klar erklärt und interaktiv gelernt.
-      </p>
-
-
-      <div class="hero-actions">
-
-        <a
-          class="btn primary"
-          href="#rules"
-          data-i18n="hero.cta1"
-        >
-          REGELN STARTEN
-        </a>
-
-
-        <a
-          class="btn ghost"
-          href="#scenarios"
-          data-i18n="hero.cta2"
-        >
-          PRAXIS TRAINIEREN
-        </a>
-
-      </div>
-
-
-      <div class="hero-meta">
-
-        <span>
-          <b>38</b>
-          <span data-i18n="hero.rules">
-            COLREG-Regeln
-          </span>
-        </span>
-
-        <span>
-          <b>DE / EN</b>
-          <span data-i18n="hero.lang">
-            zweisprachig
-          </span>
-        </span>
-
-        <span>
-          <b>IALA</b>
-          <span data-i18n="hero.iala">
-            Seezeichen
-          </span>
-        </span>
-
-      </div>
-
+  <div id="scrollProgress"></div>
+  <div class="top-strip"><span>COLREG NAVIGATOR</span><span>KVR · COLREG · SEAMANSHIP</span></div>
+  <header class="topbar" id="topbar">
+    <a class="brand" href="#home" aria-label="COLREG Navigator"><span class="brand-mark">N</span><span class="brand-copy"><strong>COLREG</strong><small>NAVIGATOR</small></span></a>
+    <nav class="main-nav" aria-label="Main navigation">
+      <a href="#rules">KVR / COLREG</a>
+      <a href="#lights">LICHTER</a>
+      <a href="#sounds">SCHALL</a>
+      <a href="#buoys">TONNEN</a>
+      <a href="#scenarios">PRAXIS</a>
+      <a href="#knots">KNOTEN</a>
+    </nav>
+    <div class="header-actions">
+      <button id="langToggle" class="lang-toggle" type="button" aria-label="Switch language"><b>DE</b><span>/</span><b>EN</b></button>
+      <a class="imo-link" href="https://www.imo.org/en/about/conventions/pages/colreg.aspx" target="_blank" rel="noopener">IMO ↗</a>
     </div>
+  </header>
 
-
-
-    <!-- INTERAKTIVER RADAR -->
-
-    <div
-      class="hero-console reveal"
-      aria-label="Interactive radar"
-    >
-
-      <div class="console-header">
-
-        <span>
-          COLREG SYSTEM
-        </span>
-
-        <span class="status">
-          <i></i>
-          ONLINE
-        </span>
-
-      </div>
-
-
-      <div
-        class="radar"
-        id="radar"
-      >
-
-        <div class="radar-ring r1"></div>
-        <div class="radar-ring r2"></div>
-        <div class="radar-ring r3"></div>
-
-        <div class="radar-line"></div>
-
-        <div class="radar-target target-1">+</div>
-        <div class="radar-target target-2">+</div>
-        <div class="radar-target target-3">+</div>
-
-        <div class="own-ship">
-          ▲
+  <main id="home">
+    <section class="hero">
+      <div class="hero-grid">
+        <div class="hero-copy reveal">
+          <div class="eyebrow">MARITIME KNOWLEDGE SYSTEM</div>
+          <h1>COLREG.<br><span>EINFACH VERSTANDEN.</span></h1>
+          <p class="hero-lead">Regeln, Lichter, Tonnen, Ausweichsituationen und Knoten – klar erklärt und interaktiv gelernt.</p>
+          <div class="hero-actions"><a class="btn primary" href="#rules">REGELN STARTEN</a><a class="btn ghost" href="#scenarios">PRAXIS TRAINIEREN</a></div>
+          <div class="hero-meta"><span><b>38</b><span>COLREG-Regeln</span></span><span><b>DE / EN</b><span>zweisprachig</span></span><span><b>IALA</b><span>Seezeichen</span></span></div>
         </div>
-
-        <div class="radar-label north">N</div>
-        <div class="radar-label east">E</div>
-        <div class="radar-label south">S</div>
-        <div class="radar-label west">W</div>
-
+        <div class="hero-console reveal" aria-label="Interactive radar">
+          <div class="console-header"><span>COLREG SYSTEM</span><span class="status"><i></i>ONLINE</span></div>
+          <div class="radar" id="radar"><div class="radar-ring r1"></div><div class="radar-ring r2"></div><div class="radar-ring r3"></div><div class="radar-line"></div><div class="radar-target target-1">+</div><div class="radar-target target-2">+</div><div class="radar-target target-3">+</div><div class="own-ship">▲</div><div class="radar-label north">N</div><div class="radar-label east">E</div><div class="radar-label south">S</div><div class="radar-label west">W</div></div>
+          <div class="console-footer"><span>CPA / TCPA</span><span>RULE 15</span><strong>SAFE PASSAGE</strong></div>
+        </div>
       </div>
+    </section>
 
+    <section class="quick-grid">
+      <a class="quick-card reveal" href="#rules"><span class="quick-number">38</span><span class="quick-title">REGELN</span><small>Deutsch + English</small></a>
+      <a class="quick-card reveal" href="#lights"><span class="quick-icon">◉</span><span class="quick-title">LICHTER</span><small>Schiffskennungen</small></a>
+      <a class="quick-card reveal" href="#buoys"><span class="quick-icon">◆</span><span class="quick-title">TONNEN</span><small>IALA & Kardinalsystem</small></a>
+      <a class="quick-card reveal" href="#knots"><span class="quick-icon">∞</span><span class="quick-title">KNOTEN</span><small>Schritt für Schritt</small></a>
+    </section>
 
-      <div class="console-footer">
-
-        <span>
-          CPA / TCPA
-        </span>
-
-        <span>
-          RULE 15
-        </span>
-
-        <strong>
-          SAFE PASSAGE
-        </strong>
-
+    <section class="section" id="rules">
+      <div class="section-head reveal">
+        <div><div class="eyebrow">01 / REGELWERK</div><h2>KVR / COLREG</h2><p>Suche nach Regelnummer, Begriff oder Situation – z. B. „Überholen“, „Nebel“, „Steuerbord“ oder „Kollisionsgefahr“.</p></div>
+        <a class="outline-link" href="https://www.imo.org/en/about/conventions/pages/colreg.aspx" target="_blank" rel="noopener">OFFIZIELLE IMO-SEITE ↗</a>
       </div>
+      <div class="searchbar reveal"><span>⌕</span><input id="ruleSearch" type="search" data-i18n-placeholder="rules.search" placeholder="Regel, Stichwort oder Situation suchen …" autocomplete="off"><button id="clearSearch" type="button">×</button></div>
+      <div id="ruleFilters" class="chips reveal"></div>
+      <div id="ruleResults" class="card-grid"></div>
+    </section>
 
-    </div>
+    <section class="section dark-section" id="lights">
+      <div class="section-head reveal"><div><div class="eyebrow">02 / NAVIGATION LIGHTS</div><h2>LICHTER & KENNUNGEN</h2><p>Karte anklicken für Bedeutung, Sichtbarkeit und Quelle.</p></div></div>
+      <div id="lightGrid" class="card-grid"></div>
+    </section>
 
-  </div>
+    <section class="section sound-section" id="sounds">
+      <div class="section-head reveal"><div><div class="eyebrow">02 / SOUND SIGNALS</div><h2>SCHALLSIGNALE</h2><p>KVR, verminderte Sicht und wichtige deutsche SeeSchStrO-Signale. Tippe auf PLAY, um die Tonfolge hörbar und visuell zu lernen.</p></div><a class="outline-link" href="https://www.elwis.de/DE/Sportschifffahrt/Seebereich/Sichtzeichen-und-Schallsignale-SeeSchStrO.pdf?__blob=publicationFile&v=4" target="_blank" rel="noopener">SeeSchStrO ↗</a></div>
+      <div class="sound-controls reveal"><button class="chip active" data-sound-filter="all">ALLE</button><button class="chip" data-sound-filter="kvr34">KVR 34</button><button class="chip" data-sound-filter="kvr35">KVR 35</button><button class="chip" data-sound-filter="kvr36">KVR 36 / 37</button><button class="chip" data-sound-filter="seeschstro">SEESCHSTRO</button></div>
+      <div id="soundGrid" class="sound-grid reveal"></div>
+      <div class="sound-note reveal"><b>Hinweis:</b> Kurzer Ton ≈ 1 s · langer Ton ≈ 4–6 s. Die Audiofunktion dient zum Lernen und ist kein Ersatz für die aktuelle amtliche Fassung.</div>
+    </section>
 
-</section>
-
-
-
-<!-- =========================================================
-     QUICK CARDS
-========================================================= -->
-
-<section class="quick-grid">
-
-
-  <a
-    class="quick-card reveal"
-    href="#rules"
-  >
-
-    <span class="quick-number">
-      38
-    </span>
-
-    <span
-      class="quick-title"
-      data-i18n="quick.rules"
-    >
-      REGELN
-    </span>
-
-    <small
-      data-i18n="quick.rulesSub"
-    >
-      Deutsch + English
-    </small>
-
-  </a>
-
-
-
-  <a
-    class="quick-card reveal"
-    href="#lights"
-  >
-
-    <span class="quick-icon">
-      ◉
-    </span>
-
-    <span
-      class="quick-title"
-      data-i18n="quick.lights"
-    >
-      LICHTER
-    </span>
-
-    <small
-      data-i18n="quick.lightsSub"
-    >
-      Schiffskennungen
-    </small>
-
-  </a>
-
-
-
-  <a
-    class="quick-card reveal"
-    href="#buoys"
-  >
-
-    <span class="quick-icon">
-      ◆
-    </span>
-
-    <span
-      class="quick-title"
-      data-i18n="quick.buoys"
-    >
-      TONNEN
-    </span>
-
-    <small
-      data-i18n="quick.buoysSub"
-    >
-      IALA & Kardinalsystem
-    </small>
-
-  </a>
-
-
-
-  <a
-    class="quick-card reveal"
-    href="#knots"
-  >
-
-    <span class="quick-icon">
-      ∞
-    </span>
-
-    <span
-      class="quick-title"
-      data-i18n="quick.knots"
-    >
-      KNOTEN
-    </span>
-
-    <small
-      data-i18n="quick.knotsSub"
-    >
-      Schritt für Schritt
-    </small>
-
-  </a>
-
-</section>
-
-
-
-<!-- =========================================================
-     RULES
-========================================================= -->
-
-<section
-  class="section"
-  id="rules"
->
-
-  <div class="section-head reveal">
-
-    <div>
-
-      <div class="eyebrow">
-        01 / REGELWERK
+    <section class="section" id="buoys">
+      <div class="section-head reveal"><div><div class="eyebrow">03 / IALA MARITIME BUOYS</div><h2>TONNEN & SEEZEICHEN</h2><p>Kardinal- und laterale Zeichen mit klarer Merkhilfe.</p></div></div>
+      <div class="buoy-layout reveal">
+        <article class="feature-image">
+          <div class="media-label">IALA / CARDINAL MARKS</div>
+          <img src="https://commons.wikimedia.org/wiki/Special:Redirect/file/Diagram_of_Cardinal_marks_used_in_coastal_navigation.png" alt="IALA Kardinalzeichen" loading="lazy">
+          <div class="media-source"><span>WIKIMEDIA COMMONS</span><a href="https://commons.wikimedia.org/wiki/File:Diagram_of_Cardinal_marks_used_in_coastal_navigation.png" target="_blank" rel="noopener">QUELLE ↗</a></div>
+        </article>
+        <div id="buoyGrid" class="buoy-grid"></div>
       </div>
+    </section>
 
-      <h2 data-i18n="rules.heading">
-        KVR / COLREG
-      </h2>
-
-      <p data-i18n="rules.intro">
-        Suche nach Regelnummer, Begriff oder Situation –
-        z. B. „Überholen“, „Nebel“, „Steuerbord“
-        oder „Kollisionsgefahr“.
-      </p>
-
-    </div>
-
-
-    <a
-      class="outline-link"
-      href="https://www.imo.org/en/about/conventions/pages/colreg.aspx"
-      target="_blank"
-      rel="noopener"
-      data-i18n="source.imo"
-    >
-      OFFIZIELLE IMO-SEITE ↗
-    </a>
-
-  </div>
-
-
-  <div class="searchbar reveal">
-
-    <span>
-      ⌕
-    </span>
-
-    <input
-      id="ruleSearch"
-      type="search"
-      data-i18n-placeholder="rules.search"
-      placeholder="Regel, Stichwort oder Situation suchen …"
-      autocomplete="off"
-    >
-
-    <button
-      id="clearSearch"
-      type="button"
-    >
-      ×
-    </button>
-
-  </div>
-
-
-  <div
-    id="ruleFilters"
-    class="chips reveal"
-  ></div>
-
-
-  <div
-    id="ruleResults"
-    class="card-grid"
-  ></div>
-
-</section>
-
-
-
-<!-- =========================================================
-     LIGHTS
-========================================================= -->
-
-<section
-  class="section dark-section"
-  id="lights"
->
-
-  <div class="section-head reveal">
-
-    <div>
-
-      <div class="eyebrow">
-        02 / NAVIGATION LIGHTS
+    <section class="section dark-section" id="scenarios">
+      <div class="section-head reveal"><div><div class="eyebrow">04 / PRACTICAL TRAINING</div><h2>WAS MUSS ICH JETZT TUN?</h2><p>Typische Begegnungen als interaktive Entscheidungshilfe.</p></div></div>
+      <div class="scene-grid reveal">
+        <article class="scene-example"><div class="art">⚓</div><div class="txt"><h4>Beispiel 1</h4><p>Steuerbord voraus, Sicht eingeschränkt: Ansteuerung, Taktik und Schallsignale im Überblick.</p></div></article>
+        <article class="scene-example"><div class="art">◉</div><div class="txt"><h4>Beispiel 2</h4><p>Fahrzeug liegt auf gleicher Kimm: Verhalten nach dem Regelwerk, Vorsicht und sichere Passage.</p></div></article>
+        <article class="scene-example"><div class="art">◆</div><div class="txt"><h4>Beispiel 3</h4><p>Backbord- / Steuerbordtonnen, Einfahrten und Peilung: schnell erkennen, was jetzt wichtig ist.</p></div></article>
       </div>
+      <div id="scenarioGrid" class="scenario-grid"></div>
+    </section>
 
-      <h2 data-i18n="lights.heading">
-        LICHTER & KENNUNGEN
-      </h2>
+    <section class="section" id="knots">
+      <div class="section-head reveal"><div><div class="eyebrow">05 / SEAMANSHIP</div><h2>KNOTEN LERNEN</h2><p>Deutsch + Englisch, Einsatzgebiet und grafische Anleitung.</p></div></div>
+      <div id="knotGrid" class="card-grid"></div>
+    </section>
 
-      <p data-i18n="lights.intro">
-        Karte anklicken für Bedeutung,
-        Sichtbarkeit und Quelle.
-      </p>
-
-    </div>
-
-  </div>
-
-
-  <div
-    id="lightGrid"
-    class="card-grid"
-  ></div>
-
-</section>
-
-
-
-<!-- =========================================================
-     SOUND SIGNALS
-========================================================= -->
-
-<section
-  class="section sound-section"
-  id="sounds"
->
-  <div class="section-head reveal">
-    <div>
-      <div class="eyebrow">02 / SOUND SIGNALS</div>
-      <h2 data-i18n="sounds.heading">SCHALLSIGNALE</h2>
-      <p data-i18n="sounds.intro">KVR, verminderte Sicht und wichtige deutsche SeeSchStrO-Signale. Tippe auf PLAY, um die Tonfolge hörbar und visuell zu lernen.</p>
-    </div>
-    <a class="outline-link" href="https://www.elwis.de/DE/Sportschifffahrt/Seebereich/Sichtzeichen-und-Schallsignale-SeeSchStrO.pdf?__blob=publicationFile&v=4" target="_blank" rel="noopener" data-i18n="sounds.source">WSV / ELWIS QUELLE ↗</a>
-  </div>
-  <div class="sound-controls reveal">
-    <button class="chip active" data-sound-filter="all">ALLE</button>
-    <button class="chip" data-sound-filter="kvr34">KVR 34</button>
-    <button class="chip" data-sound-filter="kvr35">KVR 35</button>
-    <button class="chip" data-sound-filter="kvr36">KVR 36 / 37</button>
-    <button class="chip" data-sound-filter="seeschstro">SEESCHSTRO</button>
-  </div>
-  <div id="soundGrid" class="sound-grid reveal"></div>
-  <div class="sound-note reveal"><b>Hinweis:</b> Kurzer Ton ≈ 1 s · langer Ton ≈ 4–6 s. Die Audiofunktion dient zum Lernen und ist kein Ersatz für die aktuelle amtliche Fassung.</div>
-</section>
-
-
-<!-- =========================================================
-     BUOYS
-========================================================= -->
-
-<section
-  class="section"
-  id="buoys"
->
-
-  <div class="section-head reveal">
-
-    <div>
-
-      <div class="eyebrow">
-        03 / IALA MARITIME BUOYS
+    <section class="section sources">
+      <div class="section-head reveal"><div><div class="eyebrow">06 / SOURCES</div><h2>QUELLEN</h2></div></div>
+      <div class="source-list reveal">
+        <a href="https://www.imo.org/en/about/conventions/pages/colreg.aspx" target="_blank" rel="noopener"><b>IMO – COLREG 1972</b><span>Offizielle Übersicht und Publikationsinformationen.</span><em>↗</em></a>
+        <a href="https://www.bordalltag.de/post/schallsignale-kvr-seeschstro" target="_blank" rel="noopener"><b>Bordalltag – Schallsignale KVR / SeeSchStrO</b><span>Zusammenstellung und Lernübersicht für Schallsignale.</span><em>↗</em></a>
+        <a href="https://www.imo.org/en/ourwork/safety/pages/preventing-collisions.aspx" target="_blank" rel="noopener"><b>IMO – Preventing Collisions</b><span>Hintergrundinformationen zur Kollisionsverhütung.</span><em>↗</em></a>
       </div>
-
-      <h2 data-i18n="buoys.heading">
-        TONNEN & SEEZEICHEN
-      </h2>
-
-      <p data-i18n="buoys.intro">
-        Kardinal- und laterale Zeichen
-        mit klarer Merkhilfe.
-      </p>
-
-    </div>
-
-  </div>
-
-
-  <div class="buoy-layout reveal">
-
-
-    <article class="feature-image">
-
-      <div class="media-label">
-        IALA / CARDINAL MARKS
-      </div>
-
-
-      <img
-        src="https://commons.wikimedia.org/wiki/Special:Redirect/file/Diagram_of_Cardinal_marks_used_in_coastal_navigation.png"
-        alt="IALA Kardinalzeichen"
-        loading="lazy"
-      >
-
-
-      <div class="media-source">
-
-        <span>
-          WIKIMEDIA COMMONS
-        </span>
-
-        <a
-          href="https://commons.wikimedia.org/wiki/File:Diagram_of_Cardinal_marks_used_in_coastal_navigation.png"
-          target="_blank"
-          rel="noopener"
-        >
-          QUELLE ↗
-        </a>
-
-      </div>
-
-    </article>
-
-
-    <div
-      id="buoyGrid"
-      class="buoy-grid"
-    ></div>
-
-  </div>
-
-</section>
-
-
-
-<!-- =========================================================
-     PRACTICE
-========================================================= -->
-
-<section
-  class="section dark-section"
-  id="scenarios"
->
-
-  <div class="section-head reveal">
-
-    <div>
-
-      <div class="eyebrow">
-        04 / PRACTICAL TRAINING
-      </div>
-
-      <h2 data-i18n="scenarios.heading">
-        WAS MUSS ICH JETZT TUN?
-      </h2>
-
-      <p data-i18n="scenarios.intro">
-        Typische Begegnungen als
-        interaktive Entscheidungshilfe.
-      </p>
-
-    </div>
-
-  </div>
-
-
-  <div
-    id="scenarioGrid"
-    class="scenario-grid"
-  ></div>
-
-</section>
-
-
-
-<!-- =========================================================
-     KNOTS
-========================================================= -->
-
-<section
-  class="section"
-  id="knots"
->
-
-  <div class="section-head reveal">
-
-    <div>
-
-      <div class="eyebrow">
-        05 / SEAMANSHIP
-      </div>
-
-      <h2 data-i18n="knots.heading">
-        KNOTEN LERNEN
-      </h2>
-
-      <p data-i18n="knots.intro">
-        Deutsch + Englisch, Einsatzgebiet
-        und grafische Anleitung.
-      </p>
-
-    </div>
-
-  </div>
-
-
-  <div
-    id="knotGrid"
-    class="card-grid"
-  ></div>
-
-</section>
-
-
-
-<!-- =========================================================
-     SOURCES
-========================================================= -->
-
-<section class="section sources">
-
-  <div class="section-head reveal">
-
-    <div>
-
-      <div class="eyebrow">
-        06 / SOURCES
-      </div>
-
-      <h2 data-i18n="sources.heading">
-        QUELLEN
-      </h2>
-
-    </div>
-
-  </div>
-
-
-  <div class="source-list reveal">
-
-
-    <a
-      href="https://www.imo.org/en/about/conventions/pages/colreg.aspx"
-      target="_blank"
-      rel="noopener"
-    >
-
-      <b>
-        IMO – COLREG 1972
-      </b>
-
-      <span data-i18n="sources.imo">
-        Offizielle Übersicht und Publikationsinformationen.
-      </span>
-
-      <em>
-        ↗
-      </em>
-
-    </a>
-
-
-
-    <a
-      href="https://www.bordalltag.de/post/schallsignale-kvr-seeschstro"
-      target="_blank"
-      rel="noopener"
-    >
-      <b>Bordalltag – Schallsignale KVR / SeeSchStrO</b>
-      <span>Zusammenstellung und Lernübersicht für Schallsignale.</span>
-      <em>↗</em>
-    </a>
-
-    <a
-      href="https://www.imo.org/en/ourwork/safety/pages/preventing-collisions.aspx"
-      target="_blank"
-      rel="noopener"
-    >
-
-      <b>
-        IMO – Preventing Collisions
-      </b>
-
-      <span data-i18n="sources.prevent">
-        Hintergrundinformationen zur Kollisionsverhütung.
-      </span>
-
-      <em>
-        ↗
-      </em>
-
-    </a>
-
-
-
-    <a
-      href="https://commons.wikimedia.org/wiki/File:Propmec50.PNG"
-      target="_blank"
-      rel="noopener"
-    >
-
-      <b>
-        Wikimedia – Navigationslichter
-      </b>
-
-      <span data-i18n="sources.lights">
-        Grafikquelle für Schiffslichter.
-      </span>
-
-      <em>
-        ↗
-      </em>
-
-    </a>
-
-
-
-    <a
-      href="https://commons.wikimedia.org/wiki/File:Figure_Eight_Knot.png"
-      target="_blank"
-      rel="noopener"
-    >
-
-      <b>
-        Wikimedia – Figure Eight Knot
-      </b>
-
-      <span data-i18n="sources.knots">
-        Grafikquelle für den Achtknoten.
-      </span>
-
-      <em>
-        ↗
-      </em>
-
-    </a>
-
-  </div>
-
-
-  <div class="notice reveal">
-
-    <b data-i18n="notice.label">
-      Hinweis:
-    </b>
-
-    <span data-i18n="notice.text">
-      Diese Website ist eine Lern- und Orientierungshilfe.
-      Für Prüfung, Fahrt und rechtliche Fragen sind der
-      amtliche COLREG/KVR-Text sowie die jeweils geltenden
-      nationalen Vorschriften maßgeblich.
-    </span>
-
-  </div>
-
-</section>
-
-</main>
-
-
-
-<span id="year" hidden></span>
-
-
-
-<div id="modalRoot"></div>
-
-<script src="app.js"></script>
-
-<script src="../assets/navtool-global.js"></script>
+      <div class="notice reveal"><b>Hinweis:</b> <span>Diese Website ist eine Lern- und Orientierungshilfe. Für Prüfung, Fahrt und rechtliche Fragen sind der amtliche COLREG/KVR-Text sowie die jeweils geltenden nationalen Vorschriften maßgeblich.</span></div>
+    </section>
+  </main>
+  <span id="year" hidden></span>
+  <div id="modalRoot"></div>
+  <script src="app.js"></script>
+  <script src="../assets/navtool-global.js"></script>
 </body>
 </html>

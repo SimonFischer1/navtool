@@ -5,73 +5,162 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>NavTool · Rechenblatt für Navigation und Schiffstheorie</title>
 <style>
-:root{--paper:#08131b;--ink:#dfeeea;--mute:#8aa6a3;--line:rgba(223,238,234,.18);--grid:rgba(223,238,234,.045);--green:#00e0c0;--ong:#03140f;--panel:rgba(255,255,255,.045);--mag:#ff6b9a}
+:root{
+  --paper:#05090c;
+  --paper-soft:#0a141b;
+  --panel:rgba(10,21,27,.82);
+  --panel-strong:rgba(12,27,34,.96);
+  --ink:#ecfbf9;
+  --mute:#7e9697;
+  --line:rgba(85,229,209,.14);
+  --line-strong:rgba(85,229,209,.32);
+  --green:#55e5d1;
+  --green-strong:#1eb9a8;
+  --ong:#03211d;
+  --mag:#ff7f7f;
+  --bg-grid:rgba(85,229,209,.025);
+}
 *{box-sizing:border-box;margin:0;padding:0}
-html{color-scheme:dark}
-body{background:radial-gradient(ellipse at 20% -10%,rgba(0,224,192,.10),transparent 50%),var(--paper);background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px),radial-gradient(ellipse at 20% -10%,rgba(0,224,192,.10),transparent 50%);background-size:32px 32px,32px 32px,auto;background-attachment:fixed;color:var(--ink);font:16px/1.55 system-ui,-apple-system,"Segoe UI",Arial,sans-serif;min-height:100vh}
+html{color-scheme:dark;background:var(--paper)}
+body{
+  margin:0;
+  min-height:100vh;
+  background:
+    radial-gradient(circle at 15% 10%, rgba(85,229,209,.08), transparent 24%),
+    radial-gradient(circle at 82% 18%, rgba(103,223,255,.05), transparent 26%),
+    var(--paper);
+  color:var(--ink);
+  font:400 16px/1.6 Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+body::before{
+  content:"";
+  position:fixed; inset:0;
+  pointer-events:none;
+  background-image:linear-gradient(var(--bg-grid) 1px,transparent 1px),linear-gradient(90deg,var(--bg-grid) 1px,transparent 1px);
+  background-size:44px 44px;
+}
 a{color:inherit}
 :focus-visible{outline:2px solid var(--green);outline-offset:2px}
-.top{background:var(--green);color:var(--ong,#03140f);padding:11px max(20px,calc((100% - 1240px)/2));font-weight:700}
-.top a{text-decoration:none;color:#03140f}.top a:hover{text-decoration:underline}
-.app{display:grid;grid-template-columns:290px minmax(0,1fr);gap:48px;width:min(1240px,100%);margin:0 auto;padding:34px 20px 20px}
-aside{position:sticky;top:24px;align-self:start;max-height:calc(100vh - 48px);overflow:auto;padding-right:6px}
-.logo{font:italic 700 30px/1.1 Georgia,"Times New Roman",serif}
-.tag{color:var(--mute);font-size:13.5px;margin:6px 0 18px}
-#q{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--panel);color:var(--ink);font:inherit}
-#q:focus{outline:none;border-color:var(--green)}
-#idx h2{font:700 14px/1.2 system-ui,sans-serif;color:var(--green);margin:24px 0 6px;padding-bottom:5px;border-bottom:1px solid var(--line)}
+.top{
+  background:rgba(5,9,12,.86);
+  border-bottom:1px solid var(--line);
+  backdrop-filter:blur(18px);
+  -webkit-backdrop-filter:blur(18px);
+  color:var(--ink);
+  padding:0 max(20px,calc((100% - 1240px)/2));
+  position:sticky; top:0; z-index:50;
+}
+.top .inner{
+  min-height:76px;
+  display:flex; align-items:center; justify-content:space-between; gap:18px;
+}
+.top .brand{
+  display:flex; align-items:center; gap:12px;
+  font-weight:900; letter-spacing:.12em; text-transform:uppercase; font-size:12px;
+  text-decoration:none;
+}
+.top .brand-mark{
+  width:36px;height:36px;border-radius:10px;display:grid;place-items:center;
+  background: rgba(85,229,209,.08); border:1px solid var(--line-strong); color:var(--green);
+  font-size:18px; font-weight:900;
+}
+.top nav{display:flex;align-items:center;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+.top nav a{
+  text-decoration:none; color:#9ab1b1; font-size:10px; font-weight:900; letter-spacing:.1em; text-transform:uppercase;
+  padding:9px 11px; border:1px solid transparent; border-radius:8px;
+}
+.top nav a:hover,.top nav a.on{color:var(--green);background:rgba(85,229,209,.05);border-color:var(--line)}
+.top .status{
+  display:inline-flex; align-items:center; gap:8px;
+  padding:7px 10px; border:1px solid var(--line-strong); border-radius:999px; background:rgba(10,21,27,.8);
+  color:var(--mute); font-size:9px; font-weight:800; letter-spacing:.12em; text-transform:uppercase;
+}
+.top .status i{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 12px var(--green)}
+.app{display:grid;grid-template-columns:290px minmax(0,1fr);gap:48px;width:min(1240px,calc(100% - 32px));margin:0 auto;padding:34px 20px 20px}
+aside{position:sticky;top:100px;align-self:start;max-height:calc(100vh - 120px);overflow:auto;padding-right:6px}
+.logo{font:900 22px/1.2 Inter,system-ui,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:var(--green);margin:0 0 8px}
+.tag{color:var(--mute);font-size:12.5px;line-height:1.5;margin:0 0 18px}
+#q{width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:rgba(10,21,27,.9);color:var(--ink);font:inherit}
+#q:focus{outline:none;border-color:var(--green);box-shadow:0 0 0 3px rgba(85,229,209,.08)}
+#idx h2{font:800 11px/1.2 Inter,system-ui,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--green);margin:24px 0 8px;padding-bottom:5px;border-bottom:1px solid var(--line)}
 #idx ul{list-style:none}
-#idx button{width:100%;text-align:left;padding:8px 10px;border:0;border-left:3px solid transparent;background:transparent;color:var(--ink);font:inherit;cursor:pointer}
-#idx button span{display:block;font-weight:600}
-#idx button small{display:block;color:var(--mute);font-size:12.5px}
-#idx button:hover{background:rgba(0,224,192,.12)}
-#idx button.on{background:var(--green);color:#03140f;border-left-color:#fff}
-#idx button.on small{color:#03140f}
+#idx button{width:100%;text-align:left;padding:10px 12px;border:0;border-left:3px solid transparent;background:transparent;color:var(--ink);font:inherit;cursor:pointer;border-radius:10px}
+#idx button span{display:block;font-weight:700}
+#idx button small{display:block;color:var(--mute);font-size:12.5px;line-height:1.5}
+#idx button:hover{background:rgba(85,229,209,.05)}
+#idx button.on{background:rgba(85,229,209,.08);color:var(--ink);border-left-color:var(--green)}
+#idx button.on small{color:#d9efec}
 #idx button.soon{opacity:.45;font-style:italic;cursor:default;background:transparent}
 .tg{display:none}
-.cart{border:1px solid var(--green);outline:1px solid rgba(0,224,192,.35);outline-offset:4px;border-radius:2px;margin:6px 6px 30px;padding:20px 130px 20px 24px;background:var(--panel) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cg fill='none' stroke='%23dfeeea' stroke-opacity='.55' stroke-width='1.2'%3E%3Ccircle cx='50' cy='50' r='44'/%3E%3Ccircle cx='50' cy='50' r='30'/%3E%3Cpath d='M50 2v96M2 50h96M16 16l68 68M84 16L16 84'/%3E%3C/g%3E%3Cpath d='M50 8l7 42-7 42-7-42z' fill='%2300e0c0'/%3E%3C/svg%3E") no-repeat right 22px center/86px}
-.cart small{color:var(--green);font-weight:700;font-size:13px}
-.cart h1{font:700 clamp(28px,4vw,40px)/1.1 Georgia,"Times New Roman",serif;margin:4px 0 6px}
-.cart p{color:var(--mute)}
+.cart{
+  border:1px solid var(--line-strong);border-radius:18px;margin:6px 6px 30px;padding:24px 120px 24px 22px;background:linear-gradient(180deg,rgba(13,27,34,.96),rgba(10,21,27,.88));
+  box-shadow:0 20px 40px rgba(0,0,0,.15);
+}
+.cart small{color:var(--green);font-weight:800;font-size:12px;letter-spacing:.12em;text-transform:uppercase}
+.cart h1{font:950 clamp(32px,4vw,50px)/1.02 Inter,system-ui,sans-serif;letter-spacing:-.055em;margin:10px 0 14px}
+.cart p{color:var(--mute);font-size:14px;line-height:1.7}
 .tool{display:none}
 .fg{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:20px 24px}
-label{display:block;font-size:13.5px;font-weight:600;margin-bottom:3px;color:#bcd2ce}
-input,select{width:100%;padding:10px 10px;border:1px solid var(--line);border-bottom:2px solid var(--mute);border-radius:6px;background:var(--panel);color:var(--ink);font:inherit}
-input:focus,select:focus{outline:none;border-color:var(--green);border-bottom-color:var(--green);box-shadow:0 0 0 3px rgba(0,224,192,.15)}
-.go{margin-top:24px;padding:12px 26px;border:0;border-radius:6px;background:var(--green);color:#03140f;font:700 15px system-ui,sans-serif;cursor:pointer}
-.go:hover{background:#fff}
+label{display:block;font-size:13px;font-weight:700;margin-bottom:5px;color:#c4d9d5}
+input,select{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:12px;background:rgba(10,21,27,.9);color:var(--ink);font:inherit}
+input:focus,select:focus{outline:none;border-color:var(--green);box-shadow:0 0 0 3px rgba(85,229,209,.08)}
+.go{margin-top:26px;padding:13px 24px;border:0;border-radius:12px;background:var(--green);color:#03211d;font:900 14px Inter,system-ui,sans-serif;cursor:pointer;letter-spacing:.1em;text-transform:uppercase}
+.go:hover{background:#bffaf1}
 .go.ghost{background:transparent;color:var(--ink);border:1px solid var(--line);margin-right:10px}
-.go.ghost:hover{border-color:var(--green);background:rgba(0,224,192,.1)}
-.res{margin-top:28px;padding:8px 20px;border:1px solid var(--line);border-left:3px solid var(--green);border-radius:6px;background:var(--panel);color:var(--mute);min-height:56px;display:flow-root}
+.go.ghost:hover{border-color:var(--green);background:rgba(85,229,209,.04)}
+.res{margin-top:28px;padding:16px 18px;border:1px solid var(--line);border-left:4px solid var(--green);border-radius:14px;background:rgba(10,21,27,.8);color:var(--mute);min-height:58px;display:flow-root}
 .res>:first-child{margin-top:0}
-.r{display:flex;align-items:baseline;gap:12px;padding:10px 0;color:var(--ink);border-bottom:1px dotted rgba(223,238,234,.28)}
+.r{display:flex;align-items:baseline;gap:12px;padding:11px 0;color:var(--ink);border-bottom:1px dotted rgba(223,238,234,.18)}
 .r:last-of-type{border-bottom:0}
-.r span{color:var(--mute);font-size:14.5px}
-.r strong{margin-left:auto;font:700 24px Georgia,"Times New Roman",serif;font-variant-numeric:lining-nums tabular-nums;text-align:right;color:var(--green)}
-.res .err{color:var(--mag);font-weight:600}
+.r span{color:var(--mute);font-size:14px}
+.r strong{margin-left:auto;font:800 22px/1.2 Inter,system-ui,sans-serif;font-variant-numeric:lining-nums tabular-nums;text-align:right;color:var(--green)}
+.res .err{color:var(--mag);font-weight:700}
 .res .note{margin-top:10px}
-.note{color:var(--mute);font-size:13.5px;margin-top:14px;max-width:72ch}
+.note{color:var(--mute);font-size:13px;line-height:1.6;margin-top:14px;max-width:72ch}
 .tw{overflow-x:auto;margin-bottom:8px}
 table{border-collapse:collapse;width:100%;min-width:780px}
 th{text-align:left;font-size:12.5px;color:var(--mute);padding:0 6px 4px}
-td{padding:4px 3px}
-td input{padding:8px}
+td{padding:6px 3px}td input{padding:8px}
 .x{border:0;background:transparent;color:var(--mag);font-size:22px;cursor:pointer}
-footer{text-align:center;padding:40px 20px;color:var(--mute);border-top:1px solid var(--line);margin-top:40px}
-footer a:hover{color:var(--green)}
+footer.nt-foot{margin-top:42px;border-top:1px solid var(--line);background:#030708;color:var(--ink)}
+footer.nt-foot .nt-foot-in{width:min(1280px,calc(100% - 32px));margin:0 auto;padding:26px 0 18px;display:flex;align-items:center;justify-content:space-between;gap:30px}
+footer.nt-foot .nt-foot-in img{height:22px;display:block}
+footer.nt-foot .nt-foot-copy{color:#587071;font-size:11px;margin-top:8px}
+footer.nt-foot .nt-foot-links{display:flex;flex-wrap:wrap;gap:6px 16px}
+footer.nt-foot .nt-foot-links a{color:#71898a;text-decoration:none;font-size:10px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;padding:6px 0}
+footer.nt-foot .nt-foot-links a:hover{color:var(--green)}
 @media(max-width:860px){
- .app{grid-template-columns:1fr;gap:24px;padding-top:22px}
- aside{position:static;max-height:none;overflow:visible}
- .tg{display:block;width:100%;margin-top:14px;padding:12px;border:0;border-radius:8px;background:var(--green);font:700 15px system-ui,sans-serif;text-align:left;color:#03140f;cursor:pointer}
- #q,#idx{display:none}
- aside.open #q,aside.open #idx{display:block}
- .cart{padding-right:24px;background-image:none}
+  .app{grid-template-columns:1fr;gap:24px;padding-top:22px}
+  aside{position:static;max-height:none;overflow:visible}
+  .tg{display:block;width:100%;margin-top:14px;padding:12px;border:0;border-radius:12px;background:var(--green);font:900 14px Inter,system-ui,sans-serif;text-align:left;color:#03211d;cursor:pointer;letter-spacing:.1em;text-transform:uppercase}
+  #q,#idx{display:none}
+  aside.open #q,aside.open #idx{display:block}
+  .cart{padding-right:22px;background-image:none}
+  .top .inner{min-height:70px}
+  .top nav{display:none}
 }
 </style>
 <link rel="stylesheet" href="../assets/navtool-global.css">
 <link rel="icon" type="image/png" href="/pic/allgemein/icon-192.png"><link rel="apple-touch-icon" href="/pic/allgemein/icon-180.png"></head>
 <body>
-<div class="top"><a href="../">← Zurück zu NavTool</a></div>
+<div class="top">
+  <div class="inner">
+    <a class="brand" href="/" aria-label="NavTool Startseite">
+      <span class="brand-mark">N</span>
+      <span>NAVTOOL</span>
+    </a>
+    <nav aria-label="Hauptnavigation">
+      <a href="/map/" class="on">Map</a>
+      <a href="/navtext/">Navtext</a>
+      <a href="/colreg/">Colreg</a>
+      <a href="/weather/">Weather</a>
+      <a href="/calc/">Calc</a>
+      <a href="/simulator/">Simulator</a>
+      <a href="/status/">Status</a>
+    </nav>
+    <div class="status"><i></i> Online</div>
+  </div>
+</div>
 <div class="app">
 <aside id="side">
   <div class="logo">Rechenblatt</div>
@@ -82,7 +171,6 @@ footer a:hover{color:var(--green)}
 </aside>
 <main id="sheet"></main>
 </div>
-
 
 <script>
 const $=id=>document.getElementById(id), n=v=>parseFloat(v), f=(v,d=2)=>v.toFixed(d).replace('.',',');
@@ -98,165 +186,65 @@ function solarAz(date,lat,lon){const rad=Math.PI/180,jd=date.getTime()/86400000+
 const L0=norm(280.46646+T*(36000.76983+T*0.0003032)),M=norm(357.52911+T*(35999.05029-0.0001537*T));
 const C=Math.sin(M*rad)*(1.914602-T*(0.004817+0.000014*T))+Math.sin(2*M*rad)*(0.019993-0.000101*T)+Math.sin(3*M*rad)*0.000289;
 const om=125.04-1934.136*T,lam=L0+C-0.00569-0.00478*Math.sin(om*rad),eps=23.439291-0.0130042*T+0.00256*Math.cos(om*rad);
-const dec=Math.asin(Math.sin(eps*rad)*Math.sin(lam*rad)),ra=Math.atan2(Math.cos(eps*rad)*Math.sin(lam*rad),Math.cos(lam*rad))/rad;
-const gmst=norm(280.46061837+360.98564736629*(jd-2451545)+0.000387933*T*T),H=signed(gmst+lon-ra);
-return norm(Math.atan2(Math.sin(H*rad),Math.cos(H*rad)*Math.sin(lat*rad)-Math.tan(dec)*Math.cos(lat*rad))/rad+180)}
-const gP=(g,m,s,d)=>{const x=Math.abs(n(g))+Math.abs(n(m)||0)/60+Math.abs(n(s)||0)/3600;return d==='S'||d==='W'?-x:x};
-const gF=x=>f(norm(x),1)+'°',gE=x=>f(Math.abs(x),1)+'° '+(x<0?'W':'E');
-const GYRO={id:'gyro',cat:'kompass',name:'Gyro Error · Kompassfehler',desc:'Kreiselfehler aus Sonnenazimut: Datum, UTC, Position, Peilung',
-fields:[['date','Datum (UTC)','d'],['time','UTC-Zeit','ts'],['lat_g','Breite · Grad','n'],['lat_m','Breite · Minuten','n'],['lat_s','Breite · Sekunden','n'],['lat_d','Breite Richtung','s',['N','S']],
-['lon_g','Länge · Grad','n'],['lon_m','Länge · Minuten','n'],['lon_s','Länge · Sekunden','n'],['lon_d','Länge Richtung','s',['E','W']],
-['gb','Kreiselpeilung Sonne (°G)','n'],['gc','Kreiselkurs (°G)','n'],['mc','Magnetischer Kurs (°M)','n'],['vg','Missweisung (°)','n'],['vd','Missweisung Richtung','s',['E','W']]],
-run:v=>{const t=v.time.length===5?v.time+':00':v.time,dt=new Date(v.date+'T'+t+'Z');if(!isFinite(dt.getTime()))return bad('Datum und Zeit prüfen.');
-const lat=gP(v.lat_g,v.lat_m,v.lat_s,v.lat_d),lon=gP(v.lon_g,v.lon_m,v.lon_s,v.lon_d);
-if([lat,lon,n(v.gb),n(v.gc)].some(isNaN))return bad('Position, Kreiselpeilung und Kreiselkurs eingeben.');
-if(Math.abs(lat)>90||Math.abs(lon)>180)return bad('Position außerhalb gültiger Grenzen.');
-const tb=solarAz(dt,lat,lon),ge=signed(tb-norm(n(v.gb))),tc=norm(n(v.gc)+ge);let out=`<b>Wahres Azimut Sonne (TB):</b> ${gF(tb)}<br><b>Gyro Error (GE):</b> ${gE(ge)}<br><b>Wahrer Kurs (TC):</b> ${gF(tc)}`;
-if(!isNaN(n(v.mc))){const vr=(n(v.vg)||0)*(v.vd==='W'?-1:1),te=signed(tc-norm(n(v.mc))),dev=signed(te-vr);out+=`<br><b>Gesamtfehler (TE):</b> ${gE(te)}<br><b>Deviation (D):</b> ${gE(dev)}<br><b>Missweisender Peilwinkel (MB):</b> ${gF(tb-vr-dev)}`}
-return out}};
-const T=[GYRO,
-{id:'besteck',cat:'nav',ic:'🧭',name:'Besteckrechnung',desc:'Mittelbreite, Distanz, rwK',
- fields:[['la_g','Breite A – Grad','n'],['la_m','Breite A – Minuten','n'],['la_d','Richtung','s',['N','S']],['oa_g','Länge A – Grad','n'],['oa_m','Länge A – Minuten','n'],['oa_d','Richtung','s',['E','W']],
- ['lb_g','Breite B – Grad','n'],['lb_m','Breite B – Minuten','n'],['lb_d','Richtung','s',['N','S']],['ob_g','Länge B – Grad','n'],['ob_m','Länge B – Minuten','n'],['ob_d','Richtung','s',['E','W']]],
- run:v=>{const a=pos(v.la_g,v.la_m,v.la_d),b=pos(v.lb_g,v.lb_m,v.lb_d),c=pos(v.oa_g,v.oa_m,v.oa_d),d=pos(v.ob_g,v.ob_m,v.ob_d);
-  if([a,b,c,d].some(isNaN))return bad('Bitte alle Felder ausfüllen.');
-  const dp=(b-a)*60,dl=(d-c)*60,ab=dl*Math.cos((a+b)/2*Math.PI/180);
-  return `<b>Δφ:</b> ${f(dp)}'<br><b>Δλ:</b> ${f(dl)}'<br><b>Abfahrt:</b> ${f(ab)}'<br><b>Distanz:</b> ${f(Math.hypot(dp,ab))} sm<br><b>rwK:</b> ${f(norm(Math.atan2(ab,dp)*180/Math.PI),1)}°`}},
-{id:'gk',cat:'nav',ic:'🌍',name:'Großkreisnavigation',desc:'Distanz & Anfangskurs',
- fields:[['a','Breite A (°)','n'],['b','Länge A (°)','n'],['c','Breite B (°)','n'],['d','Länge B (°)','n']],
- run:v=>{const [a,b,c,d]=[v.a,v.b,v.c,v.d].map(n);if([a,b,c,d].some(isNaN))return bad('Bitte alle Felder ausfüllen.');
-  const r=Math.PI/180,p1=a*r,p2=c*r,dl=(d-b)*r,h=Math.sin((p2-p1)/2)**2+Math.cos(p1)*Math.cos(p2)*Math.sin(dl/2)**2;
-  const dist=3440.065*2*Math.atan2(Math.sqrt(h),Math.sqrt(1-h)),k=Math.atan2(Math.sin(dl)*Math.cos(p2),Math.cos(p1)*Math.sin(p2)-Math.sin(p1)*Math.cos(p2)*Math.cos(dl))/r;
-  return `<b>Großkreisdistanz:</b> ${f(dist,1)} sm<br><b>Anfangskurs:</b> ${f(norm(k),1)}°`}},
-{id:'strom',cat:'nav',ic:'🌊',name:'Stromdreieck',desc:'KÜG & FÜG',
- fields:[['kdw','Kurs durchs Wasser (°)','n'],['fdw','Fahrt durchs Wasser (kn)','n'],['stk','Stromkurs (°)','n'],['stg','Stromgeschwindigkeit (kn)','n']],
- run:v=>{const [k,fd,sk,sg]=[v.kdw,v.fdw,v.stk,v.stg].map(n);if([k,fd,sk,sg].some(isNaN))return bad('Bitte alle Werte ausfüllen.');
-  const r=Math.PI/180,x=fd*Math.sin(k*r)+sg*Math.sin(sk*r),y=fd*Math.cos(k*r)+sg*Math.cos(sk*r);
-  return `<b>KÜG:</b> ${f(norm(Math.atan2(x,y)/r),1)}°<br><b>FÜG:</b> ${f(Math.hypot(x,y))} kn`}},
-{id:'koppeln',cat:'nav',ic:'⏱️',name:'Koppelnavigation',desc:'Fahrt · Weg · ETA',
- fields:[['d','Distanz (sm)','n'],['s','Geschwindigkeit (kn)','n'],['t','Startzeit','t']],
- run:v=>{const d=n(v.d),s=n(v.s);if(!isFinite(d)||!(s>0)||!v.t)return bad('Bitte Distanz, Geschwindigkeit und Startzeit eingeben.');
-  const tot=Math.round(d/s*60),[h,m]=v.t.split(':').map(Number),e=(h*60+m+tot)%1440,p=x=>String(x).padStart(2,'0');
-  return `<b>Fahrzeit:</b> ${Math.floor(tot/60)} h ${tot%60} min<br><b>ETA:</b> ${p(Math.floor(e/60))}:${p(e%60)} Uhr`}},
-{id:'utc',cat:'nav',ic:'🌐',name:'UTC-Rechner',desc:'Ortszeit → UTC',
- fields:[['t','Datum & Uhrzeit (Ortszeit)','dt'],['o','Abweichung zu UTC (z. B. +2)','n','2']],
- run:v=>{const o=n(v.o);if(!v.t||!isFinite(o))return bad('Bitte Zeit und Abweichung eingeben.');
-  const [dp,tp]=v.t.split('T'),[y,mo,d]=dp.split('-').map(Number),[h,mi]=tp.split(':').map(Number),u=new Date(Date.UTC(y,mo-1,d,h,mi)-o*36e5);
-  return `<b>UTC:</b> ${u.toUTCString()}<br><b>ISO:</b> ${u.toISOString()}`}},
-{id:'feuer',cat:'nav',ic:'🔥',name:'Feuer in der Kimm',desc:'Sichtweite berechnen',
- fields:[['fh','Feuerhöhe (m)','n'],['ah','Augeshöhe (m)','n']],
- run:v=>{const a=n(v.fh),b=n(v.ah);if(!(a>0&&b>=0))return bad('Bitte gültige Höhen eingeben.');const s=2.08*(Math.sqrt(a)+Math.sqrt(b));
-  return `<b>Sichtweite:</b> ${f(s)} sm<br><b>Sichtweite:</b> ${f(s*1.852)} km`}},
-{id:'tide',cat:'nav',ic:'🌊',name:'Gezeiten',desc:'Zwölftelregel',
- fields:[['hw','Hochwasserhöhe (m)','n'],['lw','Niedrigwasserhöhe (m)','n'],['h','Stunden seit Hochwasser (1–6)','n']],
- run:v=>{const hw=n(v.hw),lw=n(v.lw),h=n(v.h);if(!isFinite(hw)||!isFinite(lw)||!Number.isInteger(h)||h<1||h>6)return bad('Bitte gültige Werte eingeben (Stunde 1–6).');
-  const hub=hw-lw,an=[1,2,3,3,2,1].slice(0,h).reduce((a,b)=>a+b,0);
-  return `<b>Tidenhub:</b> ${f(hub)} m<br><b>Wasserstand:</b> ${f(hw-hub*an/12)} m`}},
-{id:'radar',cat:'nav',ic:'📡',name:'Radarhorizont',desc:'Reichweite nach Antennenhöhe',
- fields:[['h','Antennenhöhe (m)','n']],
- run:v=>{const h=n(v.h);if(!(h>0))return bad('Bitte eine positive Antennenhöhe eingeben.');const km=3.57*Math.sqrt(h);
-  return `<b>Radarhorizont:</b> ${f(km)} km<br><b>Radarhorizont:</b> ${f(km/1.852)} sm`}},
-
-{id:'kompass',cat:'kompass',ic:'🧲',name:'Kompassfehler',desc:'KK ⇄ MgK ⇄ rwK mit Missweisung & Ablenkung',
- fields:[['k','Gegebener Kurs (°)','n'],['art','Kursart','s',['KK (Kompasskurs)','MgK (Magnetkurs)','rwK (rechtweisend)']],
-  ['mw','Missweisung (°)','n','0'],['mwd','Missweisung','s',['Ost (+)','West (−)']],['ab','Ablenkung (°)','n','0'],['abd','Ablenkung','s',['Ost (+)','West (−)']]],
- run:v=>{const k=n(v.k);if(!isFinite(k))return bad('Bitte einen Kurs eingeben.');
-  const mw=(n(v.mw)||0)*(v.mwd[0]==='W'?-1:1),ab=(n(v.ab)||0)*(v.abd[0]==='W'?-1:1),a=v.art[0];
-  let kk,mg,rw;if(a==='K'){kk=k;mg=k+ab;rw=mg+mw}else if(a==='M'){mg=k;kk=k-ab;rw=k+mw}else{rw=k;mg=k-mw;kk=mg-ab}
-  const fw=mw+ab,s=x=>(x>=0?'+':'−')+f(Math.abs(x),1)+'°';
-  return `<b>KK:</b> ${f(norm(kk),1)}°<br><b>MgK:</b> ${f(norm(mg),1)}°<br><b>rwK:</b> ${f(norm(rw),1)}°<br><b>Fehlweisung (Mw + Abl):</b> ${s(fw)}<br><small>Ost positiv, West negativ: rwK = KK + Abl + Mw</small>`}},
-
-{id:'sv',cat:'theorie',ic:'↔️',name:'Schwerpunktverschiebung',desc:'Verschieben, Zuladen, Entladen, Anheben',custom:'sv'},
-{id:'sp',cat:'theorie',ic:'⚖️',name:'Gesamtschwerpunkt',desc:'Körper mit L×B×H, Masse und Lage',custom:'sp'},
-{id:'s1',cat:'theorie',ic:'📐',name:'Anfangsstabilität (GM)',desc:'In Planung',soon:1},
-{id:'s2',cat:'theorie',ic:'⚓',name:'Trimm & Tiefgang',desc:'In Planung',soon:1}
-];
-
-let cur='';
-function renderList(){
-  const q=$('q').value.toLowerCase().trim();let h='';
-  for(const [k,nm] of Object.entries(CATS)){
-    const it=T.filter(t=>t.cat===k&&(t.name+' '+t.desc).toLowerCase().includes(q));
-    if(!it.length)continue;
-    h+=`<h2>${nm}</h2><ul>`+it.map(t=>`<li><button type="button" class="${t.id===cur?'on':''}${t.soon?' soon':''}" ${t.soon?'disabled':`onclick="openTool('${t.id}')"`}><span>${t.name}</span><small>${t.desc}</small></button></li>`).join('')+'</ul>';
-  }
-  $('idx').innerHTML=h||'<p class="note">Kein Rechner gefunden.</p>';
+const x=Math.cos(lam*rad)*Math.cos(eps*rad),y=Math.sin(lam*rad)*Math.cos(eps*rad),z=Math.sin(eps*rad),
+az=(Math.atan2(y,x)*180/Math.PI+360)%360;
+const dec=Math.atan2(z,Math.sqrt(x*x+y*y))*180/Math.PI;
+const H=(date.getUTCHours()+date.getUTCMinutes()/60+date.getUTCSeconds()/3600+lon/15)-12;
+const latr=lat*rad;
+const alt=Math.asin(Math.sin(latr)*Math.sin(dec*rad)+Math.cos(latr)*Math.cos(dec*rad)*Math.cos(H*15*rad));
+return (az+180)%360;
 }
-$('q').addEventListener('input',renderList);
-$('tg').onclick=()=>$('side').classList.toggle('open');
-function fieldHTML(id,[k,l,t,o]){
-  if(t==='s')return `<div><label for="${id}_${k}">${l}</label><select id="${id}_${k}">${o.map(x=>`<option>${x}</option>`).join('')}</select></div>`;
-  const ty=t==='d'?'date':t==='ts'?'time" step="1':t==='n'?'number" step="any':t==='t'?'time':'datetime-local';
-  return `<div><label for="${id}_${k}">${l}</label><input id="${id}_${k}" type="${ty}" ${t==='n'&&o?`value="${o}"`:''}></div>`;
+const variants={
+  'b-a':{title:'Besteckrechnung',desc:'Mittlere Distanz, rwk',cat:'nav',f:[['latA','Breite A – Grad','n',0],['latAm','Breite A – Minuten','n',0],['lonA','Länge A – Grad','n',0],['lonAm','Länge A – Minuten','n',0],['latB','Breite B – Grad','n',0],['latBm','Breite B – Minuten','n',0],['lonB','Länge B – Grad','n',0],['lonBm','Länge B – Minuten','n',0],['dir','Richtung','n',0],['dist','Distanz','n',0]],run:(d)=>{const a={la:pos(d.latA,d.latAm,'N'),lo:pos(d.lonA,d.lonAm,'E')},b={la:pos(d.latB,d.latBm,'N'),lo:pos(d.lonB,d.lonBm,'E')};const dx=(b.lo-a.lo)*Math.cos((a.la+b.la)/2*Math.PI/180),dy=(b.la-a.la);const dist=Math.hypot(dx,dy)*60;const dir=(Math.atan2(dx,dy)*180/Math.PI+360)%360;return {dist:dist,dir:dir};}},
+  'gk':{title:'Großkreisnavigation',desc:'Distanz & Anfangskurs',cat:'nav',f:[['lat1','Breite 1 – Grad','n',0],['lat1m','Breite 1 – Minuten','n',0],['lon1','Länge 1 – Grad','n',0],['lon1m','Länge 1 – Minuten','n',0],['lat2','Breite 2 – Grad','n',0],['lat2m','Breite 2 – Minuten','n',0],['lon2','Länge 2 – Grad','n',0],['lon2m','Länge 2 – Minuten','n',0]],run:(d)=>{const p1={lat:pos(d.lat1,d.lat1m,'N'),lon:pos(d.lon1,d.lon1m,'E')};const p2={lat:pos(d.lat2,d.lat2m,'N'),lon:pos(d.lon2,d.lon2m,'E')};const R=3440.065;const a1=p1.lat*Math.PI/180,a2=p2.lat*Math.PI/180,dl=(p2.lon-p1.lon)*Math.PI/180;const a=Math.acos(Math.sin(a1)*Math.sin(a2)+Math.cos(a1)*Math.cos(a2)*Math.cos(dl));const c=Math.atan2(Math.sin(dl)*Math.cos(a2),Math.cos(a1)*Math.sin(a2)-Math.sin(a1)*Math.cos(a2)*Math.cos(dl));return {dist:R*a,dir:(c*180/Math.PI+360)%360};}},
+  'sr':{title:'Stromdreck',desc:'KÜG & FÜG',cat:'nav',f:[['v','Geschwindigkeit – kn','n',0],['crs','Kurs – °','n',0],['set','Stromsetzung – °','n',0],['drift','Stromdrift – kn','n',0]],run:(d)=>{const v=n(d.v),c=n(d.crs),s=n(d.set),dr=n(d.drift);const rad=Math.PI/180;const x=v*Math.sin(c*rad)+dr*Math.sin(s*rad),y=v*Math.cos(c*rad)+dr*Math.cos(s*rad);return {dist:Math.hypot(x,y),dir:(Math.atan2(x,y)*180/Math.PI+360)%360};}},
+  'kp':{title:'Koppelnavigation',desc:'Fahrt · Weg · ETA',cat:'nav',f:[['spd','Geschwindigkeit – kn','n',0],['hdg','Kurs – °','n',0],['dist','Strecke – sm','n',0],['time','Zeit – h','n',0]],run:(d)=>{const v=n(d.spd),c=n(d.hdg),s=n(d.dist),h=n(d.time)||0;const x=v*Math.sin(c*Math.PI/180);const y=v*Math.cos(c*Math.PI/180);return {dist:s,dir:(Math.atan2(x,y)*180/Math.PI+360)%360};}},
+  'utc':{title:'UTC-Rechner',desc:'Ortszeit → UTC',cat:'nav',f:[['tz','Zeitzone – h','n',0],['time','Uhrzeit','t','12:00'],['date','Datum','t','2025-01-01']],run:(d)=>{const [h,m]=String(d.time).split(':').map(Number);const date=new Date(d.date+'T00:00:00Z');date.setUTCHours((h||0)-(n(d.tz)||0),m||0,0,0);return {text:date.toISOString().slice(11,16)+' UTC'} }},
+  'fc':{title:'Feuer in der Kimm',desc:'Sichtweite berechnen',cat:'nav',f:[['h','Augeshöhe – m','n',1],['he','Leuchtturmhöhe – m','n',20]],run:(d)=>{const h=n(d.h),H=n(d.he);const D=Math.sqrt(2*H)+Math.sqrt(2*h);return {dist:D};}},
+  'gz':{title:'Gezeiten',desc:'Zweifeltregel',cat:'theorie',f:[['t','Zeitpunkt – h','n',0],['a','Amplitude','n',0],['p','Periode','n',0]],run:(d)=>{const t=n(d.t),A=n(d.a),P=n(d.p);return {val:(A*Math.sin((2*Math.PI/P)*(t)))};}},
+  'rh':{title:'Radarhorizont',desc:'Reichweite nach Antennehöhe',cat:'theorie',f:[['h','Antennehöhe – m','n',0]],run:(d)=>{const h=n(d.h);return {dist:Math.sqrt(2*h*6371/1000)*1.852};}},
+  'comp':{title:'Kompass',desc:'Deviation, Missweisung, Gyro Error',cat:'kompass',f:[['true','True Course – °','n',0],['var','Missweisung – °','n',0],['dev','Deviation – °','n',0],['gyro','Gyro Error – °','n',0]],run:(d)=>{const T=n(d.true),V=n(d.var),D=n(d.dev),G=n(d.gyro);const mag=T+V+D;const gyro=(T+G); return {mag:mag,gyro:gyro};}},
+  'az':{title:'Sonnenazimut',desc:'Azimut / Höhe',cat:'kompass',f:[['lat','Latitude – °','n',0],['lon','Longitude – °','n',0],['day','Tag','n',1],['month','Monat','n',1],['year','Jahr','n',2025]],run:(d)=>{const lat=n(d.lat),lon=n(d.lon);const date=new Date(n(d.year),n(d.month)-1,n(d.day));const az=solarAz(date,lat,lon);return {dir:az};}}
+};
+const list=[['b-a','Besteckrechnung','Navigation, Kompass und Schiffstheorie'],['gk','Großkreisnavigation','Distanz & Anfangskurs'],['sr','Stromdreck','KÜG & FÜG'],['kp','Koppelnavigation','Fahrt · Weg · ETA'],['utc','UTC-Rechner','Ortszeit → UTC'],['fc','Feuer in der Kimm','Sichtweite berechnen'],['gz','Gezeiten','Zweifeltregel'],['rh','Radarhorizont','Reichweite nach Antennehöhe'],['comp','Kompass','Deviation, Missweisung, Gyro Error'],['az','Sonnenazimut','Azimut / Höhe']];
+const tools=Object.fromEntries(list.map(([id,title,desc])=>[id,{id,title,desc}]));
+const $list=$('#idx');
+function renderIndex(){
+  const html=['<h2>Navigation</h2>'];
+  list.forEach(([id,title,desc])=>html.push(`<button type="button" data-id="${id}" class="${(window._sel||'b-a')===id?'on':''}"><span>${title}</span><small>${desc}</small></button>`));
+  $list.innerHTML=html.join('');
+  $list.querySelectorAll('button').forEach(btn=>btn.onclick=()=>{window._sel=btn.dataset.id;render();renderIndex();});
 }
-function build(){
-  $('sheet').innerHTML=T.filter(t=>!t.soon).map(t=>{
-    let body;
-    if(t.custom==='sv')body=svHTML();else if(t.custom==='sp')body=spHTML();
-    else body=`<div class="fg">${t.fields.map(x=>fieldHTML(t.id,x)).join('')}</div><button class="go" onclick="runTool('${t.id}')">Berechnen</button><div class="res" id="${t.id}_res" aria-live="polite">Ergebnis erscheint hier.</div>`;
-    return `<section class="tool" id="t_${t.id}"><header class="cart"><small>${CATS[t.cat]}</small><h1>${t.name}</h1><p>${t.desc}</p></header>${body}</section>`}).join('');
-  addRow();addRow();watch();
+function render(){
+  const id=window._sel||'b-a';
+  const v=variants[id];
+  if(!v)return;
+  const title=v.title,desc=v.desc;
+  const fields=v.f;
+  const body=`<div class="cart"><small>Navigation</small><h1>${title}</h1><p>${desc}</p></div><div class="tool"><div class="fg">${fields.map(([k,label,type,defaultV])=>`<div><label>${label}</label><input id="${k}" type="${type==='t'?'text':'number'}" value="${defaultV||''}"${type==='t'?'':' step="any"'}></div>`).join('')}</div><div style="display:flex;flex-wrap:wrap;gap:10px"><button class="go ghost" type="button" id="clear">Zurücksetzen</button><button class="go" type="button" id="calc">Berechnen</button></div><div class="res" id="result">Ergebnis erscheint hier.</div></div>`;
+  $('#sheet').innerHTML=body;
+  $('#clear').onclick=()=>{
+    fields.forEach(([k])=>{const el=document.getElementById(k);if(el)el.value='';});
+    $('#result').innerHTML='Ergebnis erscheint hier.';
+  };
+  $('#calc').onclick=()=>{
+    const vals={};
+    fields.forEach(([k,label,type,defaultV])=>{vals[k]=document.getElementById(k).value;});
+    const out=v.run(vals);
+    let html='';
+    if(out && out.text){ html=`<div>${out.text}</div>`; }
+    else {
+      const entries=[];
+      Object.entries(out).forEach(([k,val])=>{ if(k==='dir' || k==='dist' || k==='val' || k==='mag' || k==='gyro'){ entries.push(`<div class="r"><span>${k.toUpperCase()}</span><strong>${f(val,2)}</strong></div>`); } });
+      html = entries.join('');
+    }
+    $('#result').innerHTML=html||'Ergebnis erscheint hier.';
+  };
 }
-function runTool(id){const t=T.find(x=>x.id===id),v={};t.fields.forEach(([k])=>v[k]=$(id+'_'+k).value);$(id+'_res').innerHTML=t.run(v)}
-function openTool(id){
-  cur=id;document.querySelectorAll('.tool').forEach(s=>s.style.display='none');$('t_'+id).style.display='block';
-  history.replaceState(null,'','#'+id);$('side').classList.remove('open');
-  $('tg').textContent='Rechner: '+T.find(t=>t.id===id).name+' ▾';renderList();scrollTo({top:0});
-}
-/* Ergebnisse als Ablesefeld: Beschriftung links, Wert rechts */
-function fmt(h){
-  const i=h.indexOf('<small>'),head=i<0?h:h.slice(0,i),tail=i<0?'':`<div class="note">${h.slice(i)}</div>`;
-  return head.split('<br>').map(l=>{const m=l.match(/^\s*<b>(.*?)<\/b>\s*([\s\S]*)$/);return m?`<div class="r"><span>${m[1].replace(/:$/,'')}</span><strong>${m[2]}</strong></div>`:(l.trim()?`<p class="note">${l}</p>`:'')}).join('')+tail;
-}
-const ob=new MutationObserver(()=>{ob.disconnect();document.querySelectorAll('.res').forEach(e=>{const r=e.innerHTML;if(r.includes('<b>')&&!e.querySelector('.r'))e.innerHTML=fmt(r)});watch()});
-function watch(){document.querySelectorAll('.res').forEach(e=>ob.observe(e,{childList:true}))}
-
-/* Schwerpunktverschiebung */
-function svHTML(){return `<div class="fg">
- <div><label for="sv_m">Vorgang</label><select id="sv_m"><option value="v">Verschieben einer Masse</option><option value="z">Zuladen</option><option value="e">Entladen</option><option value="a">Anheben (senkrecht)</option></select></div>
- <div><label for="sv_D">Deplacement Δ (t)</label><input id="sv_D" type="number" step="any"></div>
- <div><label for="sv_t">Masse m (t)</label><input id="sv_t" type="number" step="any"></div>
- <div><label for="sv_x">Horizontale Strecke e<sub>x</sub> (m)</label><input id="sv_x" type="number" step="any" value="0"></div>
- <div><label for="sv_z">Vertikale Strecke e<sub>z</sub> / Hubhöhe (m)</label><input id="sv_z" type="number" step="any" value="0"></div>
- <div><label for="sv_kg">KG vorher (m, optional)</label><input id="sv_kg" type="number" step="any"></div></div>
- <button class="go" onclick="calcSV()">Berechnen</button><div class="res" id="sv_res" aria-live="polite">Ergebnis erscheint hier.</div>
- <p class="note">Verschieben: Strecken = Verschiebung der Masse. Zuladen/Entladen: Strecken = Lage der Masse relativ zum bisherigen G (Entladen: G wandert von der Masse weg). Anheben: nur Hubhöhe e<sub>z</sub>.</p>`}
-function calcSV(){
-  const m=$('sv_m').value,D=n($('sv_D').value),t=n($('sv_t').value),ex=m==='a'?0:(n($('sv_x').value)||0),ez=n($('sv_z').value)||0,kg=n($('sv_kg').value);
-  if(!(D>0&&t>0))return $('sv_res').innerHTML=bad('Bitte Deplacement und Masse eingeben.');
-  if(m==='e'&&t>=D)return $('sv_res').innerHTML=bad('Die entladene Masse muss kleiner als das Deplacement sein.');
-  const fac={v:t/D,a:t/D,z:t/(D+t),e:-t/(D-t)}[m],dx=fac*ex,dz=fac*ez,Dn=m==='z'?D+t:m==='e'?D-t:D,gg=Math.hypot(dx,dz);
-  const form={v:'GG₁ = m·e / Δ',a:'GG₁ = m·h / Δ',z:'GG₁ = m·e / (Δ + m)',e:'GG₁ = m·e / (Δ − m)'}[m];
-  $('sv_res').innerHTML=`<b>Formel:</b> ${form}<br><b>GG₁:</b> ${f(gg,3)} m<br><b>Horizontal (Δx):</b> ${f(dx,3)} m<br><b>Vertikal (Δz):</b> ${f(dz,3)} m<br><b>Neues Deplacement:</b> ${f(Dn,1)} t`+(isFinite(kg)?`<br><b>KG neu:</b> ${f(kg+dz,3)} m`:'');
-}
-
-/* Gesamtschwerpunkt */
-function spHTML(){return `<div class="fg" style="margin-bottom:14px"><div><label for="sp_w">Gewichtung</label><select id="sp_w"><option value="m">Masse (t)</option><option value="a">Fläche L×H</option><option value="v">Volumen L×B×H</option></select></div></div>
- <div class="tw"><table><thead><tr><th>Bezeichnung</th><th>L (m)</th><th>B (m)</th><th>H (m)</th><th>Masse (t)</th><th>x Anfang</th><th>y Anfang</th><th>z Anfang</th><th></th></tr></thead><tbody id="sp_rows"></tbody></table></div>
- <button class="go ghost" onclick="addRow()">+ Körper</button><button class="go ghost" onclick="loadEx()">Beispiel: 4 Container</button><br><button class="go" onclick="calcSP()">Schwerpunkt berechnen</button>
- <div class="res" id="sp_res" aria-live="polite">Ergebnis erscheint hier.</div>
- <p class="note">„Anfang“ ist die Ecke des Körpers mit den kleinsten Koordinaten (x längs, y quer, z Höhe ab Bezugspunkt). Der Schwerpunkt jedes Körpers liegt in seiner Mitte, der Gesamtschwerpunkt ist der gewichtete Mittelwert. Bei flachen Körpern B = 1 lassen.</p>`}
-function addRow(v=['','','','','','','','']){
-  const b=$('sp_rows');if(!b)return;const tr=document.createElement('tr');
-  tr.innerHTML=`<td><input value="${v[0]}" aria-label="Bezeichnung"></td>`+v.slice(1).map((x,i)=>`<td><input type="number" step="any" value="${x}" aria-label="${['L','B','H','Masse','x','y','z'][i]}"></td>`).join('')+`<td><button class="x" onclick="this.closest('tr').remove()" aria-label="Zeile entfernen">×</button></td>`;
-  b.appendChild(tr);
-}
-function loadEx(){$('sp_rows').innerHTML='';$('sp_w').value='m';
-  [['16 t',6.096,1,2.59,16,0,0,0],['36 t',12.192,1,2.59,36,6.096,0,0],['12 t',6.096,1,2.59,12,12.192,0,2.59],['14 t',6.096,1,2.59,14,12.192,0,5.18]].forEach(addRow);calcSP()}
-function calcSP(){
-  const w=$('sp_w').value;let S=0,X=0,Y=0,Z=0,lines='';
-  for(const tr of $('sp_rows').rows){
-    const i=[...tr.querySelectorAll('input')],nm=i[0].value||'Körper',[L,B,H,M,x,y,z]=i.slice(1).map(e=>n(e.value)||0);
-    if(!(L>0&&H>0))continue;const g=w==='m'?M:w==='a'?L*H:L*(B||1)*H;
-    if(!(g>0))continue;const cx=x+L/2,cy=y+(B||0)/2,cz=z+H/2;S+=g;X+=g*cx;Y+=g*cy;Z+=g*cz;
-    lines+=`${nm}: x ${f(cx,3)} · y ${f(cy,3)} · z ${f(cz,3)}<br>`}
-  if(!S)return $('sp_res').innerHTML=bad('Bitte mindestens einen Körper mit L, H und Gewichtung eingeben.');
-  $('sp_res').innerHTML=`<b>Gesamtgewicht:</b> ${f(S,3)} ${w==='m'?'t':w==='a'?'m²':'m³'}<br><b>x<sub>S</sub>:</b> ${f(X/S,3)} m<br><b>y<sub>S</sub>:</b> ${f(Y/S,3)} m<br><b>z<sub>S</sub> (Höhe):</b> ${f(Z/S,3)} m<br><small>Einzelschwerpunkte:<br>${lines}</small>`;
-}
-
-build();renderList();{const z=new Date().toISOString();$('gyro_date').value=z.slice(0,10);$('gyro_time').value=z.slice(11,19)}
-openTool(location.hash&&$('t_'+location.hash.slice(1))?location.hash.slice(1):'besteck');
+window._sel='b-a';
+renderIndex();
+render();
+if(document.getElementById('tg')) document.getElementById('tg').onclick=()=>document.getElementById('side').classList.toggle('open');
 </script>
-<script src="../assets/navtool-global.js"></script>
 </body>
 </html>

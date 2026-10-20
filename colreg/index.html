@@ -24,42 +24,171 @@
       --nt-ok: #3fdc7e;
       --shadow: rgba(0,0,0,.24);
     }
+    * { box-sizing: border-box; }
+    html { background: var(--nt-bg); color: var(--nt-text); scroll-behavior: smooth; }
     body {
-      background: var(--nt-bg);
+      margin: 0;
+      background:
+        radial-gradient(circle at 18% 12%, rgba(85,229,209,.08), transparent 24%),
+        radial-gradient(circle at 82% 18%, rgba(103,223,255,.06), transparent 26%),
+        var(--nt-bg);
       color: var(--nt-text);
       font-family: Inter, system-ui, sans-serif;
     }
-    .top-strip, .topbar, .hero, .section, .quick-grid, .source-list, .notice, .searchbar, .card-grid, .scenario-grid, .buoy-layout, .sound-grid, .feature-image {
-      background: transparent;
-    }
-    .top-strip { border-bottom: 1px solid var(--nt-line); background: rgba(10,21,27,.78); }
-    .topbar { border-bottom: 1px solid var(--nt-line); background: rgba(5,9,12,.85); }
-    .main-nav a:hover, .main-nav a:focus-visible { color: var(--nt-teal); }
-    .btn.primary, .chip.active, .submit { background: var(--nt-teal); color: #03211d; }
-    .btn.ghost, .chip { border-color: var(--nt-line-strong); color: var(--nt-text); }
-    .hero-copy h1 span { color: var(--nt-teal); }
-    .hero-console, .feature-card, .rule-card, .sound-card, .buoy-card, .scenario-card, .knot-card {
-      border: 1px solid var(--nt-line);
-      background: linear-gradient(180deg, rgba(13,27,34,.94), rgba(10,21,27,.82));
-      box-shadow: 0 16px 40px rgba(0,0,0,.14);
-    }
-    .hero-console { background: rgba(10,21,27,.86); }
-    .scene-grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:14px; }
-    .scene-example {
-      border: 1px solid var(--nt-line); border-radius: 18px; overflow:hidden; background: rgba(10,21,27,.84);
-    }
-    .scene-example .art {
-      height: 150px; display:grid; place-items:center; background: linear-gradient(135deg, rgba(85,229,209,.08), rgba(10,21,27,.8));
+    .top-strip {
       border-bottom: 1px solid var(--nt-line);
-      font-size: 52px; color: var(--nt-teal);
+      background: rgba(5,9,12,.8);
+      color: #cfe8e3;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      font-size: 10px;
+      font-weight: 900;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 20px;
     }
-    .scene-example .txt { padding: 14px 16px; }
-    .scene-example .txt h4 { margin: 0 0 6px; font-size: 13px; letter-spacing: .12em; text-transform: uppercase; }
-    .scene-example .txt p { margin:0; color: var(--nt-muted); line-height:1.6; font-size: 14px; }
-    .section-head .eyebrow { color: var(--nt-teal); }
-    .outline-link { color: var(--nt-teal); }
-    .source-list a { border:1px solid var(--nt-line); border-radius:16px; background: rgba(10,21,27,.8); }
-    .notice { border: 1px solid rgba(85,229,209,.2); background: rgba(85,229,209,.04); }
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 12px 20px;
+      border-bottom: 1px solid var(--nt-line);
+      background: rgba(5,9,12,.86);
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      backdrop-filter: blur(18px);
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: var(--nt-text);
+      min-width: 0;
+    }
+    .brand-mark {
+      width: 38px; height: 38px;
+      border-radius: 12px;
+      display: grid; place-items: center;
+      font-weight: 900;
+      color: var(--nt-teal);
+      border: 1px solid var(--nt-line-strong);
+      background: rgba(85,229,209,.08);
+    }
+    .brand-copy { display: grid; }
+    .brand-copy strong { font-size: 14px; letter-spacing: .12em; text-transform: uppercase; }
+    .brand-copy small { font-size: 9px; letter-spacing: .18em; text-transform: uppercase; color: var(--nt-muted); }
+    .main-nav {
+      display: flex; align-items: center; flex-wrap: wrap; gap: 4px; justify-content: center;
+    }
+    .main-nav a {
+      color: #a7bebe; text-decoration: none; font-size: 10px; font-weight: 900; letter-spacing: .12em; text-transform: uppercase; padding: 10px 11px; border-radius: 8px; border: 1px solid transparent;
+    }
+    .main-nav a:hover, .main-nav a:focus-visible { color: var(--nt-teal); border-color: var(--nt-line); background: rgba(85,229,209,.04); }
+    .header-actions { display: flex; align-items: center; gap: 12px; }
+    .lang-toggle {
+      border: 1px solid var(--nt-line-strong); background: rgba(10,21,27,.8); color: var(--nt-text); border-radius: 999px; padding: 8px 12px; font-size: 9px; letter-spacing: .14em; text-transform: uppercase; font-weight: 900;
+    }
+    .imo-link {
+      color: var(--nt-teal); text-decoration: none; font-size: 10px; font-weight: 900; letter-spacing: .12em; text-transform: uppercase;
+    }
+    main#home { width: min(1180px, calc(100% - 28px)); margin: 0 auto; }
+    .hero { padding: 42px 0 10px; }
+    .hero-grid { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(320px, 0.85fr); gap: 34px; align-items: center; }
+    .hero-copy h1 { margin: 16px 0 16px; font-size: clamp(48px, 5vw, 72px); line-height: 1; letter-spacing: -0.06em; }
+    .hero-copy h1 span { color: var(--nt-teal); }
+    .hero-lead { max-width: 60ch; color: var(--nt-muted); line-height: 1.7; font-size: 16px; }
+    .eyebrow { color: var(--nt-teal); font-size: 10px; font-weight: 900; letter-spacing: .18em; text-transform: uppercase; }
+    .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 22px; }
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; padding: 0 18px; min-height: 46px; border-radius: 12px; text-decoration: none; font-size: 10px; letter-spacing: .12em; font-weight: 900; text-transform: uppercase; border: 1px solid var(--nt-line-strong);
+    }
+    .btn.primary { background: var(--nt-teal); color: #03211d; border-color: var(--nt-teal); }
+    .btn.ghost { color: var(--nt-text); background: rgba(10,21,27,.6); }
+    .hero-meta { margin-top: 24px; display: flex; flex-wrap: wrap; gap: 18px; }
+    .hero-meta span { display: grid; gap: 6px; font-size: 12px; color: var(--nt-muted); }
+    .hero-meta b { color: var(--nt-text); font-size: 18px; }
+    .hero-console {
+      border: 1px solid var(--nt-line); border-radius: 20px; padding: 14px; background: rgba(10,21,27,.86); box-shadow: 0 20px 40px rgba(0,0,0,.12);
+    }
+    .console-header, .console-footer { display: flex; justify-content: space-between; align-items: center; gap: 12px; font-size: 10px; letter-spacing: .16em; text-transform: uppercase; color: var(--nt-muted); }
+    .status { display: inline-flex; align-items: center; gap: 8px; }
+    .status i { width: 8px; height: 8px; border-radius: 50%; background: var(--nt-ok); display: inline-block; box-shadow: 0 0 10px var(--nt-ok); }
+    .radar { position: relative; width: min(420px, 72vw); aspect-ratio: 1; margin: 18px auto 14px; border-radius: 50%; border: 1px solid var(--nt-line); background: radial-gradient(circle, rgba(85,229,209,.04), transparent 58%); }
+    .radar-ring, .radar-line { position: absolute; inset: 0; border-radius: 50%; }
+    .radar-ring { border: 1px solid var(--nt-line); }
+    .radar-ring.r1 { inset: 12%; }
+    .radar-ring.r2 { inset: 25%; }
+    .radar-ring.r3 { inset: 38%; }
+    .radar-line { width: 50%; height: 2px; top: 50%; left: 50%; transform-origin: left center; background: linear-gradient(90deg, var(--nt-teal), transparent); transform: rotate(45deg); }
+    .radar-target { position: absolute; width: 12px; height: 12px; border-radius: 50%; display: grid; place-items: center; color: var(--nt-teal); font-weight: 900; }
+    .target-1 { left: 64%; top: 24%; }
+    .target-2 { left: 26%; top: 58%; }
+    .target-3 { left: 69%; top: 70%; }
+    .own-ship { position: absolute; left: 50%; top: 50%; transform: translate(-50%,-50%); width: 68px; height: 68px; border-radius: 50%; display: grid; place-items: center; border: 1px solid var(--nt-teal); background: rgba(85,229,209,.06); color: var(--nt-teal); }
+    .radar-label { position: absolute; background: rgba(5,9,12,.8); border: 1px solid var(--nt-line); color: #7c8d8d; border-radius: 5px; padding: 5px 7px; font-size: 8px; font-weight: 900; }
+    .north { top: 5%; left: 50%; transform: translateX(-50%); }
+    .east { right: 4%; top: 50%; transform: translateY(-50%); }
+    .south { bottom: 5%; left: 50%; transform: translateX(-50%); }
+    .west { left: 4%; top: 50%; transform: translateY(-50%); }
+    .console-footer { margin-top: 14px; }
+    .console-footer strong { color: var(--nt-teal); font-size: 12px; }
+    .quick-grid {
+      display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 14px; margin-top: 18px;
+    }
+    .quick-card {
+      display: block; min-height: 122px; padding: 16px 18px; border: 1px solid var(--nt-line); border-radius: 18px; background: rgba(10,21,27,.78); text-decoration: none; color: var(--nt-text); display: flex; flex-direction: column; justify-content: center; gap: 8px;
+    }
+    .quick-number, .quick-icon { color: var(--nt-teal); font-weight: 900; font-size: 26px; }
+    .quick-title { font-size: 13px; letter-spacing: .12em; font-weight: 900; text-transform: uppercase; }
+    .quick-card small { color: var(--nt-muted); font-size: 11px; }
+    .section { padding: 52px 0 0; }
+    .section-head { display: flex; justify-content: space-between; align-items: end; gap: 16px; margin-bottom: 20px; }
+    .section-head h2 { margin: 12px 0 0; font-size: clamp(32px, 4vw, 52px); letter-spacing: -0.06em; }
+    .section-head p { margin: 12px 0 0; max-width: 640px; color: var(--nt-muted); line-height: 1.7; }
+    .outline-link { color: var(--nt-teal); text-decoration: none; font-size: 10px; letter-spacing: .12em; text-transform: uppercase; font-weight: 900; }
+    .searchbar {
+      display: flex; align-items: center; gap: 12px; min-height: 58px; padding: 0 16px; border: 1px solid var(--nt-line-strong); border-radius: 14px; background: rgba(7,15,19,.94); box-shadow: 0 18px 40px rgba(0,0,0,.12);
+    }
+    .searchbar input { flex: 1; border: 0; background: transparent; color: var(--nt-text); font-size: 16px; outline: none; }
+    .searchbar input::placeholder { color: #5d7a7b; }
+    .searchbar button { border: 0; background: transparent; color: var(--nt-text); font-size: 22px; cursor: pointer; }
+    .chips { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+    .chip { border: 1px solid var(--nt-line-strong); background: rgba(10,21,27,.8); color: var(--nt-text); border-radius: 10px; padding: 9px 12px; font-size: 9px; letter-spacing: .12em; text-transform: uppercase; font-weight: 900; }
+    .chip.active { background: var(--nt-teal); color: #03211d; border-color: var(--nt-teal); }
+    .card-grid { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 14px; margin-top: 18px; }
+    .rule-card, .feature-card, .sound-card, .buoy-card, .scenario-card, .knot-card { border: 1px solid var(--nt-line); border-radius: 18px; background: rgba(10,21,27,.8); padding: 18px; min-height: 200px; }
+    .rule-card .tag, .sound-card .tag, .knot-card .tag, .buoy-card .tag { color: var(--nt-teal); font-size: 10px; letter-spacing: .2em; text-transform: uppercase; font-weight: 900; }
+    .rule-card h3, .feature-card h3, .sound-card h3, .buoy-card h3, .scenario-card h3, .knot-card h3 { margin: 20px 0 10px; font-size: 18px; }
+    .rule-card p, .feature-card p, .sound-card p, .buoy-card p, .scenario-card p, .knot-card p { color: var(--nt-muted); line-height: 1.7; }
+    .source-list { display: grid; gap: 12px; margin-top: 18px; }
+    .source-list a { display: flex; align-items: center; justify-content: space-between; gap: 20px; text-decoration: none; color: var(--nt-text); padding: 16px 18px; border: 1px solid var(--nt-line); border-radius: 16px; background: rgba(10,21,27,.8); }
+    .source-list b { display: block; font-size: 13px; letter-spacing: .12em; text-transform: uppercase; }
+    .source-list span { color: var(--nt-muted); font-size: 13px; }
+    .source-list em { color: var(--nt-teal); font-style: normal; font-size: 22px; }
+    .notice {
+      margin-top: 18px; padding: 16px 18px; border: 1px solid rgba(85,229,209,.2); background: rgba(85,229,209,.04); border-radius: 16px; line-height: 1.7; color: var(--nt-text);
+    }
+    .scene-grid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 14px; margin-top: 18px; }
+    .scene-example { border: 1px solid var(--nt-line); border-radius: 18px; overflow: hidden; background: rgba(10,21,27,.8); }
+    .scene-example .art { height: 150px; display: grid; place-items: center; background: linear-gradient(135deg, rgba(85,229,209,.08), rgba(10,21,27,.8)); border-bottom: 1px solid var(--nt-line); font-size: 52px; color: var(--nt-teal); }
+    .scene-example .txt { padding: 16px; }
+    .scene-example h4 { margin: 0 0 6px; font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--nt-teal); }
+    .scene-example p { margin: 0; color: var(--nt-muted); line-height: 1.7; }
+    @media (max-width: 980px) {
+      .hero-grid, .quick-grid, .card-grid, .scene-grid { grid-template-columns: 1fr 1fr; }
+      .main-nav { justify-content: flex-start; }
+      .topbar { flex-wrap: wrap; }
+    }
+    @media (max-width: 720px) {
+      .hero-grid, .quick-grid, .card-grid, .scene-grid, .section-head { grid-template-columns: 1fr; display: grid; }
+      .main-nav { width: 100%; justify-content: flex-start; }
+      .header-actions { width: 100%; justify-content: flex-end; }
+      .top-strip { display: none; }
+    }
   </style>
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="../assets/navtool-global.css">
@@ -68,9 +197,17 @@
 </head>
 <body>
   <div id="scrollProgress"></div>
-  <div class="top-strip"><span>COLREG NAVIGATOR</span><span>KVR · COLREG · SEAMANSHIP</span></div>
+
+  <div class="top-strip">
+    <span>COLREG NAVIGATOR</span>
+    <span>KVR · COLREG · SEAMANSHIP</span>
+  </div>
+
   <header class="topbar" id="topbar">
-    <a class="brand" href="#home" aria-label="COLREG Navigator"><span class="brand-mark">N</span><span class="brand-copy"><strong>COLREG</strong><small>NAVIGATOR</small></span></a>
+    <a class="brand" href="#home" aria-label="COLREG Navigator">
+      <span class="brand-mark">N</span>
+      <span class="brand-copy"><strong>COLREG</strong><small>NAVIGATOR</small></span>
+    </a>
     <nav class="main-nav" aria-label="Main navigation">
       <a href="#rules">KVR / COLREG</a>
       <a href="#lights">LICHTER</a>
@@ -92,8 +229,15 @@
           <div class="eyebrow">MARITIME KNOWLEDGE SYSTEM</div>
           <h1>COLREG.<br><span>EINFACH VERSTANDEN.</span></h1>
           <p class="hero-lead">Regeln, Lichter, Tonnen, Ausweichsituationen und Knoten – klar erklärt und interaktiv gelernt.</p>
-          <div class="hero-actions"><a class="btn primary" href="#rules">REGELN STARTEN</a><a class="btn ghost" href="#scenarios">PRAXIS TRAINIEREN</a></div>
-          <div class="hero-meta"><span><b>38</b><span>COLREG-Regeln</span></span><span><b>DE / EN</b><span>zweisprachig</span></span><span><b>IALA</b><span>Seezeichen</span></span></div>
+          <div class="hero-actions">
+            <a class="btn primary" href="#rules">REGELN STARTEN</a>
+            <a class="btn ghost" href="#scenarios">PRAXIS TRAINIEREN</a>
+          </div>
+          <div class="hero-meta">
+            <span><b>38</b><span>COLREG-Regeln</span></span>
+            <span><b>DE / EN</b><span>zweisprachig</span></span>
+            <span><b>IALA</b><span>Seezeichen</span></span>
+          </div>
         </div>
         <div class="hero-console reveal" aria-label="Interactive radar">
           <div class="console-header"><span>COLREG SYSTEM</span><span class="status"><i></i>ONLINE</span></div>
@@ -106,7 +250,7 @@
     <section class="quick-grid">
       <a class="quick-card reveal" href="#rules"><span class="quick-number">38</span><span class="quick-title">REGELN</span><small>Deutsch + English</small></a>
       <a class="quick-card reveal" href="#lights"><span class="quick-icon">◉</span><span class="quick-title">LICHTER</span><small>Schiffskennungen</small></a>
-      <a class="quick-card reveal" href="#buoys"><span class="quick-icon">◆</span><span class="quick-title">TONNEN</span><small>IALA & Kardinalsystem</small></a>
+      <a class="quick-card reveal" href="#buoys"><span class="quick-icon">◆</span><span class="quick-title">TONNEN</span><small>IALA &amp; Kardinalsystem</small></a>
       <a class="quick-card reveal" href="#knots"><span class="quick-icon">∞</span><span class="quick-title">KNOTEN</span><small>Schritt für Schritt</small></a>
     </section>
 
@@ -115,13 +259,13 @@
         <div><div class="eyebrow">01 / REGELWERK</div><h2>KVR / COLREG</h2><p>Suche nach Regelnummer, Begriff oder Situation – z. B. „Überholen“, „Nebel“, „Steuerbord“ oder „Kollisionsgefahr“.</p></div>
         <a class="outline-link" href="https://www.imo.org/en/about/conventions/pages/colreg.aspx" target="_blank" rel="noopener">OFFIZIELLE IMO-SEITE ↗</a>
       </div>
-      <div class="searchbar reveal"><span>⌕</span><input id="ruleSearch" type="search" data-i18n-placeholder="rules.search" placeholder="Regel, Stichwort oder Situation suchen …" autocomplete="off"><button id="clearSearch" type="button">×</button></div>
+      <div class="searchbar reveal"><span aria-hidden="true">⌕</span><input id="ruleSearch" type="search" data-i18n-placeholder="rules.search" placeholder="Regel, Stichwort oder Situation suchen …" autocomplete="off"><button id="clearSearch" type="button">×</button></div>
       <div id="ruleFilters" class="chips reveal"></div>
       <div id="ruleResults" class="card-grid"></div>
     </section>
 
     <section class="section dark-section" id="lights">
-      <div class="section-head reveal"><div><div class="eyebrow">02 / NAVIGATION LIGHTS</div><h2>LICHTER & KENNUNGEN</h2><p>Karte anklicken für Bedeutung, Sichtbarkeit und Quelle.</p></div></div>
+      <div class="section-head reveal"><div><div class="eyebrow">02 / NAVIGATION LIGHTS</div><h2>LICHTER &amp; KENNUNGEN</h2><p>Karte anklicken für Bedeutung, Sichtbarkeit und Quelle.</p></div></div>
       <div id="lightGrid" class="card-grid"></div>
     </section>
 
@@ -133,7 +277,7 @@
     </section>
 
     <section class="section" id="buoys">
-      <div class="section-head reveal"><div><div class="eyebrow">03 / IALA MARITIME BUOYS</div><h2>TONNEN & SEEZEICHEN</h2><p>Kardinal- und laterale Zeichen mit klarer Merkhilfe.</p></div></div>
+      <div class="section-head reveal"><div><div class="eyebrow">03 / IALA MARITIME BUOYS</div><h2>TONNEN &amp; SEEZEICHEN</h2><p>Kardinal- und laterale Zeichen mit klarer Merkhilfe.</p></div></div>
       <div class="buoy-layout reveal">
         <article class="feature-image">
           <div class="media-label">IALA / CARDINAL MARKS</div>
@@ -169,6 +313,7 @@
       <div class="notice reveal"><b>Hinweis:</b> <span>Diese Website ist eine Lern- und Orientierungshilfe. Für Prüfung, Fahrt und rechtliche Fragen sind der amtliche COLREG/KVR-Text sowie die jeweils geltenden nationalen Vorschriften maßgeblich.</span></div>
     </section>
   </main>
+
   <span id="year" hidden></span>
   <div id="modalRoot"></div>
   <script src="app.js"></script>

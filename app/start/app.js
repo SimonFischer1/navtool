@@ -14,6 +14,7 @@ const TOOLS=[
  {id:"colreg",name:"COLREG",path:"/colreg/",d:"KVR, Schallsignale, Lichter, Tonnen",full:true,note:"Regeln, Signale und Situationsgrafiken offline",kw:"kvr regeln schallsignal signale lichter tonnen iala ausweichen kreuzen überholen"},
  {id:"weather",name:"WEATHER",path:"/weather/",d:"Wolkenatlas, Radar, Wind, Isobaren",full:false,note:"Wolkenatlas mit Bildern offline; Radar, Wind und Isobaren brauchen Internet",kw:"wetter wolken cumulus cirrus wind radar isobaren luftdruck fronten strömung"},
  {id:"calc",name:"CALC",path:"/calc/",d:"Navigation, Kompassfehler & Schiffstheorie",full:true,note:"Komplett offline",kw:"rechner rechenblatt navigation schiffstheorie kompass deviation schwerpunkt stabilität gyro"}];
+const COL={simulator:"#ffb454",map:"#4fe08a",navtext:"#b393ff",colreg:"#f2f6f6",weather:"#ff7b7b",calc:"#5aa9ff"};
 const TOPICS=[["Kompassfehler / Gyro Error","calc","gyro","kompasserror kompassfehler gyro kreiselfehler azimut sonne deviation missweisung"],["Backbord- und Steuerbordtonnen","colreg","buoys","backbord steuerbord tonne tonnen kardinal iala seezeichen"],["Lichterführung","colreg","lights","lichter positionslichter topplicht seitenlicht"],["Schallsignale","colreg","sounds","schallsignale nebelsignal nebelhorn"],["Was muss ich jetzt tun?","colreg","scenarios","ausweichen kreuzen überholen gegenkurs nebel situation"],["Knoten","colreg","knots","knoten palstek webleinenstek achtknoten"],["Wolken (Kumulus, Cirrus …)","weather","cloudPanel","wolken kumulus cumulus cirrus stratus wolkenatlas"],["Strömungen (Karibikstrom …)","weather","currentPanel","strömung karibikstrom golfstrom humboldt"],["Windberechnung","weather","wind","wind wahrer wind scheinbarer wind beaufort"],["Luftdruck & Isobaren","weather","pressure","luftdruck isobaren hoch tief"],["Karte & Route","map","","karte route routing"],["NAVTEXT Stationen","navtext","","navtex station"],["Simulator: Steuern üben","simulator","","simulator ruder telegraf steuern"]];
 const L=k=>{try{return JSON.parse(localStorage.getItem(k)||"null")}catch(_){return null}},S=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(_){}};
 const standalone=matchMedia("(display-mode: standalone)").matches||navigator.standalone===true;
@@ -29,7 +30,7 @@ function toast(t){const e=$("#toast");e.textContent=t;e.classList.add("on");clea
 const sp=$("#splash"),secs=cfg&&cfg.app&&cfg.app.splashSeconds!=null?cfg.app.splashSeconds:3;
 if(sessionStorage.getItem("nt-splash")||secs<=0)sp.remove();else{sessionStorage.setItem("nt-splash","1");setTimeout(()=>{sp.classList.add("out");setTimeout(()=>sp.remove(),600)},secs*1000)}
 /* Kacheln */
-function tile(t){const b=document.createElement("div"),st=mst(t.id),on=favs().includes(t.id);b.className="tile"+(st!=="aktiv"?" off":"");b.tabIndex=0;
+function tile(t){const b=document.createElement("div"),st=mst(t.id),on=favs().includes(t.id);b.className="tile"+(st!=="aktiv"?" off":"");b.tabIndex=0;b.style.setProperty("--c",COL[t.id]||"#55e5d1");
  b.innerHTML=`<button class="star${on?" on":""}" aria-label="Favorit" type="button">${on?"★":"☆"}</button><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true">${I[t.id]}</svg></span><b>${t.name}${t.isNew?'<em class="new">NEU</em>':""}</b><span class="d">${t.d}</span><span class="tag ${t.full?"":"part"}">${st!=="aktiv"?({aus:"Nicht verfügbar",wartung:"Wartung",planung:"In Planung",stoerung:"Störung"})[st]:t.full?"Voll offline":"Teilweise offline"}</span>`;
  b.querySelector(".star").onclick=e=>{e.stopPropagation();const f=favs(),i=f.indexOf(t.id);i<0?f.push(t.id):f.splice(i,1);S(fkey(),f);render();renderFav()};
  b.onclick=()=>{if(st==="aus"||st==="wartung"||st==="planung")return toast(t.name+" ist gerade nicht verfügbar.");openTool(t.id)};return b}
@@ -38,14 +39,17 @@ function render(){const q=$("#q").value.trim().toLowerCase(),g=$("#grid");g.inne
  const tp=q?TOPICS.filter(x=>(x[0]+" "+x[3]).toLowerCase().includes(q)).slice(0,5):[];
  $("#topics").innerHTML=tp.map((x,i)=>`<button class="topic" data-i="${i}" type="button"><b>${x[0]}</b><small>${by(x[1]).name} →</small></button>`).join("");
  $$("#topics .topic").forEach((b,i)=>b.onclick=()=>openTool(tp[i][1],false,tp[i][2]));
- $("#none").hidden=hits.length>0||tp.length>0;$("#feat").hidden=!!q}
+ $("#none").hidden=hits.length>0||tp.length>0;$("#feat").hidden=!!q;$("#chips").hidden=!!q;chips();resume(q)}
+function chips(){const c=$("#chips");if(c.dataset.on)return;c.dataset.on=1;c.innerHTML=TOPICS.slice(0,9).map((x,i)=>`<button type="button" class="chip" data-i="${i}" style="--c:${COL[x[1]]||"#55e5d1"}">${x[0].replace(/ \(.*\)/,"")}</button>`).join("");$$("#chips .chip").forEach(b=>b.onclick=()=>{const x=TOPICS[+b.dataset.i];buzz();openTool(x[1],false,x[2])})}
+function resume(q){const id=L("nt-last"),t=id&&by(id),b=$("#resume");if(!t||q||mst(id)!=="aktiv"){b.hidden=true;return}b.hidden=false;$("#resName").textContent=t.name+" · "+t.d;$("#resIc").innerHTML=I[t.id];b.style.setProperty("--c",COL[t.id]);b.onclick=()=>{buzz();openTool(t.id)}}
+function buzz(){try{navigator.vibrate&&navigator.vibrate(7)}catch(_){}}
 function renderFav(){const f=favs(),g=$("#favgrid");g.innerHTML="";TOOLS.filter(t=>f.includes(t.id)).forEach(t=>g.append(tile(t)));$("#favnone").hidden=f.length>0}
 $("#q").addEventListener("input",render);
 $("#q").addEventListener("keydown",e=>{if(e.key!=="Enter")return;const q=$("#q").value.trim().toLowerCase(),tp=TOPICS.filter(x=>(x[0]+" "+x[3]).toLowerCase().includes(q)),h=TOOLS.filter(t=>(t.name+" "+t.d+" "+t.kw).toLowerCase().includes(q));e.target.blur();if(tp.length)openTool(tp[0][1],false,tp[0][2]);else if(h.length)openTool(h[0].id)});
 $("#feat").onclick=()=>openTool("simulator");
 /* Viewer */
 const frame=$("#frame");
-function openTool(id,pushed,hash){const t=by(id);if(!t)return;$("#vtitle").textContent=t.name;frame.src=t.path+(hash?"#"+hash:"");$("#viewer").hidden=false;if(!pushed)history.pushState({tool:id},"","#"+id)}
+function openTool(id,pushed,hash){const t=by(id);if(!t)return;S("nt-last",id);if(id==="simulator"&&document.documentElement.dataset.dev==="phone"&&innerHeight>innerWidth)toast("Tipp: Für den Simulator das Gerät quer drehen");$("#vtitle").textContent=t.name;frame.src=t.path+(hash?"#"+hash:"");$("#viewer").hidden=false;if(!pushed)history.pushState({tool:id},"","#"+id)}
 function closeTool(fromPop){$("#viewer").hidden=true;frame.src="about:blank";if(!fromPop&&history.state&&history.state.tool)history.back()}
 $("#back").onclick=()=>closeTool(false);
 $("#reload").onclick=()=>{try{frame.contentWindow.location.reload()}catch(_){frame.src=frame.src}};
@@ -54,14 +58,18 @@ addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("#viewer").hidden)closeTo
 /* Tab-Leiste (Liquid-Glass-Blase: antippen oder schieben) */
 const tbar=$("#tabbar"),bub=$("#bub");let drag=null;
 const tabs=()=>$$("#tabbar button").filter(b=>!b.hidden);
-function place(i,live){const n=tabs().length,w=(tbar.clientWidth-12)/n;bub.style.width=w+"px";bub.style.transition=live?"none":"";bub.style.transform=`translateX(${live!==undefined&&live!==true?live:i*w}px)`+(live!==undefined?" scale(1.1)":"")}
+function place(i,live){const v=tbar.classList.contains("v"),n=tabs().length,w=((v?tbar.clientHeight:tbar.clientWidth)-12)/n;if(v){bub.style.height=w+"px";bub.style.width="auto"}else{bub.style.width=w+"px";bub.style.height=""}bub.style.transition=live!==undefined?"none":"";const o=live!==undefined&&live!==true?live:i*w;bub.style.transform=`translate${v?"Y":"X"}(${o}px)`+(live!==undefined?" scale(1.08)":"")}
+const ax=e=>tbar.classList.contains("v")?e.clientY:e.clientX;
 function show(v){view=v;$$(".view").forEach(x=>x.hidden=x.id!=="v-"+v);const ts=tabs();ts.forEach(b=>b.classList.toggle("on",b.dataset.v===v));place(Math.max(0,ts.findIndex(b=>b.dataset.v===v)));if(v==="fav")renderFav();if(v==="me"){acct();info()}scrollTo({top:0})}
-tbar.addEventListener("pointerdown",e=>{drag={x:e.clientX,moved:false};tbar.setPointerCapture(e.pointerId)});
-tbar.addEventListener("pointermove",e=>{if(!drag)return;if(Math.abs(e.clientX-drag.x)>6)drag.moved=true;if(drag.moved){const r=tbar.getBoundingClientRect(),n=tabs().length,w=(r.width-12)/n;place(0,Math.max(0,Math.min(r.width-12-w,e.clientX-r.left-6-w/2)))}});
-tbar.addEventListener("pointerup",e=>{if(!drag)return;const r=tbar.getBoundingClientRect(),ts=tabs(),w=(r.width-12)/ts.length,i=Math.max(0,Math.min(ts.length-1,Math.floor((e.clientX-r.left-6)/w)));drag=null;show(ts[i].dataset.v)});
-addEventListener("resize",()=>show(view));
+tbar.addEventListener("pointerdown",e=>{drag={x:ax(e),moved:false};tbar.setPointerCapture(e.pointerId)});
+tbar.addEventListener("pointermove",e=>{if(!drag)return;if(Math.abs(ax(e)-drag.x)>6)drag.moved=true;if(drag.moved){const v=tbar.classList.contains("v"),r=tbar.getBoundingClientRect(),n=tabs().length,len=(v?r.height:r.width)-12,w=len/n;place(0,Math.max(0,Math.min(len-w,ax(e)-(v?r.top:r.left)-6-w/2)))}});
+tbar.addEventListener("pointerup",e=>{if(!drag)return;const v=tbar.classList.contains("v"),r=tbar.getBoundingClientRect(),ts=tabs(),w=((v?r.height:r.width)-12)/ts.length,i=Math.max(0,Math.min(ts.length-1,Math.floor((ax(e)-(v?r.top:r.left)-6)/w)));drag=null;buzz();show(ts[i].dataset.v)});
+function dev(){const w=innerWidth,h=innerHeight,m=Math.min(w,h),land=w>h,coarse=matchMedia("(pointer:coarse)").matches,d=m<600?"phone":coarse?"tablet":"desktop",r=document.documentElement;
+ r.dataset.dev=d;r.dataset.orient=land?"land":"port";r.dataset.app=standalone?"1":"0";tbar.classList.toggle("v",d==="phone"&&land)}
+function hello(){const h=new Date().getHours(),g=h<5?"Gute Nacht":h<11?"Moin":h<17?"Guten Tag":h<22?"Guten Abend":"Gute Nacht",u=user();$("#hi").textContent=g+(u?", "+u:"")}
+addEventListener("resize",()=>{dev();show(view)});addEventListener("orientationchange",()=>setTimeout(()=>{dev();show(view)},250));
 /* Konto (lokal auf diesem Gerät) */
-function acct(){const u=user();$("#acctOut").hidden=!!u;$("#acctIn").hidden=!u;if(u)$("#who").textContent=u}
+function acct(){const u=user();hello();$("#acctOut").hidden=!!u;$("#acctIn").hidden=!u;if(u)$("#who").textContent=u}
 async function auth(create){const n=$("#un").value.trim(),p=$("#pw").value,m=$("#am");if(n.length<2||p.length<4){m.textContent="Benutzername (min. 2) und Passwort (min. 4 Zeichen) eingeben.";return}
  const us=L("nt-users")||{},h=await sha("nt:"+n.toLowerCase()+":"+p);
  if(create){if(us[n.toLowerCase()]){m.textContent="Dieser Benutzername ist schon vergeben.";return}us[n.toLowerCase()]=h;S("nt-users",us)}else if(us[n.toLowerCase()]!==h){m.textContent="Benutzername oder Passwort falsch.";return}
@@ -105,6 +113,6 @@ $("#prep").onclick=async()=>{
 $("#net").onclick=()=>$("#off").scrollIntoView({behavior:"smooth"});
 $(".off").id="off";
 if("serviceWorker"in navigator)navigator.serviceWorker.register("/sw.js").then(()=>navigator.serviceWorker.ready).then(()=>setTimeout(info,1500)).catch(()=>{});
-applyCfg();render();net();info();show("home");
+dev();hello();applyCfg();render();net();info();show("home");
 if(location.hash.length>1&&by(location.hash.slice(1)))openTool(location.hash.slice(1),true);
 })();

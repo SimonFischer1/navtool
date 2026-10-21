@@ -12,18 +12,34 @@ let C=null;try{C=JSON.parse(localStorage.getItem('nt-cfg'))}catch(_){}
 const NT=window.NT={hit(k){try{fetch(AB+'/hit/'+NS+'/'+k,{mode:'cors',keepalive:true}).catch(()=>{})}catch(_){}},ready:null};
 function mod(id){return C&&C.modules&&C.modules.find(m=>m.id===id)}
 function overall(){const ms=(C&&C.modules)||[];if(ms.some(m=>!m.enabled||m.status==='stoerung'))return'bad';if(ms.some(m=>m.status!=='aktiv'))return'warn';return'ok'}
+
+/* Cookie-Hinweis (nicht im Simulator, nicht in der App) */
+const needConsent=!bare&&!matchMedia('(display-mode: standalone)').matches;
+const getC=()=>{try{return localStorage.getItem('nt-consent')}catch(_){return null}};
+NT.consent=()=>!needConsent||getC()==='yes';
+NT.cookies=function(force){
+ if(!needConsent)return;const old=document.getElementById('nt-cookie');if(old)old.remove();
+ if(!force&&(getC()||sessionStorage.getItem('nt-cc-x')))return;
+ const b=document.createElement('div');b.id='nt-cookie';b.setAttribute('role','dialog');b.setAttribute('aria-label','Cookies');
+ b.innerHTML=`<button class=\"nt-cc-x\" aria-label=\"${de?'Schließen':'Close'}\">✕</button><div class=\"nt-cc-ic\"><svg viewBox=\"0 0 24 24\"><circle cx=\"12\" cy=\"12\" r=\"9\"/><circle cx=\"9\" cy=\"10\" r=\"1.1\"/><circle cx=\"14.5\" cy=\"9\" r=\"1.1\"/><circle cx=\"13\" cy=\"14.5\" r=\"1.1\"/><circle cx=\"8.5\" cy=\"14\" r=\"1.1\"/></svg></div><div class=\"nt-cc-tx\"><b>${de?'Cookies & Besucherzähler':'Cookies & visitor counter'}</b><p>${de?'NavTool speichert Einstellungen wie Sprache und Favoriten lokal auf deinem Gerät. Mit deiner Zustimmung zählen wir außerdem anonym, welche Bereiche genutzt werden.':'NavTool stores settings such as language and favourites locally on your device. With your consent we also count anonymously which sections are used.'}</p></div><div class=\"nt-cc-btn\"><button class=\"no\">${de?'Ablehnen':'Decline'}</button><button class=\"yes\">${de?'Akzeptieren':'Accept'}</button></div>`;
+ const set=v=>{try{localStorage.setItem('nt-consent',v)}catch(_){}b.classList.remove('in');setTimeout(()=>b.remove(),380);if(v==='yes')track()};
+ b.querySelector('.yes').onclick=()=>set('yes');b.querySelector('.no').onclick=()=>set('no');
+ b.querySelector('.nt-cc-x').onclick=()=>{sessionStorage.setItem('nt-cc-x','1');b.classList.remove('in');setTimeout(()=>b.remove(),380)};
+ document.body.appendChild(b);requestAnimationFrame(()=>requestAnimationFrame(()=>b.classList.add('in')));
+};
 function chrome(){
  if(bare||document.querySelector('.nt-header'))return;
  const v=C&&C.brand&&C.brand.logoVersion,mods=MODS.filter(m=>{const c=mod(m[0]);return !c||c.enabled!==false||m[0]==='app'});
  const h=document.createElement('header');h.className='nt-header';
- h.innerHTML=`<div class="nt-hin"><a class="nt-logo" href="/" aria-label="NavTool Start"><img src="${LOGO(v)}" alt="NavTool"></a><nav class="nt-nav">${mods.map(m=>`<a href="${m[2]}" class="${seg===m[0]?'on':''}${m[0]==='simulator'?' new':''}">${m[1]}</a>`).join('')}</nav><div class="nt-lang"><button data-l="de" class="${de?'on':''}">DE</button><button data-l="en" class="${de?'':'on'}">EN</button></div></div>`;
+ h.innerHTML=`<div class="nt-hin"><a class="nt-logo" href="/" aria-label="NavTool Start"><img src="${LOGO(v)}" alt="NavTool"></a><nav class="nt-nav">${mods.map(m=>m[0]==='app'?`<a href="${m[2]}" class="nt-promo${seg==='app'?' on':''}">${de?'App laden':'Get the app'}</a>`:`<a href="${m[2]}" class="${seg===m[0]?'on':''}${m[0]==='simulator'?' new':''}">${m[1]}</a>`).join('')}</nav><div class="nt-lang"><button data-l="de" class="${de?'on':''}">DE</button><button data-l="en" class="${de?'':'on'}">EN</button></div></div>`;
  h.querySelectorAll('[data-l]').forEach(b=>b.onclick=()=>{localStorage.setItem('navtool-lang',b.dataset.l);location.reload()});
  document.body.prepend(h);
  document.querySelectorAll('footer:not(.nt-foot)').forEach(f=>f.remove());
  const f=document.createElement('footer');f.className='nt-foot';f.setAttribute('role','contentinfo');
  const txt=(C&&C.brand&&C.brand.footer)||'Maritime Navigation Workspace · navtool.de';
- f.innerHTML=`<div class="nt-foot-in"><div><img src="${LOGO(v)}" alt="NavTool"><div class="nt-foot-copy"></div></div><div class="nt-foot-links">${MODS.map(m=>`<a href="${m[2]}">${m[1]}</a>`).join('')}<a href="#" id="nt-top">TOP ↑</a></div></div><div class="nt-foot-bar"><span>© NavTool</span><a href="/status/"><i class="nt-dot ${overall()==='ok'?'':overall()}"></i>Status</a></div>`;
+ f.innerHTML=`<a class="nt-appstrip" href="/app/"><span class="nt-appstrip-ic"><svg viewBox="0 0 24 24"><rect x="7" y="2.5" width="10" height="19" rx="2.4"/><path d="M10.5 18.5h3"/></svg></span><span class="nt-appstrip-tx"><b>${de?'NavTool als App':'NavTool as an app'}</b><small>${de?'Komplett offline · iPhone, iPad, Android':'Fully offline · iPhone, iPad, Android'}</small></span><span class="nt-appstrip-go">${de?'Jetzt laden':'Get it'} →</span></a><div class="nt-foot-in"><div><img src="${LOGO(v)}" alt="NavTool"><div class="nt-foot-copy"></div></div><div class="nt-foot-links">${MODS.map(m=>`<a href="${m[2]}">${m[1]}</a>`).join('')}<a href="#" id="nt-top">TOP ↑</a></div></div><div class="nt-foot-bar"><span>© NavTool</span><span><a href="#" id="nt-cc">Cookies</a> · <a href="/status/"><i class="nt-dot ${overall()==='ok'?'':overall()}"></i>Status</a></span></div>`;
  f.querySelector('.nt-foot-copy').textContent=txt;
+ f.querySelector('#nt-cc').onclick=e=>{e.preventDefault();sessionStorage.removeItem('nt-cc-x');NT.cookies(true)};
  f.querySelector('#nt-top').onclick=e=>{e.preventDefault();scrollTo({top:0,behavior:'smooth'})};
  document.body.appendChild(f);
 }
@@ -45,6 +61,7 @@ function brand(){
  s.textContent=`html body,html:root{--nt-acc:${a};--teal:${a};--green:${a};--t:${a}}`;document.head.appendChild(s);
 }
 function track(){
+ if(!NT.consent())return;
  if(localStorage.getItem('nt-admin')==='1'||seg==='admin'||seg==='status')return;
  const id=seg==='home'?'home':path.startsWith('/app/start')?'appstart':seg,d=new Date(),Y=d.getUTCFullYear(),M=String(d.getUTCMonth()+1).padStart(2,'0'),D=String(d.getUTCDate()).padStart(2,'0');
  const sk='nt-seen-'+id+Y+M+D+(inFrame?'f':'');if(sessionStorage.getItem(sk))return;sessionStorage.setItem(sk,'1');
@@ -52,7 +69,7 @@ function track(){
  if(inFrame||matchMedia('(display-mode: standalone)').matches)r='app';
  [`v.${id}.d${Y}${M}${D}`,`v.${id}.m${Y}${M}`,`v.${id}.y${Y}`,`r.${r}.m${Y}${M}`].forEach(NT.hit);
 }
-function boot(){tpl();chrome();gate();sections();setTimeout(sections,1500);brand();track()}
+function boot(){tpl();chrome();gate();sections();setTimeout(sections,1500);brand();track();setTimeout(()=>NT.cookies(),900)}
 NT.ready=fetch('/data/config.json?'+Date.now(),{cache:'no-store'}).then(r=>r.json()).then(j=>{C=j;try{localStorage.setItem('nt-cfg',JSON.stringify(j))}catch(_){}}).catch(()=>{});
 const go=()=>{boot();NT.ready.then(()=>{document.querySelectorAll('.nt-header,.nt-foot,.nt-note,.nt-lock').forEach(e=>e.remove());boot()})};
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',go);else go();

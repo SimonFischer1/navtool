@@ -24,17 +24,27 @@
     </header>
 
     <section class="view" id="v-home">
-      <label class="search">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l5 5"/></svg>
-        <input id="q" type="search" placeholder="Suchen: Kompassfehler, Tonnen, Wetter, Karte…">
-      </label>
-      <div id="topics"></div>
-      <button id="feat" class="feat" type="button">
-        <span class="new">NEU</span>
-        <b>Steering Simulator</b>
-        <small>Ruder drehen, Kompass lesen, Telegraf bedienen. Jetzt üben.</small>
-        <i>→</i>
-      </button>
+      <div class="hl">
+        <div class="hello"><small id="hi">Moin</small><h1>Wohin geht die Reise?</h1></div>
+        <label class="search">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l5 5"/></svg>
+          <input id="q" type="search" placeholder="Kompass, Tonnen, Wetter …" enterkeyhint="search">
+        </label>
+        <div id="chips" aria-label="Schnellzugriff"></div>
+        <button id="resume" class="resume" type="button" hidden>
+          <span class="ic"><svg viewBox="0 0 24 24" id="resIc"></svg></span>
+          <span class="rt"><small>Weitermachen</small><b id="resName"></b></span>
+          <i>→</i>
+        </button>
+        <div id="topics"></div>
+        <button id="feat" class="feat" type="button">
+          <svg class="fart" viewBox="0 0 120 120" aria-hidden="true"><circle cx="60" cy="60" r="46"/><circle cx="60" cy="60" r="30"/><path d="M60 8v104M8 60h104"/><path d="M60 22l7 38-7 38-7-38z" class="nd"/></svg>
+          <span class="new">NEU</span>
+          <b>Steering Simulator</b>
+          <small>Ruder drehen, Telegraf-Hebel bedienen, Kurs halten. Jetzt üben.</small>
+          <i>→</i>
+        </button>
+      </div>
       <main class="tiles"><div class="grid" id="grid"></div><p class="none" id="none" hidden>Nichts gefunden. Versuche „KVR“, „Wolken“ oder „Kompass“.</p></main>
     </section>
 
@@ -64,7 +74,7 @@
       </div>
       <div class="card">
         <h3>Version &amp; Updates</h3>
-        <p class="mu">Version <b id="ver">2.1</b></p>
+        <p class="mu">Version <b id="ver">2.2</b></p>
         <p id="anote" class="mu">Keine neuen Hinweise.</p>
         <small id="stamp" class="mu"></small>
       </div>

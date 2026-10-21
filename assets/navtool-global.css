@@ -294,3 +294,110 @@ body.nt-m-calc .nt-status-pill { display: none; }
 body.nt-m-admin .nt-footer { margin-top: 0; }
 
 html, body { overflow-x: hidden; }
+
+/* ===== App-Werbung in der Menüleiste ===== */
+.nt-nav a.nt-promo {
+  position: relative;
+  margin-left: 6px;
+  padding: 9px 14px 9px 30px;
+  border: 1px solid var(--nt-teal);
+  border-radius: 999px;
+  background: linear-gradient(135deg, rgba(85, 229, 209, 0.22), rgba(85, 229, 209, 0.06));
+  color: var(--nt-teal);
+  box-shadow: 0 0 18px rgba(85, 229, 209, 0.18);
+  transition: transform .15s, box-shadow .2s, background .2s;
+}
+.nt-nav a.nt-promo::before {
+  content: "";
+  position: absolute;
+  left: 12px; top: 50%;
+  width: 8px; height: 13px;
+  margin-top: -6.5px;
+  border: 1.6px solid currentColor;
+  border-radius: 2.4px;
+}
+.nt-nav a.nt-promo::after {
+  content: "";
+  position: absolute;
+  right: -2px; top: -2px;
+  width: 9px; height: 9px;
+  border-radius: 50%;
+  background: var(--nt-teal);
+  box-shadow: 0 0 0 0 rgba(85, 229, 209, .6);
+  animation: ntPulse 2.2s ease-out infinite;
+}
+.nt-nav a.nt-promo:hover, .nt-nav a.nt-promo.on {
+  background: var(--nt-teal);
+  color: #03211d;
+  box-shadow: 0 0 26px rgba(85, 229, 209, .4);
+  transform: translateY(-1px);
+}
+@keyframes ntPulse { 0% { box-shadow: 0 0 0 0 rgba(85,229,209,.55) } 70%,100% { box-shadow: 0 0 0 10px rgba(85,229,209,0) } }
+@media (max-width: 520px) { .nt-nav a.nt-promo { margin-left: 2px; padding: 8px 10px 8px 26px } .nt-nav a.nt-promo::before { left: 9px } }
+/* Calc/Colreg blenden die Navigation mobil aus: Werbung bleibt trotzdem sichtbar */
+@media (max-width: 620px) { .nt-header .nt-nav { display: flex !important; margin-left: auto } .nt-header .nt-nav a:not(.nt-promo) { display: none } }
+
+/* ===== App-Streifen über der Fußzeile ===== */
+.nt-appstrip {
+  display: flex; align-items: center; gap: 16px;
+  width: min(1200px, calc(100% - 40px));
+  margin: 30px auto 0; padding: 18px 22px;
+  border: 1px solid var(--nt-line-strong); border-radius: 22px;
+  background: radial-gradient(420px 120px at 8% 0, rgba(85,229,209,.22), transparent), linear-gradient(135deg, #0d2229, #08131a);
+  box-shadow: 0 18px 50px rgba(0,0,0,.45);
+  transition: border-color .2s, transform .2s;
+}
+.nt-appstrip:hover { border-color: var(--nt-teal); }
+.nt-appstrip-ic { flex: none; width: 46px; height: 46px; display: grid; place-items: center; border: 1px solid rgba(85,229,209,.4); border-radius: 14px; background: rgba(85,229,209,.08); }
+.nt-appstrip-ic svg { width: 24px; height: 24px; fill: none; stroke: var(--nt-teal); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.nt-appstrip-tx { display: grid; gap: 2px; min-width: 0; }
+.nt-appstrip-tx b { font-size: 16px; letter-spacing: -.01em; }
+.nt-appstrip-tx small { color: var(--nt-muted); font-size: 12px; }
+.nt-appstrip-go { margin-left: auto; flex: none; padding: 10px 16px; border-radius: 999px; background: var(--nt-teal); color: #03211d; font-size: 11px; font-weight: 900; letter-spacing: .08em; text-transform: uppercase; white-space: nowrap; }
+@media (max-width: 560px) { .nt-appstrip { gap: 12px; padding: 14px; } .nt-appstrip-go { padding: 9px 12px } .nt-appstrip-tx small { display: none } }
+
+/* ===== Cookie-Hinweis ===== */
+#nt-cookie {
+  position: fixed; z-index: 99990;
+  left: 50%; bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+  width: min(760px, calc(100% - 24px));
+  display: flex; align-items: center; gap: 16px;
+  padding: 16px 44px 16px 16px;
+  border: 1px solid var(--nt-line-strong); border-radius: 22px;
+  background: radial-gradient(360px 110px at 0 0, rgba(85,229,209,.16), transparent), rgba(8, 19, 25, .92);
+  backdrop-filter: blur(22px) saturate(1.4); -webkit-backdrop-filter: blur(22px) saturate(1.4);
+  box-shadow: 0 20px 60px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.06);
+  color: var(--nt-text);
+  transform: translate(-50%, 140%); opacity: 0;
+  transition: transform .45s cubic-bezier(.2,.9,.25,1.1), opacity .3s;
+}
+#nt-cookie.in { transform: translate(-50%, 0); opacity: 1; }
+.nt-cc-ic { flex: none; width: 42px; height: 42px; display: grid; place-items: center; border: 1px solid rgba(85,229,209,.4); border-radius: 13px; background: rgba(85,229,209,.08); }
+.nt-cc-ic svg { width: 24px; height: 24px; fill: none; stroke: var(--nt-teal); stroke-width: 1.7; }
+.nt-cc-ic circle:not(:first-child) { fill: var(--nt-teal); stroke: none; }
+.nt-cc-tx { flex: 1; min-width: 0; }
+.nt-cc-tx b { display: block; font-size: 14px; letter-spacing: -.01em; }
+.nt-cc-tx p { margin: 3px 0 0; color: var(--nt-muted); font-size: 12.5px; line-height: 1.5; }
+.nt-cc-btn { display: flex; gap: 8px; flex: none; }
+.nt-cc-btn button { min-height: 40px; padding: 0 16px; border-radius: 999px; cursor: pointer; font: 900 11px Inter, system-ui, sans-serif; letter-spacing: .08em; text-transform: uppercase; transition: transform .12s, background .2s; }
+.nt-cc-btn .yes { border: 0; background: var(--nt-teal); color: #03211d; box-shadow: 0 6px 22px rgba(85,229,209,.28); }
+.nt-cc-btn .no { border: 1px solid var(--nt-line-strong); background: transparent; color: #b8d2d0; }
+.nt-cc-btn button:active { transform: scale(.96); }
+.nt-cc-x { position: absolute; top: 8px; right: 8px; width: 30px; height: 30px; border: 0; border-radius: 50%; background: rgba(255,255,255,.06); color: var(--nt-muted); font-size: 13px; cursor: pointer; }
+.nt-cc-x:hover { color: var(--nt-text); background: rgba(255,255,255,.12); }
+@media (max-width: 620px) {
+  #nt-cookie { flex-wrap: wrap; gap: 12px; padding: 16px 16px 14px; }
+  .nt-cc-tx { flex-basis: calc(100% - 70px); padding-right: 22px; }
+  .nt-cc-btn { width: 100%; }
+  .nt-cc-btn button { flex: 1; min-height: 44px; }
+}
+@media (prefers-reduced-motion: reduce) { #nt-cookie, .nt-nav a.nt-promo::after { transition: none; animation: none } }
+
+/* Sprachumschalter */
+.nt-lang { display: inline-flex; flex: none; padding: 3px; border: 1px solid var(--nt-line-strong); border-radius: 999px; background: rgba(10, 21, 27, 0.8); }
+.nt-lang button { min-width: 34px; padding: 6px 9px; border: 0; border-radius: 999px; background: transparent; color: var(--nt-muted); font: 900 10px Inter, system-ui, sans-serif; letter-spacing: .1em; cursor: pointer; transition: background .2s, color .2s; }
+.nt-lang button.on { background: var(--nt-teal); color: #03211d; }
+@media (max-width: 520px) { .nt-lang button { min-width: 28px; padding: 6px 7px; } }
+
+/* Fußzeilen-Logo (vom Skript erzeugte Fußzeile) */
+.nt-foot-in img { height: 24px; width: auto; max-width: none; }

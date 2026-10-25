@@ -1,2 +1,0 @@
-# navtext
-navtext

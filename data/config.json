@@ -1,0 +1,178 @@
+{
+ "updated": "2026-10-20T05:28:42.970406Z",
+ "brand": {
+  "accent": "#55e5d1",
+  "footer": "Maritime Navigation Workspace · navtool.de",
+  "logoVersion": 1
+ },
+ "modules": [
+  {
+   "id": "map",
+   "name": "MAP",
+   "path": "/map/",
+   "enabled": true,
+   "status": "aktiv",
+   "note": "",
+   "sections": []
+  },
+  {
+   "id": "navtext",
+   "name": "NAVTEXT",
+   "path": "/navtext/",
+   "enabled": true,
+   "status": "aktiv",
+   "note": "",
+   "sections": [
+    {
+     "id": "device",
+     "name": "Gerät",
+     "enabled": true
+    },
+    {
+     "id": "messages",
+     "name": "Meldungen",
+     "enabled": true
+    },
+    {
+     "id": "about",
+     "name": "Info",
+     "enabled": true
+    }
+   ]
+  },
+  {
+   "id": "colreg",
+   "name": "COLREG",
+   "path": "/colreg/",
+   "enabled": true,
+   "status": "aktiv",
+   "note": "",
+   "sections": [
+    {
+     "id": "rules",
+     "name": "KVR / Regeln",
+     "enabled": true
+    },
+    {
+     "id": "lights",
+     "name": "Lichter",
+     "enabled": true
+    },
+    {
+     "id": "sounds",
+     "name": "Schallsignale",
+     "enabled": true
+    },
+    {
+     "id": "buoys",
+     "name": "Tonnen",
+     "enabled": true
+    },
+    {
+     "id": "scenarios",
+     "name": "Was muss ich jetzt tun?",
+     "enabled": true
+    },
+    {
+     "id": "knots",
+     "name": "Knoten",
+     "enabled": true
+    }
+   ]
+  },
+  {
+   "id": "weather",
+   "name": "WEATHER",
+   "path": "/weather/",
+   "enabled": true,
+   "status": "aktiv",
+   "note": "",
+   "sections": [
+    {
+     "id": "overview",
+     "name": "Übersicht",
+     "enabled": true
+    },
+    {
+     "id": "wind",
+     "name": "Wind",
+     "enabled": true
+    },
+    {
+     "id": "pressure",
+     "name": "Luftdruck",
+     "enabled": true
+    },
+    {
+     "id": "cloudPanel",
+     "name": "Wolken",
+     "enabled": true
+    },
+    {
+     "id": "currentPanel",
+     "name": "Strömungen",
+     "enabled": true
+    },
+    {
+     "id": "knowledge",
+     "name": "Wissen",
+     "enabled": true
+    },
+    {
+     "id": "maps",
+     "name": "Karten",
+     "enabled": true
+    },
+    {
+     "id": "links",
+     "name": "Links",
+     "enabled": true
+    }
+   ]
+  },
+  {
+   "id": "calc",
+   "name": "CALC",
+   "path": "/calc/",
+   "enabled": true,
+   "status": "aktiv",
+   "note": "",
+   "sections": []
+  },
+  {
+   "id": "simulator",
+   "name": "SIMULATOR",
+   "path": "/simulator/",
+   "enabled": true,
+   "status": "aktiv",
+   "note": "",
+   "sections": []
+  },
+  {
+   "id": "app",
+   "name": "APP",
+   "path": "/app/",
+   "enabled": true,
+   "status": "aktiv",
+   "note": "",
+   "sections": []
+  }
+ ],
+ "app": {
+  "version": "2.2",
+  "splashSeconds": 1.1,
+  "tabs": {
+   "home": true,
+   "favorites": true,
+   "profile": true
+  },
+  "offline": {
+   "map": true,
+   "navtext": true,
+   "colreg": true,
+   "weather": true,
+   "calc": true,
+   "simulator": true
+  }
+ }
+}

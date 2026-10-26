@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#05090c">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>NavTool App</title>
+  <link rel="icon" type="image/png" href="/pic/allgemein/icon-192.png">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="apple-touch-icon" href="/pic/allgemein/icon-180.png">
+  <link rel="stylesheet" href="/assets/navtool-global.css">
+  <link rel="stylesheet" href="app.css">
+</head>
+<body>
+  <div id="splash"><img src="/pic/allgemein/logo.png" alt="NavTool"><i></i></div>
+
+  <div id="shell">
+    <header class="top">
+      <span></span>
+      <img class="logo" src="/pic/allgemein/logo.png" alt="NavTool">
+      <button id="net" class="pill" type="button"><i></i><span>Prüfe…</span></button>
+    </header>
+
+    <section class="view" id="v-home">
+      <div class="hl">
+        <div class="hello"><small id="hi">Moin</small><h1>Wohin geht die Reise?</h1></div>
+        <label class="search">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l5 5"/></svg>
+          <input id="q" type="search" placeholder="Kompass, Tonnen, Wetter …" enterkeyhint="search">
+        </label>
+        <div id="chips" aria-label="Schnellzugriff"></div>
+        <button id="resume" class="resume" type="button" hidden>
+          <span class="ic"><svg viewBox="0 0 24 24" id="resIc"></svg></span>
+          <span class="rt"><small>Weitermachen</small><b id="resName"></b></span>
+          <i>→</i>
+        </button>
+        <div id="topics"></div>
+        <button id="feat" class="feat" type="button">
+          <svg class="fart" viewBox="0 0 120 120" aria-hidden="true"><circle cx="60" cy="60" r="46"/><circle cx="60" cy="60" r="30"/><path d="M60 8v104M8 60h104"/><path d="M60 22l7 38-7 38-7-38z" class="nd"/></svg>
+          <span class="new">NEU</span>
+          <b>Steering Simulator</b>
+          <small>Ruder drehen, Telegraf-Hebel bedienen, Kurs halten. Jetzt üben.</small>
+          <i>→</i>
+        </button>
+      </div>
+      <main class="tiles"><div class="grid" id="grid"></div><p class="none" id="none" hidden>Nichts gefunden. Versuche „KVR“, „Wolken“ oder „Kompass“.</p></main>
+    </section>
+
+    <section class="view" id="v-fav" hidden>
+      <h2 class="vh">Favoriten</h2>
+      <div class="grid" id="favgrid"></div>
+      <p class="none" id="favnone">Noch keine Favoriten. Tippe auf ☆ bei einem Werkzeug, dann erscheint es hier.</p>
+    </section>
+
+    <section class="view" id="v-me" hidden>
+      <h2 class="vh">Konto</h2>
+      <div class="card">
+        <h3>Version &amp; Updates</h3>
+        <p class="mu">Version <b id="ver">2.3</b></p>
+        <p id="anote" class="mu">Keine neuen Hinweise.</p>
+        <small id="stamp" class="mu"></small>
+      </div>
+      <div class="off" aria-labelledby="offT">
+        <div class="off-top">
+          <div><h2 id="offT">Offline-Nutzung</h2><p id="offText">Wird geprüft…</p></div>
+          <span class="state" id="state">–</span>
+        </div>
+        <div class="meter"><i id="bar"></i></div>
+        <button class="btn again" id="prep" type="button">Offline-Paket laden</button>
+        <small id="inst" class="inst">App läuft ohne Netz, sobald das Paket geladen wurde.</small>
+        <details>
+          <summary>Details</summary>
+          <ul id="offList"></ul>
+        </details>
+      </div>
+      <a class="card lnk" href="/status/" target="_blank">Status aller Bereiche →</a>
+    </section>
+
+    <nav id="tabbar">
+      <i id="bub"></i>
+      <button data-v="home" class="on" type="button"><svg viewBox="0 0 24 24"><path d="M4 11l8-7 8 7v9h-5v-6H9v6H4z"/></svg><span>Home</span></button>
+      <button data-v="fav" type="button"><svg viewBox="0 0 24 24"><path d="M12 17.3L5.8 21l1.5-7.2L1 8.9l7.3-.9L12 2l3.7 6 7.3.9-6.3 4.9L18.2 21z"/></svg><span>Favoriten</span></button>
+      <button data-v="me" type="button"><svg viewBox="0 0 24 24"><path d="M12 12a4 4 0 1 0-4-4 4 4 0 0 0 4 4zm-7 8a7 7 0 0 1 14 0"/></svg><span>Konto</span></button>
+    </nav>
+  </div>
+
+  <div id="toast"></div>
+
+  <div id="viewer" hidden>
+    <header class="vbar">
+      <button id="back" type="button" aria-label="Zurück zur Startseite">‹ Start</button>
+      <b id="vtitle"></b>
+      <button id="reload" type="button" aria-label="Neu laden">Neu laden</button>
+    </header>
+    <iframe id="frame" src="about:blank" title="NavTool App Inhalt"></iframe>
+  </div>
+
+  <script src="/assets/navtool-global.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

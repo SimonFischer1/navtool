@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#03090b">
+<meta name="apple-mobile-web-app-title" content="NavTool">
+<link rel="icon" type="image/png" href="/pic/allgemein/icon-192.png"><link rel="stylesheet" href="/assets/navtool-global.css"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="apple-touch-icon" href="/pic/allgemein/icon-180.png">
+<title>NavTool Apps herunterladen</title>
+<meta name="description" content="NavTool als App für iPhone, iPad, Android und Computer – komplett offline nutzbar.">
+<style>
+:root{--bg:#03090b;--p:#0a151b;--line:rgba(85,229,209,.18);--t:#55e5d1;--ink:#ecfbf9;--mute:#8ba7a8;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;background:var(--bg)}
+body{margin:0;color:var(--ink);font:400 17px/1.55 -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",system-ui,sans-serif;background:radial-gradient(60rem 30rem at 70% -5%,rgba(85,229,209,.15),transparent)}
+a{color:inherit}.wrap{width:min(1080px,100% - 36px);margin:0 auto}
+.top{display:flex;justify-content:space-between;align-items:center;padding:16px 0}
+.brand{display:flex;align-items:center;gap:10px;font-weight:800;letter-spacing:.14em;font-size:13px;text-decoration:none}
+.mk{width:32px;height:32px;display:grid;place-items:center;border:1px solid rgba(85,229,209,.5);border-radius:9px;color:var(--t);font-size:11px;background:rgba(85,229,209,.06)}
+.top a.l{font-size:14px;color:var(--mute);text-decoration:none}
+.hero{display:grid;gap:40px;padding:34px 0 20px;align-items:center}
+h1{margin:0 0 14px;font-size:clamp(40px,8vw,68px);line-height:1;letter-spacing:-.03em}
+.lead{margin:0 0 26px;color:#b9cfcf;max-width:44ch;font-size:19px}
+.cta{display:inline-flex;align-items:center;gap:12px;padding:17px 28px;border:0;border-radius:16px;background:var(--t);color:#03211d;font:800 18px inherit;font-family:inherit;cursor:pointer;box-shadow:0 10px 40px rgba(85,229,209,.28)}
+.cta svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+.cta:focus-visible,.alt:focus-visible{outline:3px solid #fff;outline-offset:3px}
+.sub{margin:14px 0 0;color:var(--mute);font-size:14px}.alt{color:var(--t);text-underline-offset:3px}
+.badges{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}
+.badges span{padding:6px 12px;border:1px solid var(--line);border-radius:99px;font-size:13px;color:#cfe6e4;background:rgba(10,21,27,.8)}
+/* Telefon */
+.phone{justify-self:center;width:min(270px,70vw);aspect-ratio:9/18.5;padding:11px;border-radius:42px;background:#0c1a21;border:2px solid #29424a;box-shadow:0 30px 80px rgba(0,0,0,.6),0 0 0 1px rgba(85,229,209,.2),0 0 90px rgba(85,229,209,.12)}
+.scr{height:100%;border-radius:32px;overflow:hidden;padding:30px 12px 12px;background:radial-gradient(14rem 10rem at 50% 0,rgba(85,229,209,.2),transparent),#03090b;position:relative}
+.scr:before{content:"";position:absolute;top:9px;left:50%;width:70px;height:20px;transform:translateX(-50%);border-radius:12px;background:#000}
+.pill{display:flex;align-items:center;gap:6px;font-size:10px;color:#cfe6e4;margin:2px 0 10px}.pill i{width:7px;height:7px;border-radius:50%;background:var(--t);box-shadow:0 0 0 3px rgba(85,229,209,.2)}
+.mg{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.mg div{padding:10px 8px;border:1px solid var(--line);border-radius:12px;background:linear-gradient(160deg,#0e1d25,#0a151b);font-size:10px;font-weight:700;display:grid;gap:4px}
+.mg b{width:24px;height:24px;display:grid;place-items:center;border-radius:7px;border:1px solid rgba(85,229,209,.35);color:var(--t);font-size:12px}
+/* Abschnitte */
+section{padding:46px 0 0}
+h2{margin:0 0 18px;font-size:clamp(28px,5vw,40px);line-height:1.05;letter-spacing:-.02em}
+.cols{display:grid;gap:14px}
+.box{padding:20px;border:1px solid var(--line);border-radius:18px;background:var(--p)}
+.box.me{border-color:var(--t);box-shadow:0 0 0 1px var(--t) inset}
+.box h3{margin:0 0 8px;font-size:19px}.box p,.box li{color:#b9cfcf;margin:0}
+.box ol{margin:0;padding-left:20px;display:grid;gap:8px}
+.feat{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+.feat .box b{display:block;margin-bottom:4px;font-size:17px}.feat .box span{color:#9fb8b8;font-size:15px}
+.foot{margin-top:60px;padding:24px 0 40px;border-top:1px solid var(--line);color:var(--mute);font-size:14px}
+.mg .last{grid-column:1/-1}
+[data-dev=tablet] .phone{width:min(440px,84vw);aspect-ratio:4/3;border-radius:30px;padding:10px}
+[data-dev=tablet] .scr{border-radius:22px;padding:30px 14px 14px}[data-dev=tablet] .scr:before{top:8px;width:46px;height:8px;border-radius:5px}
+[data-dev=tablet] .mg{grid-template-columns:repeat(3,1fr)}[data-dev=tablet] .mg .last{grid-column:auto}
+/* Hub-Fußzeile */
+.nt-foot{margin-top:60px;border-top:1px solid rgba(85,229,209,.13);background:#030708}
+.nt-foot-in{width:min(100% - 36px,1080px);min-height:125px;margin:0 auto;padding:26px 0 calc(26px + env(safe-area-inset-bottom,0px));display:flex;align-items:center;justify-content:space-between;gap:30px}
+.nt-foot-brand{color:#55e5d1;font-size:13px;font-weight:900;letter-spacing:.16em}.nt-foot-copy{margin-top:7px;color:#587071;font-size:10px}
+.nt-foot-links{display:flex;flex-wrap:wrap;gap:15px}.nt-foot-links a{color:#71898a;font-size:10px;font-weight:900;letter-spacing:.08em;text-decoration:none;padding:6px 0}.nt-foot-links a:hover{color:#55e5d1}
+@media(max-width:760px){.nt-foot-in{flex-direction:column;align-items:flex-start;gap:18px}.nt-foot-links{gap:12px}}
+/* Dialog */
+dialog{width:min(440px,calc(100% - 28px));padding:24px;border:1px solid var(--t);border-radius:22px;background:#071116;color:var(--ink)}
+dialog::backdrop{background:rgba(0,0,0,.7);backdrop-filter:blur(4px)}
+dialog h3{margin:0 0 12px;font-size:22px}dialog ol{padding-left:20px;display:grid;gap:10px;margin:0 0 18px}
+dialog button{width:100%;padding:13px;border:0;border-radius:12px;background:var(--t);color:#03211d;font:800 16px inherit;font-family:inherit;cursor:pointer}
+.ic{display:inline-block;width:1.1em;height:1.1em;vertical-align:-.18em;fill:none;stroke:var(--t);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+@media(min-width:880px){.hero{grid-template-columns:1.15fr .85fr;padding-top:60px}.cols{grid-template-columns:repeat(3,1fr)}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+.hero1{padding:34px 0 20px}.apps{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(290px,1fr))}.app{display:grid;gap:12px;align-content:start}.mk.big{width:46px;height:46px;font-size:15px}.app .cta{justify-self:start}.app .badges{margin-top:0}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="top"><a class="brand" href="/"><span class="mk">NT</span>NAVTOOL</a><a class="l" href="/">Zur Website</a></header>
+
+<div class="hero1"><h1>Zwei Apps.<br>Ein Konto.</h1><p class="lead">Lade NavTool, die SailingApp oder beide. Beide laufen auch ohne Netz, und mit deinem NavTool-Konto sind Favoriten, Reisen und Crew auf jedem Gerät da.</p></div>
+<div class="apps">
+  <div class="box app"><span class="mk big">NT</span><h3>NavTool</h3><p>Map, NAVTEXT, COLREG, Weather, Calc und der Steering Simulator zum Nachschlagen.</p>
+    <div class="badges"><span>Offline nutzbar</span><span>iPhone &amp; iPad</span><span>Android &amp; PC</span></div>
+    <button class="cta" id="install" type="button"><svg viewBox="0 0 24 24"><path d="M12 4v11m0 0l-4-4m4 4l4-4M5 20h14"/></svg><span id="ilabel">NavTool laden</span></button>
+    <p class="sub" id="note">Kostenlos · kein App Store nötig · <a class="alt" href="/app/start/">Direkt im Browser öffnen</a></p></div>
+  <div class="box app"><span class="mk big">SA</span><h3>SailingApp</h3><p>Routenplanung mit Karte, Logbuch mit Trackkontrolle, Ankerwache, Crew, Checklisten und Excel-Sicherung.</p>
+    <div class="badges"><span>Offline nutzbar</span><span>Ankeralarm</span><span>Excel-Ordner</span></div>
+    <a class="cta" href="/sailingapp/#install" style="text-decoration:none"><svg viewBox="0 0 24 24"><path d="M12 4v11m0 0l-4-4m4 4l4-4M5 20h14"/></svg><span>SailingApp laden</span></a>
+    <p class="sub">Öffnet die App und zeigt dort den Installieren-Knopf · <a class="alt" href="/sailingapp/">Direkt im Browser öffnen</a></p></div>
+</div>
+<p class="sub" style="margin-top:18px">Ein Konto für alles: <a class="alt" href="/konto/?m=register">Registrieren</a> · <a class="alt" href="/konto/">Anmelden und Dashboard</a></p>
+</div>
+
+<section>
+  <h2>Alles drin.</h2>
+  <div class="feat">
+    <div class="box"><b>Offline nachschlagen</b><span>Regeln, Signale, Lichter, Tonnen, Rechner und Wolkenatlas ohne Empfang.</span></div>
+    <div class="box"><b>Sofort startklar</b><span>Eigener Startbildschirm mit Suche, Favoriten und „Weitermachen“.</span></div>
+    <div class="box"><b>Ein Icon, kein Browser</b><span>Öffnet im Vollbild wie eine normale App auf dem Home-Bildschirm.</span></div>
+    <div class="box"><b>Immer aktuell</b><span>Neue Inhalte laden automatisch, sobald du wieder online bist.</span></div>
+  </div>
+</section>
+
+<section id="anleitung">
+  <h2>So installierst du sie.</h2>
+  <div class="cols">
+    <div class="box" id="g-ios"><h3>iPhone &amp; iPad</h3><ol>
+      <li>Diese Seite in <b>Safari</b> öffnen.</li>
+      <li>Auf <b>Teilen</b> <svg class="ic" viewBox="0 0 24 24"><path d="M12 15V3m0 0L8 7m4-4l4 4M6 11H5a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-8a1 1 0 0 0-1-1h-1"/></svg> tippen.</li>
+      <li><b>„Zum Home-Bildschirm“</b> wählen und bestätigen.</li></ol></div>
+    <div class="box" id="g-and"><h3>Android</h3><ol>
+      <li>Oben auf <b>App herunterladen</b> tippen.</li>
+      <li>Auf <b>Installieren</b> bestätigen.</li>
+      <li>Falls nichts erscheint: Browsermenü ⋮ → <b>„App installieren“</b>.</li></ol></div>
+    <div class="box" id="g-pc"><h3>Computer</h3><ol>
+      <li>In Chrome oder Edge auf <b>App herunterladen</b> klicken.</li>
+      <li>Oder im Adressfeld auf das Installieren-Symbol klicken.</li>
+      <li>Safari am Mac: Ablage → <b>„Zum Dock hinzufügen“</b>.</li></ol></div>
+  </div>
+  <p class="sub">Danach die App einmal mit Internet öffnen und auf „Offline“ den Knopf <b>„Offline-Paket laden“</b> tippen. Ab dann läuft sie auch ohne Netz.</p>
+</section>
+
+</div>
+<div class="nt-foot" role="contentinfo"><div class="nt-foot-in"><div><div class="nt-foot-brand">NAVTOOL</div><div class="nt-foot-copy">Maritime Navigation Workspace · navtool.de · Windy-Radar, neue Kartenkacheln und AIS brauchen weiterhin Internet.</div></div><div class="nt-foot-links"><a href="/map/">MAP</a><a href="/navtext/">NAVTEXT</a><a href="/colreg/">COLREG</a><a href="/weather/">WEATHER</a><a href="/calc/">CALC</a><a href="#" onclick="scrollTo({top:0,behavior:'smooth'});return false">TOP ↑</a></div></div></div>
+
+<dialog id="dlg"><h3 id="dt">App installieren</h3><ol id="ds"></ol><button id="dc" type="button">Verstanden</button></dialog>
+
+<script>
+(()=>{
+const $=id=>document.getElementById(id),btn=$("install"),dlg=$("dlg");
+const ua=navigator.userAgent,ios=/iPad|iPhone|iPod/.test(ua)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1),and=/Android/.test(ua);
+const standalone=matchMedia("(display-mode: standalone)").matches||navigator.standalone===true;
+let dp=null;
+const tablet=/iPad/.test(ua)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1)||(!/Mobi|iPhone|Android.*Mobile/.test(ua));document.body.dataset.dev=tablet?"tablet":"phone";
+const mine=ios?"g-ios":and?"g-and":"g-pc";$(mine).classList.add("me");
+if("serviceWorker"in navigator)navigator.serviceWorker.register("/sw.js").catch(()=>{});
+addEventListener("beforeinstallprompt",e=>{e.preventDefault();dp=e});
+addEventListener("appinstalled",()=>{$("ilabel").textContent="App öffnen";$("note").textContent="Installiert. Du findest NavTool jetzt auf deinem Startbildschirm."});
+if(standalone){$("ilabel").textContent="App öffnen";$("note").textContent="Du nutzt NavTool bereits als App."}
+const steps={
+ ios:["Tippe unten in Safari auf <b>Teilen</b> (Quadrat mit Pfeil nach oben).","Scrolle und wähle <b>„Zum Home-Bildschirm“</b>.","Tippe oben rechts auf <b>Hinzufügen</b>.","Öffne NavTool vom Home-Bildschirm und lade das <b>Offline-Paket</b>."],
+ other:["Öffne das Browsermenü (⋮ oder Installieren-Symbol in der Adressleiste).","Wähle <b>„App installieren“</b> oder <b>„Zum Startbildschirm“</b>.","Öffne NavTool und lade das <b>Offline-Paket</b>."]};
+function help(list,title){$("dt").textContent=title;$("ds").innerHTML=list.map(s=>"<li>"+s+"</li>").join("");dlg.showModal()}
+btn.onclick=async()=>{
+ if(standalone){location.href="/app/start/";return}
+ if(dp){dp.prompt();const r=await dp.userChoice;dp=null;if(r.outcome==="accepted")$("ilabel").textContent="Wird installiert…";return}
+ if(ios){help(steps.ios,"Auf dem Home-Bildschirm ablegen");return}
+ help(steps.other,"App installieren")};
+$("dc").onclick=()=>dlg.close();
+})();
+</script>
+<script src="/assets/navtool-global.js"></script><script>document.getElementById("install").addEventListener("click",()=>{const d=new Date(),s=d.getUTCFullYear()+String(d.getUTCMonth()+1).padStart(2,"0"),u=navigator.userAgent,p=/iPhone|iPad|iPod/.test(u)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1)?"ios":/Android/.test(u)?"android":"pc";["d"+s+String(d.getUTCDate()).padStart(2,"0"),"m"+s,"y"+d.getUTCFullYear()].forEach(k=>NT.hit("dl.app."+k));NT.hit("dl."+p+".m"+s)})</script></body>
+</html>

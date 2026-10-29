@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Status · NavTool</title>
+  <meta name="theme-color" content="#05090c">
+  <link rel="icon" href="/pic/allgemein/icon-192.png">
+  <link rel="stylesheet" href="/assets/navtool-global.css">
+  <style>
+    body { margin: 0; }
+    main {
+      width: min(960px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 52px 0 20px;
+    }
+    .kicker {
+      color: var(--nt-teal);
+      font-size: 10px;
+      font-weight: 900;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+    }
+    h1 {
+      margin: 16px 0 18px;
+      font-size: clamp(36px, 5vw, 62px);
+      line-height: 1;
+      letter-spacing: -0.06em;
+    }
+    .overview {
+      padding: 18px 20px;
+      border-radius: 16px;
+      border: 1px solid rgba(85,229,209,.3);
+      background: rgba(10,21,27,.82);
+      font-weight: 800;
+      line-height: 1.7;
+    }
+    .row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 6px 16px;
+      alignment: center;
+      padding: 16px 18px;
+      margin-top: 12px;
+      border: 1px solid rgba(85,229,209,.13);
+      border-radius: 14px;
+      background: rgba(10,21,27,.75);
+      transition: border-color .2s ease;
+    }
+    .row:hover { border-color: rgba(85,229,209,.4); }
+    .row b {
+      font-size: 15px;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+    .row small {
+      grid-column: 1 / -1;
+      color: var(--nt-muted);
+      line-height: 1.5;
+    }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 110px;
+      padding: 7px 12px;
+      border-radius: 999px;
+      font-size: 10px;
+      font-weight: 900;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+    .p-aktiv { background: rgba(63,220,126,.12); color: #3fdc7e; }
+    .p-stoerung { background: rgba(255,112,112,.12); color: #ff7070; }
+    .p-wartung { background: rgba(255,180,84,.12); color: #ffb454; }
+    .p-planung { background: rgba(103,223,255,.12); color: #67dfff; }
+    .p-aus { background: rgba(126,150,151,.12); color: #9fb6b6; }
+    .updated {
+      margin-top: 18px;
+      color: var(--nt-muted-2);
+      font-size: 12px;
+    }
+    .admin-link {
+      display: inline-flex;
+      margin-top: 20px;
+      padding: 11px 16px;
+      border: 1px solid rgba(85,229,209,.24);
+      border-radius: 999px;
+      color: var(--nt-teal);
+      font-size: 10px;
+      font-weight: 900;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+  </style>
+</head>
+<body>
+  <header class="nt-header">
+    <div class="nt-hin">
+      <a class="nt-logo" href="/" aria-label="NavTool Startseite"><img src="/pic/allgemein/logo.png" alt="NAVTOOL"></a>
+      <nav class="nt-nav" aria-label="Hauptnavigation">
+        <a href="/">Home</a>
+        <a href="/map/">Map</a>
+        <a href="/colreg/">Colreg</a>
+        <a href="/weather/">Weather</a>
+        <a href="/calc/">Calc</a>
+        <a href="/status/" class="on">Status</a>
+        <a href="/app/" class="nt-promo">App laden</a>
+      </nav>
+      <div class="nt-status-pill"><span class="dot"></span> Live</div>
+    </div>
+  </header>
+
+  <main>
+    <div class="kicker">NavTool Status</div>
+    <h1>Was läuft gerade?</h1>
+    <div class="overview" id="ov">Status wird geladen…</div>
+    <div id="list"></div>
+    <a class="admin-link" href="/app/">NavTool als App laden →</a>
+    <p class="updated" id="up"></p>
+  </main>
+
+  <footer class="nt-foot" role="contentinfo">
+    <div class="nt-foot-in">
+      <div>
+        <div class="nt-foot-brand"><img src="/pic/allgemein/logo.png" alt="NavTool"></div>
+        <div class="nt-foot-copy">Maritime Navigation Workspace · navtool.de · Status und Systeminformationen</div>
+      </div>
+      <div class="nt-foot-links">
+        <a href="/">Home</a>
+        <a href="/status/">Status</a>
+      </div>
+    </div>
+    <div class="nt-foot-bar"><span>NavTool</span><span><a href="/app/">App</a></span></div>
+  </footer>
+
+  <script src="/assets/navtool-global.js"></script>
+  <script>
+    const L = { aktiv: 'Aktiv', stoerung: 'Störung', wartung: 'Wartung', planung: 'In Planung', aus: 'Abgeschaltet' };
+    const ov = document.getElementById('ov');
+    const list = document.getElementById('list');
+    const up = document.getElementById('up');
+
+    async function loadStatus() {
+      try {
+        const localCfg = localStorage.getItem('nt-cfg');
+        const cfg = localCfg ? JSON.parse(localCfg) : await (await fetch('/data/config.json?' + Date.now(), { cache: 'no-store' })).json();
+        const modules = (cfg.modules || []).map((m) => ({ ...m, k: m.enabled ? (m.status || 'aktiv') : 'aus' }));
+        const bad = modules.some((m) => m.k === 'stoerung');
+        const warn = modules.some((m) => m.k !== 'aktiv' && m.k !== 'aus');
+
+        ov.innerHTML = `
+          <span class="nt-dot ${bad ? 'bad' : warn ? 'warn' : ''}"></span>
+          ${bad ? 'Es gibt aktuell eine Störung.' : warn ? 'Einige Bereiche sind in Wartung, Planung oder abgeschaltet.' : 'Alle Bereiche laufen normal.'}
+        `;
+
+        list.innerHTML = modules.map((m) => `
+          <a class="row" href="${m.path || '/'}">
+            <b>${m.name || m.id}</b>
+            <span class="pill p-${m.k}">${L[m.k] || 'Aktiv'}</span>
+            ${m.note ? `<small>${m.note.replace(/</g, '&lt;')}</small>` : ''}
+            ${(m.sections || []).length ? `<small>Bereiche: ${m.sections.filter(s => s.enabled !== false).map(s => s.name || s.id).join(', ') || 'Keine'}</small>` : ''}
+          </a>
+        `).join('');
+
+        const date = cfg.updated ? new Date(cfg.updated) : new Date();
+        up.textContent = 'Zuletzt aktualisiert: ' + date.toLocaleString('de-DE');
+      } catch (e) {
+        ov.textContent = 'Status konnte nicht geladen werden. Bitte prüfe deine Verbindung und versuche es erneut.';
+      }
+    }
+    loadStatus();
+    setInterval(loadStatus, 60000);
+  </script>
+</body>
+</html>

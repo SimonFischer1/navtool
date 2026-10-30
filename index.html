@@ -1,612 +1,1303 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>NAVTOOL — Maritime Navigation Workspace</title>
-  <meta name="description" content="NAVTOOL — Maritime Navigation Workspace für Map, NAVTEXT, COLREG, Weather und nautische Berechnungen.">
-  <meta name="theme-color" content="#05090c">
-  <link rel="icon" type="image/png" href="/pic/allgemein/icon-192.png">
-  <link rel="stylesheet" href="/assets/navtool-global.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NAVTOOL 2.1 – Maritime Bridge</title>
+  <meta name="description" content="NAVTOOL 2.1 – kombinierte Brücke, Navtext, Simulator und nautische Übersicht in einem zusammenhängenden Design." />
   <style>
-    .hero {
-      padding: 72px 0 32px;
+    :root {
+      --bg: #060c10;
+      --bg-2: #0d171c;
+      --panel: rgba(15, 26, 31, 0.96);
+      --panel-2: rgba(10, 18, 22, 0.94);
+      --line: rgba(144, 196, 198, 0.16);
+      --line-strong: rgba(144, 196, 198, 0.4);
+      --teal: #72f0d7;
+      --teal-2: #29d1c6;
+      --amber: #ffca66;
+      --danger: #ff736f;
+      --text: #eaf9f8;
+      --muted: #a4bcc0;
+      --shadow: rgba(0, 0, 0, 0.38);
+      --navy: #071018;
+      --inmarsat: #2d5f63;
+      --furuno: #9ed7d2;
+      --green: #8ff0b1;
+      --track: rgba(136, 233, 224, 0.2);
     }
-    .hero-grid {
-      display: grid;
-      grid-template-columns: minmax(0, 1.15fr) minmax(340px, 0.85fr);
-      align-items: center;
-      gap: 56px;
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(41, 209, 198, 0.12), transparent 35%),
+        linear-gradient(180deg, #040a0d 0%, #09161b 18%, #060b0f 100%);
+      color: var(--text);
+      min-height: 100vh;
     }
-    .hero-title {
-      margin: 18px 0 22px;
-      font-size: clamp(68px, 11vw, 156px);
-      line-height: 0.8;
-      letter-spacing: -0.09em;
-      font-weight: 950;
+
+    a { color: inherit; text-decoration: none; }
+    button { font: inherit; }
+    .container {
+      width: min(1460px, calc(100% - 32px));
+      margin: 0 auto;
     }
-    .hero-title span { color: var(--nt-teal); }
-    .hero-sub {
-      max-width: 680px;
-      color: #a3c0c0;
-      font-size: 18px;
-      line-height: 1.8;
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      backdrop-filter: blur(12px);
+      background: rgba(4, 11, 15, 0.7);
+      border-bottom: 1px solid var(--line);
     }
-    .hero-actions {
+
+    .topbar-inner {
       display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-      margin-top: 24px;
-    }
-    .nt-btn {
-      display: inline-flex;
       align-items: center;
-      justify-content: center;
-      min-height: 48px;
-      padding: 0 20px;
-      border-radius: 12px;
-      border: 1px solid rgba(85, 229, 209, 0.28);
-      background: rgba(85, 229, 209, 0.04);
-      color: var(--nt-text);
-      font-size: 10px;
-      font-weight: 900;
-      letter-spacing: 0.14em;
+      justify-content: space-between;
+      gap: 24px;
+      min-height: 74px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      letter-spacing: 0.2em;
       text-transform: uppercase;
-      transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease;
-    }
-    .nt-btn:hover { transform: translateY(-2px); border-color: rgba(85,229,209,.45); }
-    .nt-btn.primary {
-      background: var(--nt-teal);
-      color: #03211d;
-      box-shadow: 0 16px 34px rgba(85, 229, 209, 0.12);
-      border-color: var(--nt-teal);
-    }
-    .search-shell {
-      position: relative;
-      max-width: 760px;
-      margin-top: 32px;
-    }
-    .search-box {
-      min-height: 64px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 0 14px 0 18px;
-      border: 1px solid rgba(85, 229, 209, 0.25);
-      border-radius: 16px;
-      background: rgba(7, 15, 19, 0.94);
-      box-shadow: 0 18px 40px rgba(0,0,0,0.24);
-    }
-    .search-box input {
-      flex: 1;
-      min-width: 0;
-      border: 0;
-      outline: 0;
-      background: transparent;
-      color: var(--nt-text);
-      font-size: 16px;
-    }
-    .search-box input::placeholder { color: #5f7878; }
-    .search-shortcut {
-      padding: 7px 8px;
-      border: 1px solid var(--nt-line);
-      border-radius: 7px;
-      color: var(--nt-muted-2);
-      font-size: 8px;
       font-weight: 900;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
+      font-size: 0.78rem;
+      color: var(--teal);
     }
-    .search-results {
-      position: absolute;
-      top: calc(100% + 8px);
-      left: 0;
-      right: 0;
-      display: none;
-      overflow: hidden;
-      border: 1px solid rgba(85, 229, 209, 0.22);
-      border-radius: 14px;
-      background: rgba(6, 13, 17, 0.98);
-      box-shadow: 0 24px 80px rgba(0,0,0,0.52);
-      z-index: 40;
-    }
-    .search-results.visible { display: block; }
-    .search-result {
-      width: 100%;
-      padding: 14px 16px;
-      border: 0;
-      border-bottom: 1px solid rgba(85,229,209,.08);
-      background: transparent;
-      color: var(--nt-text);
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      text-align: left;
-      cursor: pointer;
-    }
-    .search-result:last-child { border-bottom: 0; }
-    .search-result:hover { background: rgba(85, 229, 209, 0.04); }
-    .result-icon {
-      width: 38px;
-      height: 38px;
+
+    .brand-mark {
+      width: 34px;
+      height: 34px;
       border-radius: 10px;
-      border: 1px solid rgba(85, 229, 209, 0.17);
-      background: rgba(85,229,209,.05);
-      display: grid;
-      place-items: center;
-      color: var(--nt-teal);
-      font-weight: 900;
-      flex-shrink: 0;
-    }
-    .result-title {
-      font-size: 11px;
-      font-weight: 900;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-    }
-    .result-copy {
-      margin-top: 2px;
-      font-size: 10px;
-      color: var(--nt-muted);
-    }
-    .result-arrow {
-      margin-left: auto;
-      color: var(--nt-teal);
-      font-size: 18px;
-    }
-    .radar-wrap {
       position: relative;
-      min-height: 470px;
-      display: grid;
-      place-items: center;
+      background: linear-gradient(135deg, rgba(114, 240, 215, 0.16), rgba(41, 209, 198, 0.05));
+      border: 1px solid var(--line-strong);
+      overflow: hidden;
     }
-    .radar {
-      position: relative;
-      width: min(440px, 78vw);
-      aspect-ratio: 1;
-      border-radius: 50%;
-      border: 1px solid rgba(85,229,209,.2);
-      background: radial-gradient(circle, rgba(85, 229, 209, 0.06), transparent 58%);
-      box-shadow: inset 0 0 90px rgba(85,229,209,.04), 0 0 80px rgba(85,229,209,.04);
-    }
-    .radar::before, .radar::after {
+
+    .brand-mark::before,
+    .brand-mark::after {
       content: "";
       position: absolute;
-      border: 1px solid rgba(85,229,209,.12);
+      inset: 7px;
+      border: 1px solid rgba(114, 240, 215, 0.7);
       border-radius: 50%;
     }
-    .radar::before { inset: 14%; }
-    .radar::after { inset: 29%; }
-    .radar-x, .radar-y {
-      position: absolute;
-      background: rgba(85,229,209,.14);
+
+    .brand-mark::after {
+      inset: 14px;
+      border-radius: 0 50% 50% 50%;
+      transform: rotate(45deg);
     }
-    .radar-x { left: 5%; right: 5%; top: 50%; height: 1px; }
-    .radar-y { top: 5%; bottom: 5%; left: 50%; width: 1px; }
-    .radar-sweep {
-      position: absolute;
-      left: 50%;
-      top: 50%;
-      width: 48%;
-      height: 2px;
-      transform-origin: left center;
-      background: linear-gradient(90deg, var(--nt-teal), transparent);
-      filter: drop-shadow(0 0 8px var(--nt-teal));
-      animation: sweep 4s linear infinite;
+
+    .topnav {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      flex-wrap: wrap;
+      color: var(--muted);
+      font-size: 0.72rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
     }
-    @keyframes sweep { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-    .radar-dot {
-      position: absolute;
+
+    .topnav a {
+      opacity: 0.8;
+      transition: opacity 0.2s ease, color 0.2s ease;
+    }
+
+    .topnav a:hover,
+    .topnav a.active {
+      color: var(--teal);
+      opacity: 1;
+    }
+
+    .status-pill {
+      border: 1px solid var(--line-strong);
+      background: rgba(114, 240, 215, 0.06);
+      color: var(--teal);
+      border-radius: 999px;
+      padding: 9px 14px;
+      font-size: 0.68rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .status-pill::before {
+      content: "";
       width: 8px;
       height: 8px;
       border-radius: 50%;
-      background: var(--nt-teal);
-      box-shadow: 0 0 18px var(--nt-teal);
+      background: var(--teal);
+      box-shadow: 0 0 16px rgba(114, 240, 215, 0.85);
     }
-    .dot-a { left: 65%; top: 27%; }
-    .dot-b { left: 28%; top: 60%; }
-    .dot-c { left: 68%; top: 73%; }
-    .ship-marker {
-      position: absolute;
-      left: 50%; top: 50%;
-      width: 72px; height: 72px;
-      transform: translate(-50%, -50%);
-      display: grid; place-items: center;
-      border-radius: 50%; border: 1px solid var(--nt-teal);
-      background: rgba(85,229,209,.06);
-      color: var(--nt-teal);
-      box-shadow: 0 0 40px rgba(85,229,209,.1);
-    }
-    .ship-marker::before { content: "▲"; font-size: 24px; }
-    .radar-label {
-      position: absolute;
-      padding: 6px 8px;
-      border-radius: 5px;
-      border: 1px solid var(--nt-line);
-      background: rgba(5,9,12,.8);
-      color: #688383;
-      font-size: 8px;
-      font-weight: 900;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-    }
-    .label-n { top: 5%; left: 50%; transform: translateX(-50%); }
-    .label-s { bottom: 5%; left: 50%; transform: translateX(-50%); }
-    .label-w { left: 3%; top: 50%; transform: translateY(-50%); }
-    .label-e { right: 3%; top: 50%; transform: translateY(-50%); }
 
-    .status-row {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      border-top: 1px solid var(--nt-line);
-      border-bottom: 1px solid var(--nt-line);
-      background: rgba(255,255,255,0.01);
-      margin-top: 28px;
+    .hero {
+      padding: 48px 0 22px;
     }
-    .status-item {
-      min-height: 96px;
-      padding: 18px 24px;
-      border-right: 1px solid var(--nt-line);
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-    }
-    .status-item:last-child { border-right: 0; }
-    .status-label {
-      font-size: 8px;
-      font-weight: 900;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-      color: var(--nt-muted-2);
-    }
-    .status-value {
-      margin-top: 8px;
-      font-size: 13px;
-      font-weight: 850;
-    }
-    .status-online { color: var(--nt-teal); }
 
-    .grid {
+    .hero-grid {
       display: grid;
-      grid-template-columns: repeat(2, minmax(0,1fr));
-      gap: 18px;
-      margin-top: 26px;
+      grid-template-columns: 1.15fr 1.25fr;
+      gap: 28px;
+      align-items: stretch;
     }
-    .tool-card {
+
+    .hero-copy, .panel {
+      background: linear-gradient(180deg, rgba(15, 27, 31, 0.95), rgba(8, 15, 19, 0.96));
+      border: 1px solid var(--line);
+      border-radius: 26px;
+      box-shadow: 0 24px 80px rgba(0,0,0,0.24);
+    }
+
+    .hero-copy {
+      padding: 32px 30px 24px;
       position: relative;
-      min-height: 268px;
-      padding: 24px;
-      border: 1px solid rgba(85,229,209,.14);
-      border-radius: 22px;
-      background: linear-gradient(180deg, rgba(15, 29, 37, 0.92), rgba(9, 17, 21, 0.88));
       overflow: hidden;
     }
-    .tool-card::after {
+
+    .hero-copy::after {
       content: "";
       position: absolute;
-      right: -32px;
-      top: -28px;
-      width: 120px;
-      height: 120px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(85,229,209,.12), transparent 65%);
+      width: 260px;
+      height: 260px;
+      background: radial-gradient(circle, rgba(114, 240, 215, 0.12), transparent 65%);
+      right: -40px;
+      top: -70px;
     }
-    .tool-meta {
+
+    .eyebrow {
+      color: var(--teal);
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      font-size: 0.72rem;
+      font-weight: 800;
+    }
+
+    h1 {
+      margin: 16px 0 18px;
+      font-size: clamp(3.2rem, 6vw, 8rem);
+      line-height: 0.86;
+      letter-spacing: -0.08em;
+    }
+
+    h1 span { color: var(--teal); }
+
+    .hero-copy p {
+      margin: 0;
+      max-width: 660px;
+      color: var(--muted);
+      line-height: 1.8;
+      font-size: 1.04rem;
+    }
+
+    .cta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 26px;
+    }
+
+    .cta-primary, .cta-secondary {
+      border-radius: 12px;
+      padding: 14px 18px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      font-size: 0.72rem;
+      font-weight: 900;
+      transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+
+    .cta-primary {
+      background: linear-gradient(180deg, var(--teal), var(--teal-2));
+      color: #032018;
+      border: none;
+      box-shadow: 0 18px 32px rgba(41, 209, 198, 0.18);
+    }
+
+    .cta-secondary {
+      background: rgba(114, 240, 215, 0.03);
+      border: 1px solid var(--line);
+      color: var(--text);
+    }
+
+    .cta-primary:hover, .cta-secondary:hover { transform: translateY(-2px); }
+
+    .mini-stats {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 26px;
+    }
+
+    .stat {
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: rgba(114, 240, 215, 0.02);
+      padding: 16px 14px;
+    }
+
+    .stat-label {
+      color: var(--muted);
+      font-size: 0.65rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .stat-value {
+      margin-top: 8px;
+      font-size: 1.4rem;
+      font-weight: 800;
+      letter-spacing: -0.04em;
+    }
+
+    .bridge-panel {
+      padding: 18px;
+      position: relative;
+      overflow: hidden;
+      min-height: 470px;
+    }
+
+    .bridge-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 12px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--line);
     }
-    .tool-icon {
-      width: 52px;
-      height: 52px;
+
+    .bridge-title {
+      font-size: 0.76rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      font-weight: 800;
+    }
+
+    .bridge-legend {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: var(--muted);
+      font-size: 0.64rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .legend-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      display: inline-block;
+      background: var(--teal);
+      box-shadow: 0 0 16px rgba(114, 240, 215, 0.8);
+    }
+
+    .bridge-map {
+      position: relative;
+      height: 380px;
+      margin-top: 16px;
+      border-radius: 24px;
+      overflow: hidden;
+      border: 1px solid rgba(114, 240, 215, 0.18);
+      background:
+        linear-gradient(180deg, rgba(14, 26, 31, 0.96), rgba(7, 14, 18, 1)),
+        repeating-linear-gradient(
+          90deg,
+          rgba(114, 240, 215, 0.02) 0,
+          rgba(114, 240, 215, 0.02) 1px,
+          transparent 1px,
+          transparent 42px
+        ),
+        repeating-linear-gradient(
+          0deg,
+          rgba(114, 240, 215, 0.02) 0,
+          rgba(114, 240, 215, 0.02) 1px,
+          transparent 1px,
+          transparent 42px
+        );
+    }
+
+    .water {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 50% 50%, rgba(114, 240, 215, 0.08), transparent 35%),
+        linear-gradient(180deg, transparent, rgba(58, 89, 94, 0.24));
+    }
+
+    .route {
+      position: absolute;
+      inset: 10% 8% 12% 10%;
+      border: 1px solid rgba(114, 240, 215, 0.18);
+      border-radius: 50%;
+      transform: rotate(-16deg);
+    }
+
+    .route::before,
+    .route::after {
+      content: "";
+      position: absolute;
+      inset: 16%;
+      border: 1px solid rgba(114, 240, 215, 0.16);
+      border-radius: 50%;
+    }
+
+    .route::after {
+      inset: 32%;
+    }
+
+    .track {
+      position: absolute;
+      width: 220px;
+      height: 160px;
+      left: 56%;
+      top: 52%;
+      transform: translate(-50%, -50%) rotate(-12deg);
+      border: 2px solid rgba(114, 240, 215, 0.8);
+      border-color: rgba(114, 240, 215, 0.75) transparent transparent transparent;
+      border-radius: 50% 50% 0 0;
+      opacity: 0.8;
+    }
+
+    .ship-ghost {
+      position: absolute;
+      left: 58%;
+      top: 53%;
+      width: 27px;
+      height: 27px;
+      transform: translate(-50%, -50%) rotate(42deg);
+      border-radius: 50% 50% 50% 10%;
+      background: linear-gradient(180deg, rgba(216, 239, 255, 0.9), rgba(114, 240, 215, 0.8));
+      box-shadow: 0 0 18px rgba(114, 240, 215, 0.45);
+    }
+
+    .ship-ghost::before {
+      content: "";
+      position: absolute;
+      inset: 8px 6px 8px 8px;
+      border-radius: 50% 20% 30% 15%;
+      background: rgba(4, 17, 22, 0.75);
+    }
+
+    .bearing {
+      position: absolute;
+      left: 18%;
+      top: 18%;
+      width: 150px;
+      height: 150px;
+      border: 1px solid rgba(114, 240, 215, 0.12);
+      border-radius: 50%;
+      transform: rotate(28deg);
+    }
+
+    .bearing::before {
+      content: "";
+      position: absolute;
+      inset: 18%;
+      border: 1px solid rgba(114, 240, 215, 0.15);
+      border-radius: 50%;
+    }
+
+    .compass-n,
+    .compass-e,
+    .compass-s,
+    .compass-w {
+      position: absolute;
+      color: var(--muted);
+      font-size: 0.6rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      font-weight: 800;
+    }
+
+    .compass-n { top: 12px; left: 50%; transform: translateX(-50%); }
+    .compass-e { right: 12px; top: 50%; transform: translateY(-50%); }
+    .compass-s { bottom: 12px; left: 50%; transform: translateX(-50%); }
+    .compass-w { left: 12px; top: 50%; transform: translateY(-50%); }
+
+    .bridge-overlays {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    .vector {
+      position: absolute;
+      width: 220px;
+      height: 2px;
+      background: linear-gradient(90deg, rgba(114, 240, 215, 0.38), rgba(114, 240, 215, 0));
+      transform-origin: left center;
+      left: 50%;
+      top: 50%;
+      opacity: 0.9;
+      animation: sweep 8s linear infinite;
+    }
+
+    @keyframes sweep {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    .navtext-box {
+      position: absolute;
+      right: 18px;
+      bottom: 18px;
+      width: 280px;
+      border: 1px solid rgba(114, 240, 215, 0.22);
+      border-radius: 18px;
+      background: rgba(4, 12, 16, 0.78);
+      box-shadow: 0 16px 30px rgba(0, 0, 0, 0.2);
+      padding: 12px 14px;
+    }
+
+    .navtext-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: var(--teal);
+      font-size: 0.62rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      font-weight: 900;
+    }
+
+    .navtext-list {
+      list-style: none;
+      margin: 10px 0 0;
+      padding: 0;
+      display: grid;
+      gap: 8px;
+    }
+
+    .navtext-list li {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      font-size: 0.7rem;
+      color: var(--muted);
+      border-bottom: 1px solid rgba(114, 240, 215, 0.08);
+      padding-bottom: 7px;
+    }
+
+    .navtext-list li:last-child { border-bottom: 0; padding-bottom: 0; }
+
+    .navtext-badge {
+      color: var(--teal);
+      font-weight: 800;
+    }
+
+    .content-grid {
+      margin-top: 24px;
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 24px;
+    }
+
+    .panel {
+      padding: 22px;
+    }
+
+    .panel-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+
+    .panel-kicker {
+      color: var(--teal);
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      font-size: 0.68rem;
+      font-weight: 900;
+    }
+
+    .panel-head h2 {
+      margin: 8px 0 0;
+      font-size: clamp(1.8rem, 2vw, 2.8rem);
+      letter-spacing: -0.06em;
+      line-height: 1;
+    }
+
+    .action-link {
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: rgba(114, 240, 215, 0.03);
+      padding: 8px 12px;
+      font-size: 0.66rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text);
+    }
+
+    .simulator-shell {
+      display: grid;
+      grid-template-columns: 0.85fr 1.15fr;
+      gap: 18px;
+      align-items: stretch;
+    }
+
+    .controls {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .mode-tabs {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      background: rgba(114, 240, 215, 0.02);
+      border: 1px solid var(--line);
+      padding: 8px;
+      border-radius: 14px;
+    }
+
+    .mode-btn {
+      border: 1px solid transparent;
+      background: transparent;
+      color: var(--muted);
+      border-radius: 10px;
+      padding: 12px 10px;
+      font-size: 0.72rem;
+      font-weight: 900;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .mode-btn.active {
+      background: linear-gradient(180deg, rgba(114, 240, 215, 0.12), rgba(114, 240, 215, 0.04));
+      color: var(--teal);
+      border-color: rgba(114, 240, 215, 0.25);
+      box-shadow: inset 0 0 16px rgba(114, 240, 215, 0.08);
+    }
+
+    .console {
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 18px;
+      background: rgba(6, 12, 15, 0.8);
+    }
+
+    .console-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: var(--muted);
+      font-size: 0.62rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+
+    .dial-wrap {
+      display: grid;
+      place-items: center;
+      position: relative;
+      margin: 10px auto 14px;
+      width: 180px;
+      height: 180px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(114, 240, 215, 0.08), rgba(7, 14, 18, 0.84));
+      border: 1px solid rgba(114, 240, 215, 0.2);
+      box-shadow: inset 0 0 30px rgba(114, 240, 215, 0.06);
+    }
+
+    .dial {
+      position: relative;
+      width: 132px;
+      height: 132px;
+      border-radius: 50%;
+      border: 1px solid rgba(114, 240, 215, 0.14);
+      background: rgba(7, 13, 17, 0.72);
+    }
+
+    .dial::before,
+    .dial::after {
+      content: "";
+      position: absolute;
+      inset: 12px;
+      border-radius: 50%;
+      border: 1px solid rgba(114, 240, 215, 0.12);
+    }
+
+    .dial::after {
+      inset: 34px;
+      border-color: rgba(114, 240, 215, 0.18);
+    }
+
+    .dial-pointer {
+      position: absolute;
+      width: 2px;
+      height: 58px;
+      left: 50%;
+      top: 10px;
+      transform: translateX(-50%) rotate(60deg);
+      transform-origin: center 54px;
+      background: linear-gradient(180deg, rgba(255, 202, 102, 0.95), rgba(255, 202, 102, 0.2));
+      box-shadow: 0 0 18px rgba(255, 202, 102, 0.6);
+      border-radius: 999px;
+    }
+
+    .dial-pointer::before {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: -8px;
+      transform: translateX(-50%);
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--amber);
+      box-shadow: 0 0 14px rgba(255, 202, 102, 0.8);
+    }
+
+    .degrees {
+      position: absolute;
+      inset: 0;
+      font-size: 0.62rem;
+      color: var(--muted);
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .deg-0 { left: 50%; top: 10px; transform: translateX(-50%); }
+    .deg-90 { right: 10px; top: 50%; transform: translateY(-50%); }
+    .deg-180 { left: 50%; bottom: 10px; transform: translateX(-50%); }
+    .deg-270 { left: 10px; top: 50%; transform: translateY(-50%); }
+
+    .course-readout {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 12px;
+      color: var(--muted);
+      font-size: 0.72rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .course-value {
+      color: var(--teal);
+      font-size: 1.7rem;
+      letter-spacing: -0.05em;
+      font-weight: 900;
+    }
+
+    .switch-box {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .switch-box button {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: rgba(114, 240, 215, 0.02);
+      color: var(--muted);
+      padding: 12px 10px;
+      font-size: 0.62rem;
+      font-weight: 900;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+
+    .switch-box button.active {
+      background: rgba(114, 240, 215, 0.08);
+      color: var(--teal);
+      border-color: rgba(114, 240, 215, 0.3);
+    }
+
+    .furuno-stack {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .furuno-btn {
+      border-radius: 10px;
+      border: 1px solid rgba(158, 215, 210, 0.4);
+      background: linear-gradient(180deg, rgba(158, 215, 210, 0.12), rgba(158, 215, 210, 0.03));
+      min-height: 54px;
+      color: var(--text);
+      font-weight: 800;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      font-size: 0.62rem;
+      cursor: pointer;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.05);
+    }
+
+    .furuno-btn.primary {
+      background: linear-gradient(180deg, rgba(114, 240, 215, 0.18), rgba(114, 240, 215, 0.05));
+      color: var(--teal);
+      border-color: rgba(114, 240, 215, 0.44);
+    }
+
+    .scene {
+      position: relative;
+      min-height: 320px;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background:
+        radial-gradient(circle at 50% 30%, rgba(41, 209, 198, 0.09), transparent 30%),
+        linear-gradient(180deg, rgba(13, 19, 23, 0.98), rgba(8, 14, 18, 1));
+      overflow: hidden;
+    }
+
+    .water-ripple {
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(
+        90deg,
+        rgba(114, 240, 215, 0.02),
+        rgba(114, 240, 215, 0.02) 1px,
+        transparent 1px,
+        transparent 28px
+      );
+      opacity: 0.7;
+    }
+
+    .vessel-3d {
+      position: absolute;
+      left: 50%;
+      top: 52%;
+      width: 240px;
+      height: 150px;
+      transform: translate(-50%, -50%);
+      perspective: 1000px;
+      animation: drift 7s ease-in-out infinite alternate;
+    }
+
+    @keyframes drift {
+      0% { transform: translate(-50%, -47%) rotate(-8deg) scale(0.96); }
+      100% { transform: translate(-50%, -53%) rotate(8deg) scale(1.02); }
+    }
+
+    .hull {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 180px;
+      height: 72px;
+      transform: translate(-50%, -50%) rotateX(42deg) rotateY(-20deg);
+      border-radius: 18px 60px 36px 24px;
+      background: linear-gradient(180deg, rgba(196, 233, 239, 0.82), rgba(115, 155, 168, 0.62));
+      box-shadow: 0 12px 34px rgba(0,0,0,0.2);
+      border: 1px solid rgba(255,255,255,0.25);
+    }
+
+    .hull::before {
+      content: "";
+      position: absolute;
+      inset: 18px 12px 18px 16px;
+      border-radius: 16px 46px 26px 18px;
+      background: linear-gradient(180deg, rgba(4, 15, 20, 0.75), rgba(18, 31, 35, 0.9));
+    }
+
+    .bridge-plat {
+      position: absolute;
+      left: 50%;
+      top: 60%;
+      width: 220px;
+      height: 20px;
+      transform: translate(-50%, -50%) rotateX(68deg);
+      border-radius: 999px;
+      background: rgba(126, 224, 208, 0.22);
+      border: 1px solid rgba(126, 224, 208, 0.32);
+      box-shadow: 0 0 28px rgba(114, 240, 215, 0.22);
+    }
+
+    .waypoint {
+      position: absolute;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--amber);
+      box-shadow: 0 0 18px rgba(255, 202, 102, 0.7);
+    }
+
+    .waypoint.one { left: 26%; top: 32%; }
+    .waypoint.two { right: 22%; top: 44%; }
+    .waypoint.three { left: 50%; top: 22%; }
+
+    .route-line {
+      position: absolute;
+      left: 24%;
+      top: 32%;
+      width: 54%;
+      height: 2px;
+      background: linear-gradient(90deg, rgba(255, 202, 102, 0.18), rgba(255, 202, 102, 0.88), rgba(255, 202, 102, 0.18));
+      transform: rotate(18deg);
+      border-radius: 999px;
+    }
+
+    .navtext-rail {
+      display: grid;
+      gap: 12px;
+      margin-top: 18px;
+    }
+
+    .message {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: rgba(114, 240, 215, 0.02);
+      padding: 12px 14px;
+    }
+
+    .message-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      color: var(--muted);
+      font-size: 0.6rem;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      margin-bottom: 8px;
+    }
+
+    .tag {
+      display: inline-block;
+      padding: 4px 7px;
+      border-radius: 999px;
+      border: 1px solid rgba(114, 240, 215, 0.2);
+      color: var(--teal);
+      background: rgba(114, 240, 215, 0.06);
+      font-weight: 800;
+    }
+
+    .message p {
+      margin: 0;
+      color: var(--text);
+      line-height: 1.6;
+      font-size: 0.86rem;
+    }
+
+    .overview-grid {
+      margin-top: 26px;
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .overview-card {
+      background: linear-gradient(180deg, rgba(16, 26, 31, 0.98), rgba(8, 14, 18, 0.97));
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 18px 16px;
+      min-height: 170px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .overview-icon {
+      width: 48px;
+      height: 48px;
       display: grid;
       place-items: center;
       border-radius: 14px;
-      border: 1px solid rgba(85,229,209,.2);
-      background: rgba(85,229,209,.04);
-      color: var(--nt-teal);
-      font-size: 22px;
+      border: 1px solid rgba(114, 240, 215, 0.2);
+      background: rgba(114, 240, 215, 0.04);
+      color: var(--teal);
+      font-size: 1.2rem;
       font-weight: 900;
     }
-    .tool-badge {
-      font-size: 8px;
-      font-weight: 900;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--nt-teal);
-      background: rgba(85,229,209,.04);
-      border: 1px solid rgba(85,229,209,.22);
-      border-radius: 999px;
-      padding: 6px 8px;
+
+    .overview-card h3 {
+      margin: 14px 0 8px;
+      font-size: 1rem;
+      letter-spacing: -0.03em;
     }
-    .tool-card h3 {
-      margin: 18px 0 8px;
-      font-size: 14px;
-      font-weight: 900;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-    }
-    .tool-card p {
-      color: var(--nt-muted);
+
+    .overview-card p {
+      margin: 0;
+      color: var(--muted);
       line-height: 1.7;
-      font-size: 14px;
+      font-size: 0.82rem;
     }
-    .tool-card a {
-      display: inline-flex;
-      align-items: center;
-      margin-top: 18px;
-      color: var(--nt-teal);
-      font-size: 10px;
-      font-weight: 900;
+
+    .footer {
+      margin-top: 28px;
+      padding: 22px 0 40px;
+      color: var(--muted);
+      font-size: 0.72rem;
       letter-spacing: 0.12em;
       text-transform: uppercase;
+      border-top: 1px solid var(--line);
     }
-    .section-head {
+
+    .footer-inner {
       display: flex;
-      flex-wrap: wrap;
       justify-content: space-between;
-      gap: 18px;
-      margin: 50px 0 18px;
-      align-items: end;
+      gap: 16px;
+      flex-wrap: wrap;
     }
-    .section-head h2 {
-      font-size: clamp(34px, 4vw, 56px);
-      line-height: 0.96;
-      letter-spacing: -0.06em;
-      margin: 12px 0 0;
+
+    @media (max-width: 1050px) {
+      .hero-grid,
+      .content-grid,
+      .simulator-shell {
+        grid-template-columns: 1fr;
+      }
+
+      .overview-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
     }
-    .section-head p {
-      max-width: 620px;
-      color: var(--nt-muted);
-      line-height: 1.8;
-      margin-top: 12px;
-      font-size: 15px;
-    }
-    .leadn {
-      width: min(100%, 620px);
-      color: var(--nt-muted);
-      line-height: 1.8;
-    }
-    @media (max-width: 980px) {
-      .hero-grid { grid-template-columns: 1fr; }
-      .status-row { grid-template-columns: repeat(2, 1fr); }
-      .grid { grid-template-columns: 1fr; }
-    }
-    @media (max-width: 560px) {
-      .status-row { grid-template-columns: 1fr; }
-      .status-item { border-right: 0; border-bottom: 1px solid var(--nt-line); }
-      .status-item:last-child { border-bottom: 0; }
-      .hero { padding-top: 42px; }
-      .hero-sub { font-size: 15px; }
+
+    @media (max-width: 720px) {
+      .topbar-inner {
+        flex-wrap: wrap;
+        justify-content: center;
+        padding: 12px 0;
+      }
+
+      .topnav {
+        justify-content: center;
+      }
+
+      .mini-stats,
+      .overview-grid,
+      .furuno-stack {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-copy,
+      .panel,
+      .bridge-panel {
+        border-radius: 20px;
+      }
+
+      .navtext-box {
+        position: static;
+        width: auto;
+        margin-top: 14px;
+      }
     }
   </style>
 </head>
 <body>
-  <header class="nt-header">
-    <div class="nt-hin">
-      <a class="nt-logo" href="/" aria-label="NavTool Startseite">
-        <img src="/pic/allgemein/logo.png" alt="NAVTOOL">
-      </a>
-      <nav class="nt-nav" aria-label="Hauptnavigation">
-        <a href="/map/">Map</a>
-        <a href="/navtext/">Navtext</a>
-        <a href="/colreg/">Colreg</a>
-        <a href="/weather/">Weather</a>
-        <a href="/calc/">Calc</a>
-        <a href="/sailingapp/">Sailing</a>
-        <a href="/simulator/">Simulator</a>
-        <a href="/status/">Status</a>
-        <a href="/app/" class="nt-promo">App laden</a>
+  <header class="topbar">
+    <div class="container topbar-inner">
+      <div class="brand">
+        <span class="brand-mark" aria-hidden="true"></span>
+        <span>NAVTOOL</span>
+      </div>
+
+      <nav class="topnav" aria-label="Hauptnavigation">
+        <a href="#overview" class="active">Overview</a>
+        <a href="#bridge">Bridge</a>
+        <a href="#navtext">Navtext</a>
+        <a href="#simulator">Simulator</a>
+        <a href="#map">Map</a>
+        <a href="#status">Status</a>
       </nav>
-      <div class="nt-status-pill"><span class="dot"></span> Online</div>
+
+      <div class="status-pill">Bridge Online</div>
     </div>
   </header>
 
-  <main class="nt-main">
-    <div class="nt-shell">
-      <section class="hero">
-        <div class="hero-grid">
-          <div>
-            <div class="nt-kicker">Maritime navigation workspace</div>
-            <h1 class="hero-title">NAV<span>TOOL</span></h1>
-            <p class="hero-sub">Alles für die Seefahrt an einem Ort: Karten, NAVTEXT, COLREG, Wetter, Berechnungen, Simulator und App. Sauber, schnell und mit einem durchgängigen Design für den ganzen nautischen Alltag.</p>
-            <div class="hero-actions">
-              <a class="nt-btn primary" href="/map/">Zur Startseite</a>
-              <a class="nt-btn" href="/status/">Status prüfen</a>
+  <main class="container">
+    <section class="hero" id="overview">
+      <div class="hero-grid">
+        <div class="hero-copy">
+          <div class="eyebrow">Maritime navigation workspace</div>
+          <h1>NAV<span>TOOL</span> 2.1</h1>
+          <p>
+            Eine zusammengefasste Brücke für die moderne Seefahrt: Navtext, Navigation, Karten, Simulator
+            und Steuerfunktionen werden in einem klaren, konsistenten nautischen Design gebündelt.
+            Die Oberfläche wirkt wie eine reale Brücke, mit Furuno-ähnlichen Bedienelementen,
+            Inmarsat-ähnlicher Nachrichtenansicht und einem einheitlichen nautischen Look.
+          </p>
+
+          <div class="cta-row">
+            <a href="#bridge" class="cta-primary">Zur Brücke</a>
+            <a href="#simulator" class="cta-secondary">Zum Simulator</a>
+          </div>
+
+          <div class="mini-stats">
+            <div class="stat">
+              <div class="stat-label">Netz</div>
+              <div class="stat-value">24/7</div>
+            </div>
+            <div class="stat">
+              <div class="stat-label">Systeme</div>
+              <div class="stat-value">4</div>
+            </div>
+            <div class="stat">
+              <div class="stat-label">Modus</div>
+              <div class="stat-value">Auto</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel bridge-panel" id="bridge">
+          <div class="bridge-header">
+            <div class="bridge-title">Karte · Lage</div>
+            <div class="bridge-legend"><span class="legend-dot"></span>Online</div>
+          </div>
+
+          <div class="bridge-map" id="map">
+            <div class="water"></div>
+            <div class="route"></div>
+            <div class="track"></div>
+            <div class="bearing"></div>
+            <div class="compass-n">N</div>
+            <div class="compass-e">E</div>
+            <div class="compass-s">S</div>
+            <div class="compass-w">W</div>
+            <div class="ship-ghost" aria-hidden="true"></div>
+            <div class="bridge-overlays">
+              <div class="vector" aria-hidden="true"></div>
             </div>
 
-            <div class="search-shell">
-              <div class="search-box">
-                <span aria-hidden="true">⌕</span>
-                <input id="globalSearch" type="search" placeholder="Kompassfehler, Backbord, Karte, Kumulus, Karibikstrom…" autocomplete="off">
-                <span class="search-shortcut">Enter</span>
+            <div class="navtext-box" id="navtext">
+              <div class="navtext-title">
+                <span>Navtext</span>
+                <span class="navtext-badge">LIVE</span>
               </div>
-              <div id="searchResults" class="search-results" aria-live="polite"></div>
-            </div>
-          </div>
-
-          <div class="radar-wrap" aria-hidden="true">
-            <div class="radar">
-              <div class="radar-x"></div>
-              <div class="radar-y"></div>
-              <div class="radar-sweep"></div>
-              <div class="radar-dot dot-a"></div>
-              <div class="radar-dot dot-b"></div>
-              <div class="radar-dot dot-c"></div>
-              <div class="ship-marker"></div>
-              <div class="radar-label label-n">N</div>
-              <div class="radar-label label-e">E</div>
-              <div class="radar-label label-s">S</div>
-              <div class="radar-label label-w">W</div>
+              <ul class="navtext-list">
+                <li><span>IST-Kurs</span><strong>142°</strong></li>
+                <li><span>Geschw.</span><strong>11.8 kn</strong></li>
+                <li><span>Weg</span><strong>32.4 nm</strong></li>
+              </ul>
             </div>
           </div>
         </div>
-      </section>
+      </div>
+    </section>
 
-      <div class="status-row" aria-label="Systemstatus">
-        <div class="status-item">
-          <span class="status-label">System</span>
-          <span class="status-value status-online">Online</span>
+    <section class="content-grid">
+      <div class="panel">
+        <div class="panel-head">
+          <div>
+            <div class="panel-kicker">Steuerung</div>
+            <h2>Bridge Simulator</h2>
+          </div>
+          <div class="action-link">Sicher</div>
         </div>
-        <div class="status-item">
-          <span class="status-label">Bereiche</span>
-          <span class="status-value">6 Module</span>
-        </div>
-        <div class="status-item">
-          <span class="status-label">Offline</span>
-          <span class="status-value status-online">Vorbereitet</span>
-        </div>
-        <div class="status-item">
-          <span class="status-label">Status</span>
-          <span class="status-value">Aktiv</span>
+
+        <div class="simulator-shell" id="simulator">
+          <div class="controls">
+            <div class="mode-tabs" aria-label="Steuerungsmodus">
+              <button class="mode-btn active" data-mode="hand">Hand</button>
+              <button class="mode-btn" data-mode="tiller">Tiller</button>
+              <button class="mode-btn" data-mode="auto">Auto</button>
+            </div>
+
+            <div class="console">
+              <div class="console-header">
+                <span>Ruder</span>
+                <span id="mode-label">Hand</span>
+              </div>
+
+              <div class="dial-wrap">
+                <div class="dial" aria-hidden="true">
+                  <div class="dial-pointer" id="dial-pointer"></div>
+                  <div class="degrees">
+                    <div class="deg-0">000</div>
+                    <div class="deg-90">090</div>
+                    <div class="deg-180">180</div>
+                    <div class="deg-270">270</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="course-readout">
+                <span>Kurs</span>
+                <div class="course-value"><span id="course-value">142</span>°</div>
+              </div>
+
+              <div class="switch-box" aria-label="Schalter am Brückenpult">
+                <button class="switch active">Hand</button>
+                <button class="switch">Tiller</button>
+                <button class="switch">Auto</button>
+              </div>
+
+              <div class="furuno-stack">
+                <button class="furuno-btn primary">Set</button>
+                <button class="furuno-btn">Hold</button>
+                <button class="furuno-btn">Rudder</button>
+                <button class="furuno-btn">Mode</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="scene" aria-label="3D Steuerungsanimation">
+            <div class="water-ripple"></div>
+            <div class="route-line"></div>
+            <div class="waypoint one"></div>
+            <div class="waypoint two"></div>
+            <div class="waypoint three"></div>
+            <div class="vessel-3d" id="vessel-3d">
+              <div class="bridge-plat"></div>
+              <div class="hull"></div>
+            </div>
+          </div>
         </div>
       </div>
 
-      <section class="nt-section">
-        <div class="section-head">
+      <div class="panel">
+        <div class="panel-head">
           <div>
-            <div class="nt-kicker">Tools</div>
-            <h2>Alles auf einen Blick.</h2>
+            <div class="panel-kicker">Nachrichten</div>
+            <h2>Inmarsat</h2>
           </div>
-          <p class="leadn">Von der Karte bis zum Rechenblatt – alle Bereiche nutzen dasselbe Design, dieselben Farben und dieselbe Logik, damit die Navigation klar, schnell und einheitlich bleibt.</p>
         </div>
 
-        <div class="grid">
-          <article class="tool-card">
-            <div class="tool-meta">
-              <div class="tool-icon">M</div>
-              <span class="tool-badge">Map</span>
+        <div class="navtext-rail">
+          <div class="message">
+            <div class="message-head">
+              <span>Vessel Msg</span>
+              <span class="tag">INFO</span>
             </div>
-            <h3>Map</h3>
-            <p>Karten, routingrelevante Informationen und navigationsnahe Workflows für eine schnelle Lagebeurteilung im Einsatz.</p>
-            <a href="/map/">Öffnen →</a>
-          </article>
+            <p>Route stabilisiert. Kurskorrektur 3° nach Osten berücksichtigt. Windlage bleibt im grünen Bereich.</p>
+          </div>
 
-          <article class="tool-card">
-            <div class="tool-meta">
-              <div class="tool-icon">N</div>
-              <span class="tool-badge">Navtext</span>
+          <div class="message">
+            <div class="message-head">
+              <span>Weather</span>
+              <span class="tag">WARN</span>
             </div>
-            <h3>Navtext</h3>
-            <p>Stationen, Meldungen, Warnungen und kritische Informationen kompakt in einer klaren, nutzbaren Oberfläche.</p>
-            <a href="/navtext/">Öffnen →</a>
-          </article>
+            <p>Leichte Schwellensicht von Nordwest. Manöverbereich bleibt sicher und kontrolliert.</p>
+          </div>
 
-          <article class="tool-card">
-            <div class="tool-meta">
-              <div class="tool-icon">C</div>
-              <span class="tool-badge">Colreg</span>
+          <div class="message">
+            <div class="message-head">
+              <span>Bridge</span>
+              <span class="tag">AUTO</span>
             </div>
-            <h3>Colreg</h3>
-            <p>Regeln, Lichter, Schallsignale, Tonnen und Situationstypen für die sichere Begegnung auf See – grafisch verständlich.</p>
-            <a href="/colreg/">Öffnen →</a>
-          </article>
-
-          <article class="tool-card">
-            <div class="tool-meta">
-              <div class="tool-icon">W</div>
-              <span class="tool-badge">Weather</span>
-            </div>
-            <h3>Weather</h3>
-            <p>Wetterlage, Wind, Druck, Wolken und tragfähige Infos in einem übersichtlichen nautischen Dashboard.</p>
-            <a href="/weather/">Öffnen →</a>
-          </article>
-
-          <article class="tool-card">
-            <div class="tool-meta">
-              <div class="tool-icon">∑</div>
-              <span class="tool-badge">Calc</span>
-            </div>
-            <h3>Calc</h3>
-            <p>Kompassfehler, Besteck, Stromdreieck, Sichtweiten und Schiffstheorie – alles auf einem verständlichen Rechenblatt.</p>
-            <a href="/calc/">Öffnen →</a>
-          </article>
-
-          <article class="tool-card">
-            <div class="tool-meta">
-              <div class="tool-icon">S</div>
-              <span class="tool-badge">App</span>
-            </div>
-            <h3>App</h3>
-            <p>Mobile Startseite, Suche, Favoriten, Login, offline-taugliche Nutzung und ein konsistentes NavTool-Erlebnis im Handy-Format.</p>
-            <a href="/app/start/">Öffnen →</a>
-          </article>
+            <p>Autopilot aktiv. Sollkurs 142° eingestellt. Tillermodus derzeit nicht freigegeben.</p>
+          </div>
         </div>
-      </section>
-    </div>
+      </div>
+    </section>
+
+    <section class="overview-grid" aria-label="Nautische Übersichten">
+      <div class="overview-card">
+        <div class="overview-icon">M</div>
+        <div>
+          <h3>Map</h3>
+          <p>Digitale Karte mit nautisch lesbarer Lage, Kurslinien und sicheren Hauptwegen.</p>
+        </div>
+      </div>
+
+      <div class="overview-card">
+        <div class="overview-icon">N</div>
+        <div>
+          <h3>Navtext</h3>
+          <p>Verständliche Meldungen und Statusanzeigen mit realistischer HUD-ähnlicher Oberfläche.</p>
+        </div>
+      </div>
+
+      <div class="overview-card">
+        <div class="overview-icon">S</div>
+        <div>
+          <h3>Simulator</h3>
+          <p>Hand, Tiller und Auto in einem Moduswechsel, mit klassischer Brückensteuerung.</p>
+        </div>
+      </div>
+
+      <div class="overview-card">
+        <div class="overview-icon">A</div>
+        <div>
+          <h3>Bridge</h3>
+          <p>Alles zusammen in einem Design: Brücke, Überwachung, Karten und Fahrsteuerung.</p>
+        </div>
+      </div>
+    </section>
   </main>
 
-  <footer class="nt-foot" role="contentinfo">
-    <div class="nt-foot-in">
-      <div>
-        <div class="nt-foot-brand">
-          <img src="/pic/allgemein/logo.png" alt="NavTool">
-        </div>
-        <div class="nt-foot-copy">Maritime Navigation Workspace · navtool.de · Navigation, Wetter, Regeln und Berechnung</div>
-      </div>
-      <div class="nt-foot-links">
-        <a href="/">Home</a>
-        <a href="/status/">Status</a>
-      </div>
-    </div>
-    <div class="nt-foot-bar">
-      <span>NavTool</span>
-      <span><a href="/status/">Status</a> · <a href="/me/">Ersteller</a></span>
+  <footer class="footer">
+    <div class="container footer-inner">
+      <span>NAVTOOL 2.1</span>
+      <span>Maritime Bridge Overview</span>
     </div>
   </footer>
 
   <script>
-    const data = [
-      { label: 'Kompassfehler', url: '/calc/#gyro', icon: 'K', text: 'Gyro Error / Kompassfehler' },
-      { label: 'Backbord', url: '/colreg/#buoys', icon: 'B', text: 'Tonnen und Karten' },
-      { label: 'Karte', url: '/map/', icon: 'M', text: 'Karten und Lage' },
-      { label: 'Kumulus', url: '/weather/', icon: 'W', text: 'Wolken / Wetterlage' },
-      { label: 'Karibikstrom', url: '/weather/', icon: 'S', text: 'Strömungen und Wetter' },
-      { label: 'Lichter', url: '/colreg/#lights', icon: 'L', text: 'Schiffslichter' },
-      { label: 'Schallsignale', url: '/colreg/#sounds', icon: 'S', text: 'Schallsignal erkennen' },
-      { label: 'Status', url: '/status/', icon: '✓', text: 'Systemstatus' }
-    ];
-    const input = document.getElementById('globalSearch');
-    const results = document.getElementById('searchResults');
-    function getMatches(value) {
-      const q = value.trim().toLowerCase();
-      if (!q) return [];
-      return data.filter(item => {
-        return item.label.toLowerCase().includes(q) || item.text.toLowerCase().includes(q) || q.includes(item.label.toLowerCase().split(' ')[0]);
-      }).slice(0, 6);
+    const modeButtons = document.querySelectorAll('.mode-btn');
+    const switchButtons = document.querySelectorAll('.switch');
+    const pointer = document.getElementById('dial-pointer');
+    const courseValue = document.getElementById('course-value');
+    const modeLabel = document.getElementById('mode-label');
+    const vessel = document.getElementById('vessel-3d');
+    const state = { mode: 'hand', course: 142 };
+
+    function updateMode(nextMode) {
+      state.mode = nextMode;
+      modeButtons.forEach(btn => btn.classList.toggle('active', btn.dataset.mode === nextMode));
+      switchButtons.forEach(btn => btn.classList.toggle('active', btn.textContent.trim().toLowerCase() === nextMode));
+      modeLabel.textContent = nextMode === 'hand' ? 'Hand' : nextMode === 'tiller' ? 'Tiller' : 'Auto';
+
+      const modeDegrees = {
+        hand: 50,
+        tiller: 130,
+        auto: 210
+      };
+
+      const tilt = {
+        hand: 6,
+        tiller: 12,
+        auto: -9
+      };
+
+      pointer.style.transform = `translateX(-50%) rotate(${modeDegrees[nextMode]}deg)`;
+      vessel.style.transform = `translate(-50%, -50%) rotate(${tilt[nextMode]}deg)`;
     }
-    input.addEventListener('input', () => {
-      const matches = getMatches(input.value);
-      if (!matches.length) {
-        results.classList.remove('visible');
-        results.innerHTML = '';
-        return;
-      }
-      results.innerHTML = matches.map(item => `
-        <button class="search-result" type="button" onclick="location.href='${item.url}'">
-          <span class="result-icon">${item.icon}</span>
-          <span>
-            <span class="result-title">${item.label}</span>
-            <span class="result-copy">${item.text}</span>
-          </span>
-          <span class="result-arrow">→</span>
-        </button>
-      `).join('');
-      results.classList.add('visible');
+
+    modeButtons.forEach(btn => {
+      btn.addEventListener('click', () => updateMode(btn.dataset.mode));
     });
-    document.addEventListener('click', (e) => {
-      if (!e.target.closest('.search-box') && !e.target.closest('.search-result')) {
-        results.classList.remove('visible');
-      }
+
+    switchButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const nextMode = btn.textContent.trim().toLowerCase();
+        updateMode(nextMode);
+      });
     });
-    input.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') {
-        const matches = getMatches(input.value);
-        if (matches.length) location.href = matches[0].url;
-      }
-    });
+
+    const course = document.getElementById('course-value');
+    function animateCourse() {
+      const current = Number(course.textContent);
+      const target = state.mode === 'auto' ? 142 : state.mode === 'tiller' ? 156 : 132;
+      const delta = target - current;
+      const step = delta * 0.08;
+      const next = Math.round(current + step);
+      course.textContent = next;
+      state.course = next;
+      pointer.style.transform = `translateX(-50%) rotate(${(next / 360) * 240 + 30}deg)`;
+      requestAnimationFrame(animateCourse);
+    }
+
+    updateMode('hand');
+    requestAnimationFrame(animateCourse);
   </script>
-  <script src="/assets/navtool-global.js"></script>
 </body>
 </html>

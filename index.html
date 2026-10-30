@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NAVTOOL — Maritime Navigation Workspace</title>
+  <meta name="description" content="NAVTOOL — Maritime Navigation Workspace für Map, NAVTEXT, COLREG, Weather und nautische Berechnungen.">
+  <meta name="theme-color" content="#05090c">
+  <link rel="icon" type="image/png" href="/pic/allgemein/icon-192.png">
+  <link rel="stylesheet" href="/assets/navtool-global.css">
+  <style>
+    .hero {
+      padding: 72px 0 32px;
+    }
+    .hero-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.15fr) minmax(340px, 0.85fr);
+      align-items: center;
+      gap: 56px;
+    }
+    .hero-title {
+      margin: 18px 0 22px;
+      font-size: clamp(68px, 11vw, 156px);
+      line-height: 0.8;
+      letter-spacing: -0.09em;
+      font-weight: 950;
+    }
+    .hero-title span { color: var(--nt-teal); }
+    .hero-sub {
+      max-width: 680px;
+      color: #a3c0c0;
+      font-size: 18px;
+      line-height: 1.8;
+    }
+    .hero-actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 24px;
+    }
+    .nt-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 48px;
+      padding: 0 20px;
+      border-radius: 12px;
+      border: 1px solid rgba(85, 229, 209, 0.28);
+      background: rgba(85, 229, 209, 0.04);
+      color: var(--nt-text);
+      font-size: 10px;
+      font-weight: 900;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease;
+    }
+    .nt-btn:hover { transform: translateY(-2px); border-color: rgba(85,229,209,.45); }
+    .nt-btn.primary {
+      background: var(--nt-teal);
+      color: #03211d;
+      box-shadow: 0 16px 34px rgba(85, 229, 209, 0.12);
+      border-color: var(--nt-teal);
+    }
+    .search-shell {
+      position: relative;
+      max-width: 760px;
+      margin-top: 32px;
+    }
+    .search-box {
+      min-height: 64px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 0 14px 0 18px;
+      border: 1px solid rgba(85, 229, 209, 0.25);
+      border-radius: 16px;
+      background: rgba(7, 15, 19, 0.94);
+      box-shadow: 0 18px 40px rgba(0,0,0,0.24);
+    }
+    .search-box input {
+      flex: 1;
+      min-width: 0;
+      border: 0;
+      outline: 0;
+      background: transparent;
+      color: var(--nt-text);
+      font-size: 16px;
+    }
+    .search-box input::placeholder { color: #5f7878; }
+    .search-shortcut {
+      padding: 7px 8px;
+      border: 1px solid var(--nt-line);
+      border-radius: 7px;
+      color: var(--nt-muted-2);
+      font-size: 8px;
+      font-weight: 900;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+    .search-results {
+      position: absolute;
+      top: calc(100% + 8px);
+      left: 0;
+      right: 0;
+      display: none;
+      overflow: hidden;
+      border: 1px solid rgba(85, 229, 209, 0.22);
+      border-radius: 14px;
+      background: rgba(6, 13, 17, 0.98);
+      box-shadow: 0 24px 80px rgba(0,0,0,0.52);
+      z-index: 40;
+    }
+    .search-results.visible { display: block; }
+    .search-result {
+      width: 100%;
+      padding: 14px 16px;
+      border: 0;
+      border-bottom: 1px solid rgba(85,229,209,.08);
+      background: transparent;
+      color: var(--nt-text);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-align: left;
+      cursor: pointer;
+    }
+    .search-result:last-child { border-bottom: 0; }
+    .search-result:hover { background: rgba(85, 229, 209, 0.04); }
+    .result-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      border: 1px solid rgba(85, 229, 209, 0.17);
+      background: rgba(85,229,209,.05);
+      display: grid;
+      place-items: center;
+      color: var(--nt-teal);
+      font-weight: 900;
+      flex-shrink: 0;
+    }
+    .result-title {
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .result-copy {
+      margin-top: 2px;
+      font-size: 10px;
+      color: var(--nt-muted);
+    }
+    .result-arrow {
+      margin-left: auto;
+      color: var(--nt-teal);
+      font-size: 18px;
+    }
+    .radar-wrap {
+      position: relative;
+      min-height: 470px;
+      display: grid;
+      place-items: center;
+    }
+    .radar {
+      position: relative;
+      width: min(440px, 78vw);
+      aspect-ratio: 1;
+      border-radius: 50%;
+      border: 1px solid rgba(85,229,209,.2);
+      background: radial-gradient(circle, rgba(85, 229, 209, 0.06), transparent 58%);
+      box-shadow: inset 0 0 90px rgba(85,229,209,.04), 0 0 80px rgba(85,229,209,.04);
+    }
+    .radar::before, .radar::after {
+      content: "";
+      position: absolute;
+      border: 1px solid rgba(85,229,209,.12);
+      border-radius: 50%;
+    }
+    .radar::before { inset: 14%; }
+    .radar::after { inset: 29%; }
+    .radar-x, .radar-y {
+      position: absolute;
+      background: rgba(85,229,209,.14);
+    }
+    .radar-x { left: 5%; right: 5%; top: 50%; height: 1px; }
+    .radar-y { top: 5%; bottom: 5%; left: 50%; width: 1px; }
+    .radar-sweep {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 48%;
+      height: 2px;
+      transform-origin: left center;
+      background: linear-gradient(90deg, var(--nt-teal), transparent);
+      filter: drop-shadow(0 0 8px var(--nt-teal));
+      animation: sweep 4s linear infinite;
+    }
+    @keyframes sweep { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+    .radar-dot {
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--nt-teal);
+      box-shadow: 0 0 18px var(--nt-teal);
+    }
+    .dot-a { left: 65%; top: 27%; }
+    .dot-b { left: 28%; top: 60%; }
+    .dot-c { left: 68%; top: 73%; }
+    .ship-marker {
+      position: absolute;
+      left: 50%; top: 50%;
+      width: 72px; height: 72px;
+      transform: translate(-50%, -50%);
+      display: grid; place-items: center;
+      border-radius: 50%; border: 1px solid var(--nt-teal);
+      background: rgba(85,229,209,.06);
+      color: var(--nt-teal);
+      box-shadow: 0 0 40px rgba(85,229,209,.1);
+    }
+    .ship-marker::before { content: "▲"; font-size: 24px; }
+    .radar-label {
+      position: absolute;
+      padding: 6px 8px;
+      border-radius: 5px;
+      border: 1px solid var(--nt-line);
+      background: rgba(5,9,12,.8);
+      color: #688383;
+      font-size: 8px;
+      font-weight: 900;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+    .label-n { top: 5%; left: 50%; transform: translateX(-50%); }
+    .label-s { bottom: 5%; left: 50%; transform: translateX(-50%); }
+    .label-w { left: 3%; top: 50%; transform: translateY(-50%); }
+    .label-e { right: 3%; top: 50%; transform: translateY(-50%); }
+
+    .status-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      border-top: 1px solid var(--nt-line);
+      border-bottom: 1px solid var(--nt-line);
+      background: rgba(255,255,255,0.01);
+      margin-top: 28px;
+    }
+    .status-item {
+      min-height: 96px;
+      padding: 18px 24px;
+      border-right: 1px solid var(--nt-line);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .status-item:last-child { border-right: 0; }
+    .status-label {
+      font-size: 8px;
+      font-weight: 900;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--nt-muted-2);
+    }
+    .status-value {
+      margin-top: 8px;
+      font-size: 13px;
+      font-weight: 850;
+    }
+    .status-online { color: var(--nt-teal); }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0,1fr));
+      gap: 18px;
+      margin-top: 26px;
+    }
+    .tool-card {
+      position: relative;
+      min-height: 268px;
+      padding: 24px;
+      border: 1px solid rgba(85,229,209,.14);
+      border-radius: 22px;
+      background: linear-gradient(180deg, rgba(15, 29, 37, 0.92), rgba(9, 17, 21, 0.88));
+      overflow: hidden;
+    }
+    .tool-card::after {
+      content: "";
+      position: absolute;
+      right: -32px;
+      top: -28px;
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(85,229,209,.12), transparent 65%);
+    }
+    .tool-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .tool-icon {
+      width: 52px;
+      height: 52px;
+      display: grid;
+      place-items: center;
+      border-radius: 14px;
+      border: 1px solid rgba(85,229,209,.2);
+      background: rgba(85,229,209,.04);
+      color: var(--nt-teal);
+      font-size: 22px;
+      font-weight: 900;
+    }
+    .tool-badge {
+      font-size: 8px;
+      font-weight: 900;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--nt-teal);
+      background: rgba(85,229,209,.04);
+      border: 1px solid rgba(85,229,209,.22);
+      border-radius: 999px;
+      padding: 6px 8px;
+    }
+    .tool-card h3 {
+      margin: 18px 0 8px;
+      font-size: 14px;
+      font-weight: 900;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+    .tool-card p {
+      color: var(--nt-muted);
+      line-height: 1.7;
+      font-size: 14px;
+    }
+    .tool-card a {
+      display: inline-flex;
+      align-items: center;
+      margin-top: 18px;
+      color: var(--nt-teal);
+      font-size: 10px;
+      font-weight: 900;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+    .section-head {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 18px;
+      margin: 50px 0 18px;
+      align-items: end;
+    }
+    .section-head h2 {
+      font-size: clamp(34px, 4vw, 56px);
+      line-height: 0.96;
+      letter-spacing: -0.06em;
+      margin: 12px 0 0;
+    }
+    .section-head p {
+      max-width: 620px;
+      color: var(--nt-muted);
+      line-height: 1.8;
+      margin-top: 12px;
+      font-size: 15px;
+    }
+    .leadn {
+      width: min(100%, 620px);
+      color: var(--nt-muted);
+      line-height: 1.8;
+    }
+    @media (max-width: 980px) {
+      .hero-grid { grid-template-columns: 1fr; }
+      .status-row { grid-template-columns: repeat(2, 1fr); }
+      .grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 560px) {
+      .status-row { grid-template-columns: 1fr; }
+      .status-item { border-right: 0; border-bottom: 1px solid var(--nt-line); }
+      .status-item:last-child { border-bottom: 0; }
+      .hero { padding-top: 42px; }
+      .hero-sub { font-size: 15px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="nt-header">
+    <div class="nt-hin">
+      <a class="nt-logo" href="/" aria-label="NavTool Startseite">
+        <img src="/pic/allgemein/logo.png" alt="NAVTOOL">
+      </a>
+      <nav class="nt-nav" aria-label="Hauptnavigation">
+        <a href="/map/">Map</a>
+        <a href="/navtext/">Navtext</a>
+        <a href="/colreg/">Colreg</a>
+        <a href="/weather/">Weather</a>
+        <a href="/calc/">Calc</a>
+        <a href="/sailingapp/">Sailing</a>
+        <a href="/simulator/">Simulator</a>
+        <a href="/status/">Status</a>
+        <a href="/app/" class="nt-promo">App laden</a>
+      </nav>
+      <div class="nt-status-pill"><span class="dot"></span> Online</div>
+    </div>
+  </header>
+
+  <main class="nt-main">
+    <div class="nt-shell">
+      <section class="hero">
+        <div class="hero-grid">
+          <div>
+            <div class="nt-kicker">Maritime navigation workspace</div>
+            <h1 class="hero-title">NAV<span>TOOL</span></h1>
+            <p class="hero-sub">Alles für die Seefahrt an einem Ort: Karten, NAVTEXT, COLREG, Wetter, Berechnungen, Simulator und App. Sauber, schnell und mit einem durchgängigen Design für den ganzen nautischen Alltag.</p>
+            <div class="hero-actions">
+              <a class="nt-btn primary" href="/map/">Zur Startseite</a>
+              <a class="nt-btn" href="/status/">Status prüfen</a>
+            </div>
+
+            <div class="search-shell">
+              <div class="search-box">
+                <span aria-hidden="true">⌕</span>
+                <input id="globalSearch" type="search" placeholder="Kompassfehler, Backbord, Karte, Kumulus, Karibikstrom…" autocomplete="off">
+                <span class="search-shortcut">Enter</span>
+              </div>
+              <div id="searchResults" class="search-results" aria-live="polite"></div>
+            </div>
+          </div>
+
+          <div class="radar-wrap" aria-hidden="true">
+            <div class="radar">
+              <div class="radar-x"></div>
+              <div class="radar-y"></div>
+              <div class="radar-sweep"></div>
+              <div class="radar-dot dot-a"></div>
+              <div class="radar-dot dot-b"></div>
+              <div class="radar-dot dot-c"></div>
+              <div class="ship-marker"></div>
+              <div class="radar-label label-n">N</div>
+              <div class="radar-label label-e">E</div>
+              <div class="radar-label label-s">S</div>
+              <div class="radar-label label-w">W</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="status-row" aria-label="Systemstatus">
+        <div class="status-item">
+          <span class="status-label">System</span>
+          <span class="status-value status-online">Online</span>
+        </div>
+        <div class="status-item">
+          <span class="status-label">Bereiche</span>
+          <span class="status-value">6 Module</span>
+        </div>
+        <div class="status-item">
+          <span class="status-label">Offline</span>
+          <span class="status-value status-online">Vorbereitet</span>
+        </div>
+        <div class="status-item">
+          <span class="status-label">Status</span>
+          <span class="status-value">Aktiv</span>
+        </div>
+      </div>
+
+      <section class="nt-section">
+        <div class="section-head">
+          <div>
+            <div class="nt-kicker">Tools</div>
+            <h2>Alles auf einen Blick.</h2>
+          </div>
+          <p class="leadn">Von der Karte bis zum Rechenblatt – alle Bereiche nutzen dasselbe Design, dieselben Farben und dieselbe Logik, damit die Navigation klar, schnell und einheitlich bleibt.</p>
+        </div>
+
+        <div class="grid">
+          <article class="tool-card">
+            <div class="tool-meta">
+              <div class="tool-icon">M</div>
+              <span class="tool-badge">Map</span>
+            </div>
+            <h3>Map</h3>
+            <p>Karten, routingrelevante Informationen und navigationsnahe Workflows für eine schnelle Lagebeurteilung im Einsatz.</p>
+            <a href="/map/">Öffnen →</a>
+          </article>
+
+          <article class="tool-card">
+            <div class="tool-meta">
+              <div class="tool-icon">N</div>
+              <span class="tool-badge">Navtext</span>
+            </div>
+            <h3>Navtext</h3>
+            <p>Stationen, Meldungen, Warnungen und kritische Informationen kompakt in einer klaren, nutzbaren Oberfläche.</p>
+            <a href="/navtext/">Öffnen →</a>
+          </article>
+
+          <article class="tool-card">
+            <div class="tool-meta">
+              <div class="tool-icon">C</div>
+              <span class="tool-badge">Colreg</span>
+            </div>
+            <h3>Colreg</h3>
+            <p>Regeln, Lichter, Schallsignale, Tonnen und Situationstypen für die sichere Begegnung auf See – grafisch verständlich.</p>
+            <a href="/colreg/">Öffnen →</a>
+          </article>
+
+          <article class="tool-card">
+            <div class="tool-meta">
+              <div class="tool-icon">W</div>
+              <span class="tool-badge">Weather</span>
+            </div>
+            <h3>Weather</h3>
+            <p>Wetterlage, Wind, Druck, Wolken und tragfähige Infos in einem übersichtlichen nautischen Dashboard.</p>
+            <a href="/weather/">Öffnen →</a>
+          </article>
+
+          <article class="tool-card">
+            <div class="tool-meta">
+              <div class="tool-icon">∑</div>
+              <span class="tool-badge">Calc</span>
+            </div>
+            <h3>Calc</h3>
+            <p>Kompassfehler, Besteck, Stromdreieck, Sichtweiten und Schiffstheorie – alles auf einem verständlichen Rechenblatt.</p>
+            <a href="/calc/">Öffnen →</a>
+          </article>
+
+          <article class="tool-card">
+            <div class="tool-meta">
+              <div class="tool-icon">S</div>
+              <span class="tool-badge">App</span>
+            </div>
+            <h3>App</h3>
+            <p>Mobile Startseite, Suche, Favoriten, Login, offline-taugliche Nutzung und ein konsistentes NavTool-Erlebnis im Handy-Format.</p>
+            <a href="/app/start/">Öffnen →</a>
+          </article>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer class="nt-foot" role="contentinfo">
+    <div class="nt-foot-in">
+      <div>
+        <div class="nt-foot-brand">
+          <img src="/pic/allgemein/logo.png" alt="NavTool">
+        </div>
+        <div class="nt-foot-copy">Maritime Navigation Workspace · navtool.de · Navigation, Wetter, Regeln und Berechnung</div>
+      </div>
+      <div class="nt-foot-links">
+        <a href="/">Home</a>
+        <a href="/status/">Status</a>
+      </div>
+    </div>
+    <div class="nt-foot-bar">
+      <span>NavTool</span>
+      <span><a href="/status/">Status</a> · <a href="/me/">Ersteller</a></span>
+    </div>
+  </footer>
+
+  <script>
+    const data = [
+      { label: 'Kompassfehler', url: '/calc/#gyro', icon: 'K', text: 'Gyro Error / Kompassfehler' },
+      { label: 'Backbord', url: '/colreg/#buoys', icon: 'B', text: 'Tonnen und Karten' },
+      { label: 'Karte', url: '/map/', icon: 'M', text: 'Karten und Lage' },
+      { label: 'Kumulus', url: '/weather/', icon: 'W', text: 'Wolken / Wetterlage' },
+      { label: 'Karibikstrom', url: '/weather/', icon: 'S', text: 'Strömungen und Wetter' },
+      { label: 'Lichter', url: '/colreg/#lights', icon: 'L', text: 'Schiffslichter' },
+      { label: 'Schallsignale', url: '/colreg/#sounds', icon: 'S', text: 'Schallsignal erkennen' },
+      { label: 'Status', url: '/status/', icon: '✓', text: 'Systemstatus' }
+    ];
+    const input = document.getElementById('globalSearch');
+    const results = document.getElementById('searchResults');
+    function getMatches(value) {
+      const q = value.trim().toLowerCase();
+      if (!q) return [];
+      return data.filter(item => {
+        return item.label.toLowerCase().includes(q) || item.text.toLowerCase().includes(q) || q.includes(item.label.toLowerCase().split(' ')[0]);
+      }).slice(0, 6);
+    }
+    input.addEventListener('input', () => {
+      const matches = getMatches(input.value);
+      if (!matches.length) {
+        results.classList.remove('visible');
+        results.innerHTML = '';
+        return;
+      }
+      results.innerHTML = matches.map(item => `
+        <button class="search-result" type="button" onclick="location.href='${item.url}'">
+          <span class="result-icon">${item.icon}</span>
+          <span>
+            <span class="result-title">${item.label}</span>
+            <span class="result-copy">${item.text}</span>
+          </span>
+          <span class="result-arrow">→</span>
+        </button>
+      `).join('');
+      results.classList.add('visible');
+    });
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.search-box') && !e.target.closest('.search-result')) {
+        results.classList.remove('visible');
+      }
+    });
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        const matches = getMatches(input.value);
+        if (matches.length) location.href = matches[0].url;
+      }
+    });
+  </script>
+  <script src="/assets/navtool-global.js"></script>
+</body>
+</html>

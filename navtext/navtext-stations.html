@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NavTool - NAVTEX Karte</title>
+<link rel="icon" type="image/png" href="/pic/allgemein/icon-192.png">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/furuno.css"><link rel="stylesheet" href="../assets/navtool-global.css">
+<style>
+body.simpage{display:flex;flex-direction:column;height:100vh;overflow:hidden}
+.mp{flex:1;min-height:0;display:grid;grid-template-columns:1fr 310px}@media(max-width:860px){.mp{grid-template-columns:1fr;grid-template-rows:1fr 220px}}
+#map{background:#cfe3ee;min-height:0}
+#pn{padding:14px;overflow:auto;background:#08121a;border-left:1px solid rgba(85,229,209,.18);display:flex;flex-direction:column;gap:12px}
+.st{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:10px;border:1px solid rgba(85,229,209,.14);background:#0a151b;cursor:pointer;transition:.15s}.st:hover,.st.hv{border-color:#55e5d1;background:rgba(85,229,209,.1);transform:translateX(2px)}
+.st i{font-style:normal;display:grid;place-items:center;width:28px;height:28px;border-radius:8px;background:#0d3b66;color:#ffd24a;font-weight:800;font-size:14px;flex:none}.st small{display:block;color:#7e9697}
+.pin{width:30px;height:30px;border-radius:50% 50% 50% 4px;transform:rotate(-45deg);background:#0d3b66;border:2px solid #fff;box-shadow:0 3px 8px rgba(0,0,0,.45);display:grid;place-items:center;transition:transform .15s,background .15s}.pin b{transform:rotate(45deg);color:#ffd24a;font:800 14px Inter,sans-serif}.pin.hv{background:#d4380d;transform:rotate(-45deg) scale(1.25)}
+#co{position:absolute;left:10px;bottom:10px;z-index:900;background:rgba(8,18,26,.88);color:#55e5d1;padding:5px 10px;border-radius:8px;font:600 12px monospace}
+.leaflet-tooltip{background:#08121a;color:#ecfbf9;border:1px solid #55e5d1;border-radius:8px;font:600 12px Inter,sans-serif;box-shadow:0 6px 18px rgba(0,0,0,.4)}
+</style></head>
+<body class="simpage">
+<header class="sp-top"><a href="/"><img src="/pic/allgemein/logo.png" alt="NavTool"></a><b>NAVTEX · SENDESTATIONEN &amp; EMPFANGSGEBIETE</b>
+<nav><a href="/navtext/">Gerät</a><a class="on" href="navtext-stations.html">Karte</a><a href="/inmarsat/">Inmarsat-C</a></nav></header>
+<div class="mp"><div style="position:relative;min-height:0"><div id="map" style="height:100%"></div><div id="co">–</div></div>
+<aside id="pn"><div class="card"><h3>Empfangsgebiete</h3><p>Kreise zeigen die angenommene Reichweite (nm). Mit der Maus über Station oder Gebiet fahren, klicken zum Heranzoomen. Simulationsdaten, Kennbuchstaben frei gewählt.</p><button id="tg" type="button">Empfangsbereiche ein/aus</button></div><div id="ls"></div></aside></div>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script><script src="../assets/sim-data.js"></script>
+<script>
+const D=SimData,map=L.map('map',{minZoom:3,maxZoom:12}).setView([55.5,5],5);
+L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Ocean/World_Ocean_Base/MapServer/tile/{z}/{y}/{x}',{maxNativeZoom:10,maxZoom:12,attribution:'Esri, GEBCO, NOAA'}).addTo(map);
+L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Ocean/World_Ocean_Reference/MapServer/tile/{z}/{y}/{x}',{maxNativeZoom:10,maxZoom:12}).addTo(map);
+L.tileLayer('https://tiles.openseamap.org/seamark/{z}/{x}/{y}.png',{maxZoom:18,attribution:'OpenSeaMap'}).addTo(map);
+L.control.scale({imperial:false}).addTo(map);
+const grp=L.layerGroup().addTo(map),ls=document.getElementById('ls'),cs={},pins={},rows={};
+const hv=(id,on)=>{cs[id].setStyle({weight:on?3:1.5,fillOpacity:on?.32:.12});pins[id].getElement()?.firstChild.classList.toggle('hv',on);rows[id].classList.toggle('hv',on)};
+D.stations.forEach(s=>{
+ cs[s.id]=L.circle([s.lat,s.lon],{radius:s.range*1852,color:'#0d6efd',weight:1.5,fillColor:'#0d6efd',fillOpacity:.12,dashArray:'6 4'}).addTo(grp);
+ pins[s.id]=L.marker([s.lat,s.lon],{icon:L.divIcon({className:'',html:`<div class="pin"><b>${s.id}</b></div>`,iconSize:[30,30],iconAnchor:[8,30]})}).addTo(map);
+ const tip=`<b>${s.name}</b> (${s.id})<br>${s.f} · Reichweite ${s.range} nm`;
+ [cs[s.id],pins[s.id]].forEach(o=>{o.bindTooltip(tip,{sticky:true});o.on('mouseover',()=>hv(s.id,1));o.on('mouseout',()=>hv(s.id,0));o.on('click',()=>map.flyToBounds(cs[s.id].getBounds(),{duration:.8}))});
+ const d=document.createElement('div');d.className='st';d.innerHTML=`<i>${s.id}</i><div><b>${s.name}</b><small>${s.f} · ${s.range} nm</small></div>`;rows[s.id]=d;
+ d.onmouseenter=()=>hv(s.id,1);d.onmouseleave=()=>hv(s.id,0);d.onclick=()=>map.flyToBounds(cs[s.id].getBounds(),{duration:.8});ls.appendChild(d)});
+let on=1;document.getElementById('tg').onclick=()=>{on=!on;on?map.addLayer(grp):map.removeLayer(grp)};
+map.on('mousemove',e=>co.textContent=D.fmt(e.latlng.lat,e.latlng.lng));
+</script></body></html>

@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NavTool - Inmarsat-C Simulator (Furuno FELCOM 15)</title>
+<link rel="icon" type="image/png" href="/pic/allgemein/icon-192.png"><link rel="apple-touch-icon" href="/pic/allgemein/icon-180.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=VT323&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/furuno.css"><link rel="stylesheet" href="../assets/navtool-global.css"></head>
+<body class="simpage">
+<header class="sp-top"><a href="/"><img src="/pic/allgemein/logo.png" alt="NavTool"></a><b>INMARSAT-C · FURUNO FELCOM 15</b>
+<nav><a href="/navtext/">NAVTEX</a><a class="on" href="/inmarsat/">Inmarsat-C</a><a href="/simulator/">Steering</a></nav></header>
+<main class="sp-main">
+<div id="dev"></div>
+<aside class="sp-side">
+<div class="card"><h3>Standort des Schiffes</h3><select id="pos"></select><button id="test" type="button">SafetyNET-Meldung jetzt empfangen</button><p style="margin-top:8px">Meldungen (EGC) treffen automatisch alle 15–35 s ein. Distress und Urgency lassen sich nicht abschalten.</p></div>
+<div class="card"><h3>Tasten (Maus oder Tastatur)</h3><table>
+<tr><td>F1–F6</td><td>Softkeys (Beschriftung unten im Display)</td></tr><tr><td>MENU</td><td>Hauptmenü · Taste M</td></tr>
+<tr><td>LOG</td><td>Protokoll</td></tr><tr><td>▲ ▼ ENT</td><td>wählen · öffnen</td></tr>
+<tr><td>CLR</td><td>zurück</td></tr><tr><td>0–9</td><td>Menüpunkt wählen</td></tr>
+<tr><td>PRINT</td><td>Meldung drucken · P</td></tr><tr><td>POWER</td><td>Gerät ein/aus</td></tr></table></div>
+<div class="card"><p>Simulation für Ausbildungszwecke. Es wird nichts gesendet; die DISTRESS-Taste löst nur eine Anzeige aus. Meldungen sind erfunden.</p></div>
+</aside></main>
+<script src="../assets/sim-data.js"></script><script src="../assets/furuno.js"></script><script src="felcom.js"></script>
+</body></html>

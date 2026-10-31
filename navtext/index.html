@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NavTool - NAVTEX Simulator (Furuno NX-700)</title>
+<link rel="icon" type="image/png" href="/pic/allgemein/icon-192.png"><link rel="apple-touch-icon" href="/pic/allgemein/icon-180.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=VT323&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/furuno.css"><link rel="stylesheet" href="../assets/navtool-global.css"></head>
+<body class="simpage">
+<header class="sp-top"><a href="/"><img src="/pic/allgemein/logo.png" alt="NavTool"></a><b>NAVTEX · FURUNO NX-700</b>
+<nav><a class="on" href="/navtext/">Gerät</a><a href="navtext-stations.html">Karte</a><a href="/inmarsat/">Inmarsat-C</a></nav></header>
+<main class="sp-main">
+<div id="dev"></div>
+<aside class="sp-side">
+<div class="card"><h3>Standort des Schiffes</h3><select id="pos"></select><button id="test" type="button">Meldung jetzt empfangen</button><p style="margin-top:8px">Meldungen treffen automatisch ein (alle 20–40 s), aber nur von gewählten Stationen in Reichweite.</p></div>
+<div class="card"><h3>Tasten (Maus oder Tastatur)</h3><table>
+<tr><td>MENU</td><td>Menü · Taste M</td></tr><tr><td>MODE</td><td>Anzeige / Liste / Abdeckung</td></tr>
+<tr><td>◄ ►</td><td>ältere / neuere Meldung</td></tr><tr><td>▲ ▼ ENT</td><td>wählen · bestätigen</td></tr>
+<tr><td>PAGE</td><td>nächste Seite</td></tr><tr><td>ACK</td><td>Alarm quittieren</td></tr>
+<tr><td>PRINT</td><td>Meldung drucken · P</td></tr><tr><td>FUNC</td><td>Meldung löschen</td></tr>
+<tr><td>DIM / Regler</td><td>Helligkeit</td></tr></table></div>
+<div class="card"><p>Simulation für Ausbildungszwecke. Stationen, Kennbuchstaben (B1) und Meldungen sind frei erfunden bzw. vereinfacht und ersetzen keine amtlichen Warnungen.</p></div>
+</aside></main>
+<script src="../assets/sim-data.js"></script><script src="../assets/furuno.js"></script><script src="nx700.js"></script>
+</body></html>

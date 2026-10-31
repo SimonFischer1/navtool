@@ -1,0 +1,41 @@
+NAVTOOL ADMIN-BENUTZERVERWALTUNG – EINRICHTUNG
+
+Administrator: fischersimonluca@icloud.com
+Admin-Seite: https://navtool.de/admin/
+
+WICHTIG
+- Das alte Admin-Login mit fest im HTML eingetragenen Zugangsdaten wurde entfernt.
+- Die Admin-Seite funktioniert erst, wenn die Edge Function unten bereitgestellt ist.
+- Das Service-Role-Geheimnis darf NIEMALS in HTML, JavaScript im Browser oder Git eingecheckt werden.
+- Wenn das frühere fest eingetragene Passwort noch verwendet wurde, ändere es überall, wo es wiederverwendet wurde.
+
+1) Supabase Auth
+- Im Supabase-Dashboard unter Authentication > Users prüfen, dass fischersimonluca@icloud.com existiert und die E-Mail bestätigt ist.
+- Für dieses Konto das normale NavTool-Passwort verwenden. Es gibt kein separates Admin-Passwort.
+- Die Admin-Seite verweigert andere E-Mail-Adressen; zusätzlich prüft die Edge Function die verifizierte Sitzung serverseitig.
+
+2) Supabase CLI / Edge Function
+- Diesen Ordner in das bestehende Supabase-Projekt übernehmen.
+- Mit der Supabase CLI beim richtigen Projekt anmelden und verknüpfen.
+- Function bereitstellen: supabase functions deploy admin-users
+- Die Function benötigt die Standard-Secrets SUPABASE_URL, SUPABASE_ANON_KEY und SUPABASE_SERVICE_ROLE_KEY. Supabase stellt sie in der Regel für Edge Functions bereit. Im Dashboard unter Edge Functions/Secrets prüfen, dass alle vorhanden sind.
+- JWT-Prüfung für die Function aktiviert lassen.
+
+3) Profile
+- Die bestehende Tabelle public.profiles aus supabase/schema.sql wird genutzt. Sie muss bereits angelegt sein.
+- Die Function verwendet den Service-Role-Key nur serverseitig. Niemals RLS deaktivieren oder diesen Schlüssel in assets/supabase-config.js kopieren.
+
+4) Veröffentlichen und testen
+- V11/admin/index.html und V11/supabase/functions/admin-users/index.ts mit dem restlichen Projekt veröffentlichen.
+- Unter https://navtool.de/admin/ mit fischersimonluca@icloud.com anmelden.
+- Mit einem zweiten normalen Konto prüfen, dass der Admin-Zugriff abgewiesen wird.
+- Testweise einen nicht kritischen Testnutzer bearbeiten und anschließend löschen.
+
+FUNKTIONEN
+- Kontoanzahl, E-Mail-Bestätigung, Registrierung und letzte Anmeldung aus Supabase Auth
+- Name und E-Mail bearbeiten (je nach Supabase-Einstellungen kann eine E-Mail-Bestätigung der neuen Adresse erforderlich sein)
+- Passwort neu setzen (Passwort wird niemals ausgelesen oder angezeigt)
+- Benutzerkonto dauerhaft löschen
+
+HINWEIS ZUR ANMELDEHISTORIE
+Supabase Auth stellt created_at und last_sign_in_at bereit. Das ist nicht die vollständige Liste jedes einzelnen Logins. Für eine lückenlose Historie müssten zusätzliche Auth-Logs/Audit-Events eingerichtet werden.

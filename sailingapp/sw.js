@@ -1,6 +1,0 @@
-const C='sailing-v4',F=['./','./index.html','./manifest.webmanifest','./icon.svg','https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js','/assets/supabase-config.js','https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css','https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js','https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js'];
-self.addEventListener('install',e=>{self.skipWaiting();e.waitUntil(caches.open(C).then(c=>Promise.all(F.map(u=>c.add(u).catch(()=>{})))))});
-self.addEventListener('activate',e=>e.waitUntil(caches.keys().then(k=>Promise.all(k.filter(x=>x.startsWith('sailing-')&&x!=C).map(x=>caches.delete(x)))).then(()=>clients.claim())));
-self.addEventListener('fetch',e=>{const r=e.request,u=r.url;if(r.method!='GET'||u.includes('nominatim'))return;
-if(/tile\.openstreetmap\.org|tiles\.openseamap\.org/.test(u)){e.respondWith(caches.open('tiles').then(c=>c.match(u).then(h=>h||fetch(u,{mode:'cors'}).catch(()=>fetch(r)).then(n=>{if(n.ok||n.type=='opaque')c.put(u,n.clone());return n}).catch(()=>new Response('',{status:504})))));return}
-e.respondWith(fetch(r).then(n=>{const c=n.clone();caches.open(C).then(x=>x.put(r,c));return n}).catch(()=>caches.match(r)))});

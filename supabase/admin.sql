@@ -80,6 +80,6 @@ grant execute on function public.admin_list_users(), public.admin_update_user(uu
 -- 1. Auf navtool.de/konto/ mit deinem normalen Konto registrieren (falls noch nicht geschehen).
 -- 2. Unten DEINE@EMAIL.DE durch die E-Mail dieses Kontos ersetzen und den Befehl ausführen.
 insert into public.admins (user_id)
-select id from auth.users where lower(email) = lower('DEINE@EMAIL.DE')
+select id from auth.users where lower(email) = lower('fischersimonluca@icloud.com')
 on conflict do nothing;
 -- Kontrolle: select a.user_id, u.email from public.admins a join auth.users u on u.id = a.user_id;

@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Admin · NavTool</title>
+  <meta name="theme-color" content="#05090c">
+  <link rel="icon" type="image/png" href="/pic/allgemein/icon-192.png">
+  <link rel="stylesheet" href="/assets/navtool-global.css">
+  <style>
+
+    body { margin:0; }
+    .admin-shell {
+      width: min(1180px, calc(100% - 30px));
+      margin: 0 auto;
+      padding: 42px 0 60px;
+    }
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 18px 20px;
+      border: 1px solid rgba(85,229,209,.18);
+      background: rgba(10,21,27,.8);
+      border-radius: 18px;
+      margin-bottom: 26px;
+    }
+    .brandline { display: flex; align-items: center; gap: 12px; }
+    .brandline img { height: 26px; }
+    .brandline h1 { margin:0; font-size: 18px; letter-spacing: .12em; text-transform: uppercase; }
+    .topbar-actions { display:flex; align-items:center; gap:10px; }
+    .ghost-button {
+      padding: 9px 12px; border:1px solid rgba(85,229,209,.2); background:transparent; color:var(--nt-teal);
+      border-radius: 999px; font-size: 9px; font-weight:900; letter-spacing:.1em; text-transform:uppercase;
+    }
+    .logout-button {
+      padding: 9px 12px; border:1px solid rgba(255,112,112,.2); background:rgba(255,112,112,.08); color:#ff9b9b; border-radius:999px;
+      font-size: 9px; font-weight:900; letter-spacing:.1em; text-transform:uppercase;
+    }
+    .login-wrap {
+      max-width: 500px; margin: 80px auto 20px; padding: 28px; border-radius: 24px; border:1px solid rgba(85,229,209,.18); background: rgba(10,21,27,.88); box-shadow: 0 20px 50px rgba(0,0,0,.16);
+    }
+    .login-wrap h2 { margin:0 0 16px; font-size: clamp(28px, 5vw, 46px); letter-spacing:-.05em; }
+    .login-form { display:grid; gap:12px; }
+    .login-form input, .login-form select {
+      width: 100%; border: 1px solid rgba(85,229,209,.18); background: rgba(5,9,12,.9); color: var(--nt-text); border-radius: 12px; padding: 12px 14px; font-size: 15px;
+    }
+    .login-form button {
+      border:0; background: var(--nt-teal); color:#03211d; border-radius: 12px; min-height:48px; font-weight:900; letter-spacing:.12em; text-transform: uppercase; cursor:pointer;
+    }
+    .login-message { min-height: 22px; color: #ff9b9b; font-size: 13px; }
+    .dashboard { display:none; }
+    .dashboard.active { display:block; }
+    .summary-grid {
+      display:grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap:14px; margin-bottom: 20px;
+    }
+    .summary-card {
+      border:1px solid rgba(85,229,209,.14); border-radius:18px; padding:18px; background: rgba(10,21,27,.82);
+    }
+    .summary-card .label { color: var(--nt-muted-2); font-size:10px; letter-spacing:.16em; font-weight:900; text-transform:uppercase; }
+    .summary-card .value { margin-top:8px; font-size: 28px; font-weight:950; letter-spacing:-.04em; }
+    .panel-grid { display:grid; grid-template-columns: 1.1fr .9fr; gap:18px; }
+    .panel { border:1px solid rgba(85,229,209,.14); background: rgba(10,21,27,.82); border-radius:20px; padding:20px; }
+    .panel h3 { margin:0 0 14px; font-size: 18px; letter-spacing: -.02em; }
+    .list { display:grid; gap:10px; }
+    .module-row {
+      display:flex; align-items:center; justify-content:space-between; gap:12px; padding:12px 14px; border:1px solid rgba(85,229,209,.12); border-radius: 12px; background: rgba(5,9,12,.38);
+    }
+    .toggle-row { display:flex; align-items:center; gap:12px; }
+    .switch { position:relative; width:46px; height:26px; border-radius:999px; background: rgba(126,150,151,.34); }
+    .switch input { position:absolute; opacity:0; inset:0; }
+    .switch .slider { position:absolute; inset: 3px; border-radius:999px; background: rgba(255,255,255,.12); }
+    .switch .slider::before { content:''; position:absolute; left:3px; top:3px; width:20px; height:20px; border-radius:50%; background:white; transition: transform .2s ease; }
+    .switch input:checked + .slider { background: rgba(85,229,209,.5); }
+    .switch input:checked + .slider::before { transform: translateX(20px); }
+    .status-select { border:1px solid rgba(85,229,209,.18); background: rgba(5,9,12,.8); color:var(--nt-text); border-radius:10px; padding:8px 10px; }
+    .stat-list { list-style:none; margin:0; padding:0; display:grid; gap:10px; }
+    .stat-list li { display:flex; justify-content:space-between; gap:10px; padding:10px 0; border-bottom:1px solid rgba(85,229,209,.08); }
+    .stat-list li:last-child { border-bottom: 0; }
+    .save-button {
+      margin-top: 18px; border:0; background: var(--nt-teal); color:#03211d; border-radius: 12px; min-height:46px; padding: 0 16px; font-weight:900; letter-spacing:.12em; text-transform: uppercase; cursor:pointer;
+    }
+    .mini-grid { display:grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap:12px; }
+    .mini-card { border:1px solid rgba(85,229,209,.12); border-radius: 12px; padding:12px; background: rgba(5,9,12,.38); }
+    .mini-card strong { display:block; font-size:20px; margin-top:8px; }
+    .small-label { color:var(--nt-muted-2); font-size:10px; letter-spacing:.12em; text-transform: uppercase; font-weight:900; }
+    @media (max-width: 820px) { .summary-grid, .panel-grid, .mini-grid { grid-template-columns: 1fr; } }
+  
+    /* V12: Konto-Anmeldung, Nutzerverwaltung */
+    .login-form button:disabled,.save-button:disabled{opacity:.55;cursor:default}
+    .login-hint{margin:14px 0 0;color:var(--nt-muted);font-size:13px;line-height:1.5}
+    .tabs{display:flex;gap:6px;margin:0 0 20px;padding:4px;border:1px solid rgba(85,229,209,.18);border-radius:14px;background:rgba(10,21,27,.8);width:fit-content;max-width:100%;overflow:auto}
+    .tabs button{padding:10px 16px;border:0;border-radius:10px;background:transparent;color:var(--nt-muted);font:800 13px Inter,system-ui,sans-serif;cursor:pointer;white-space:nowrap}
+    .tabs button.on{background:var(--nt-teal);color:#03211d}
+    .pane{display:none}.pane.on{display:block}
+    .tools{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:0 0 14px}
+    .tools input[type=search]{flex:1 1 220px;padding:11px 14px;border:1px solid rgba(85,229,209,.18);border-radius:12px;background:rgba(5,9,12,.9);color:var(--nt-text);font-size:15px}
+    .btn2{padding:10px 14px;border:1px solid rgba(85,229,209,.25);border-radius:10px;background:transparent;color:var(--nt-text);font:800 12px Inter,system-ui,sans-serif;cursor:pointer}
+    .btn2:hover{border-color:var(--nt-teal);color:var(--nt-teal)}
+    .btn2.bad{border-color:rgba(255,112,112,.35);color:#ff9b9b}.btn2.bad:hover{border-color:#ff7070;background:rgba(255,112,112,.08)}
+    .tw{overflow:auto;border:1px solid rgba(85,229,209,.14);border-radius:16px;background:rgba(10,21,27,.82)}
+    table.ut{width:100%;border-collapse:collapse;min-width:820px}
+    table.ut th{padding:12px 14px;text-align:left;color:var(--nt-muted-2);font:900 10px Inter,system-ui,sans-serif;letter-spacing:.12em;text-transform:uppercase;border-bottom:1px solid rgba(85,229,209,.14);white-space:nowrap}
+    table.ut td{padding:12px 14px;border-bottom:1px solid rgba(85,229,209,.08);font-size:14px;vertical-align:middle}
+    table.ut tr:last-child td{border-bottom:0}
+    table.ut td.mail{word-break:break-all}
+    table.ut td.act{white-space:nowrap;text-align:right}
+    table.ut td.act .btn2{margin-left:6px;padding:7px 10px;font-size:11px}
+    .tag{display:inline-block;padding:2px 9px;border:1px solid rgba(85,229,209,.3);border-radius:99px;color:var(--nt-teal);font-size:11px;font-weight:800}
+    .tag.w{border-color:rgba(255,180,84,.4);color:var(--nt-warn)}
+    .empty{padding:26px;text-align:center;color:var(--nt-muted)}
+    .spark{display:flex;align-items:flex-end;gap:3px;height:70px;margin-top:14px}
+    .spark i{flex:1;min-width:4px;border-radius:3px 3px 0 0;background:rgba(85,229,209,.55)}
+    .spark i.z{background:rgba(85,229,209,.14)}
+    .note{margin:16px 0 0;padding:14px 16px;border:1px solid rgba(255,180,84,.3);border-radius:14px;background:rgba(255,180,84,.06);color:#e9cf9b;font-size:13px;line-height:1.55}
+    dialog{width:min(440px,calc(100% - 28px));padding:22px;border:1px solid var(--nt-teal);border-radius:20px;background:#071116;color:var(--nt-text)}
+    dialog::backdrop{background:rgba(0,0,0,.72);backdrop-filter:blur(4px)}
+    dialog h3{margin:0 0 10px;font-size:20px}
+    dialog label{display:block;margin:12px 0 0;color:var(--nt-muted);font:800 11px Inter,system-ui,sans-serif;letter-spacing:.1em;text-transform:uppercase}
+    dialog input{width:100%;margin-top:6px;padding:12px;border:1px solid rgba(85,229,209,.2);border-radius:12px;background:#05090c;color:var(--nt-text);font-size:15px}
+    dialog .row{display:flex;gap:10px;margin-top:18px;justify-content:flex-end}
+    dialog p{margin:6px 0 0;color:var(--nt-muted);font-size:13px;line-height:1.5}
+    .dmsg{min-height:20px;margin-top:10px;color:#ff9b9b;font-size:13px}.dmsg.ok{color:var(--nt-teal)}
+    .nt-m-admin .nt-foot{margin-top:30px}
+  </style>
+</head>
+<body>
+  <div class="admin-shell">
+    <div id="loginView">
+      <div class="login-wrap">
+        <div class="brandline" style="margin-bottom:16px;"><img src="/pic/allgemein/logo.png" alt="NavTool"></div>
+        <h2>Admin-Anmeldung</h2>
+        <form class="login-form" id="loginForm" novalidate>
+          <input id="em" type="email" aria-label="E-Mail" placeholder="E-Mail deines NavTool-Kontos" autocomplete="username" required>
+          <input id="pw" type="password" aria-label="Passwort" placeholder="Passwort" autocomplete="current-password" required>
+          <button type="submit" id="loginBtn">Anmelden</button>
+        </form>
+        <div class="login-message" id="loginMessage" role="alert"></div>
+        <p class="login-hint">Nur das Admin-Konto hat hier Zugriff. Die Prüfung läuft in der Datenbank. Alle anderen Konten sehen nach der Anmeldung nichts.</p>
+      </div>
+    </div>
+
+    <div id="dashboardView" class="dashboard">
+      <div class="topbar">
+        <div class="brandline">
+          <img src="/pic/allgemein/logo.png" alt="NavTool">
+          <h1>NavTool Admin</h1>
+        </div>
+        <div class="topbar-actions">
+          <span id="whoami" class="small-label"></span>
+          <button class="ghost-button" type="button" onclick="location.href='/status/'">Status</button>
+          <button class="logout-button" type="button" id="logoutBtn">Abmelden</button>
+        </div>
+      </div>
+
+      <div class="tabs" role="tablist">
+        <button type="button" class="on" data-p="users" role="tab">Nutzer</button>
+        <button type="button" data-p="site" role="tab">Website-Status</button>
+        <button type="button" data-p="brand" role="tab">Einstellungen</button>
+      </div>
+
+      <section class="pane on" id="p-users">
+        <div class="summary-grid" id="userSummary"></div>
+        <div class="panel" style="margin-bottom:18px">
+          <h3>Registrierungen der letzten 30 Tage</h3>
+          <div class="spark" id="spark" aria-hidden="true"></div>
+          <div class="small-label" id="sparkLabel" style="margin-top:8px"></div>
+        </div>
+        <div class="tools">
+          <input type="search" id="uq" placeholder="Name oder E-Mail suchen …" aria-label="Nutzer suchen" autocomplete="off">
+          <button class="btn2" type="button" id="reload">Neu laden</button>
+          <button class="btn2" type="button" id="csv">CSV exportieren</button>
+        </div>
+        <div class="tw"><table class="ut"><thead><tr><th>Name</th><th>E-Mail</th><th>Registriert</th><th>Letzte Anmeldung</th><th>Reisen</th><th>Status</th><th></th></tr></thead><tbody id="ubody"><tr><td colspan="7" class="empty">Lade Nutzer …</td></tr></tbody></table></div>
+        <p class="note"><b>Passwörter:</b> Supabase speichert Passwörter nur als nicht umkehrbaren Hash. Sie lassen sich von niemandem anzeigen, auch nicht von dir. Das ist Absicht und schützt deine Nutzer. Über „Passwort“ setzt du für ein Konto ein neues Passwort, das du dem Nutzer dann nennst.</p>
+      </section>
+
+      <section class="pane" id="p-site">
+        <div class="summary-grid" id="summaryGrid"></div>
+        <div class="panel">
+          <h3>Website-Status</h3>
+          <div id="moduleList" class="list"></div>
+          <button class="save-button" type="button" id="saveModules">Änderungen übernehmen</button>
+          <button class="save-button" type="button" id="exportCfg" style="margin-left:8px">config.json herunterladen</button>
+          <p class="login-hint">„Übernehmen“ gilt nur für diesen Browser. Damit alle Besucher die Änderung sehen, lädst du <b>config.json</b> herunter und ersetzt damit <b>data/config.json</b> im GitHub-Repository.</p>
+        </div>
+      </section>
+
+      <section class="pane" id="p-brand">
+        <div class="panel">
+          <h3>Allgemeine Einstellungen</h3>
+          <div class="mini-grid">
+            <div class="mini-card">
+              <div class="small-label">Akzentfarbe</div>
+              <input id="brandColor" type="color" value="#55e5d1" style="width:100%;margin-top:12px;height:42px;border:none;background:transparent;">
+            </div>
+            <div class="mini-card">
+              <div class="small-label">Footer</div>
+              <input id="brandFooter" type="text" value="Maritime Navigation Workspace · navtool.de" style="width:100%;margin-top:12px;padding:10px;border:1px solid rgba(85,229,209,.18);border-radius:10px;background:rgba(5,9,12,.8);color:var(--nt-text);">
+            </div>
+          </div>
+          <button class="save-button" type="button" id="saveBrand">Einstellungen übernehmen</button>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <dialog id="dEdit"><h3>Konto bearbeiten</h3>
+    <label>Name<input id="eName" maxlength="120" autocomplete="off"></label>
+    <label>E-Mail<input id="eMail" type="email" autocomplete="off"></label>
+    <p>Die neue E-Mail gilt sofort als bestätigt. Der Nutzer meldet sich danach mit der neuen Adresse an.</p>
+    <div class="dmsg" id="eMsg" role="alert"></div>
+    <div class="row"><button class="btn2" type="button" data-close>Abbrechen</button><button class="btn2" type="button" id="eSave" style="border-color:var(--nt-teal);color:var(--nt-teal)">Speichern</button></div>
+  </dialog>
+  <dialog id="dPass"><h3>Neues Passwort setzen</h3>
+    <p id="pWho"></p>
+    <label>Neues Passwort (mindestens 8 Zeichen)<input id="pNew" type="text" autocomplete="off" spellcheck="false"></label>
+    <div class="dmsg" id="pMsg" role="alert"></div>
+    <div class="row"><button class="btn2" type="button" data-close>Abbrechen</button><button class="btn2" type="button" id="pSave" style="border-color:var(--nt-teal);color:var(--nt-teal)">Passwort setzen</button></div>
+  </dialog>
+  <dialog id="dDel"><h3>Konto löschen?</h3>
+    <p id="dWho"></p>
+    <p>Das Konto samt Profil, Reisen, Favoriten und Kalkulationen wird endgültig aus der Datenbank gelöscht. Das lässt sich nicht rückgängig machen.</p>
+    <div class="dmsg" id="dMsg" role="alert"></div>
+    <div class="row"><button class="btn2" type="button" data-close>Abbrechen</button><button class="btn2 bad" type="button" id="dGo">Endgültig löschen</button></div>
+  </dialog>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+  <script src="/assets/supabase-config.js"></script>
+  <script src="/assets/navtool-global.js"></script>
+  <script src="admin.js"></script>
+</body>
+</html>

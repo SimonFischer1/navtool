@@ -1,0 +1,3624 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+>
+
+<title>Simon Fischer — Nautik · Technik · Entwicklung</title>
+
+<meta
+    name="description"
+    content="Simon Fischer — Nautik Student, Entwickler und Technikbegeisterter. Maritime Technologie, Programmierung, Forschung und digitale Projekte."
+>
+
+<style>
+
+/* =========================================================
+   ROOT
+========================================================= */
+
+:root{
+
+    --bg:#050708;
+    --bg2:#091014;
+
+    --card:rgba(10,18,22,.78);
+    --card2:rgba(13,24,29,.88);
+
+    --text:#edf7f8;
+
+    --muted:#8da1a7;
+    --muted2:#62757c;
+
+    --accent:#00e6c3;
+    --accent2:#00a994;
+
+    --accent-soft:rgba(0,230,195,.10);
+
+    --line:rgba(130,170,180,.16);
+    --line-strong:rgba(0,230,195,.32);
+
+    --shadow:0 30px 100px rgba(0,0,0,.45);
+
+}
+
+
+/* =========================================================
+   RESET
+========================================================= */
+
+*{
+    box-sizing:border-box;
+}
+
+
+html{
+
+    scroll-behavior:smooth;
+
+    background:var(--bg);
+
+}
+
+
+body{
+
+    margin:0;
+
+    min-height:100%;
+
+    background:
+
+        radial-gradient(
+            circle at 50% 10%,
+            rgba(0,230,195,.08),
+            transparent 32%
+        ),
+
+        radial-gradient(
+            circle at 80% 70%,
+            rgba(0,130,150,.07),
+            transparent 30%
+        ),
+
+        var(--bg);
+
+    color:var(--text);
+
+    font-family:
+        Inter,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        Roboto,
+        Arial,
+        sans-serif;
+
+    overflow-x:hidden;
+
+}
+
+
+a{
+    color:inherit;
+}
+
+
+/* =========================================================
+   BACKGROUND
+========================================================= */
+
+.background{
+
+    position:fixed;
+
+    inset:0;
+
+    overflow:hidden;
+
+    pointer-events:none;
+
+    z-index:0;
+
+}
+
+
+.grid{
+
+    position:absolute;
+
+    inset:-20%;
+
+    opacity:.22;
+
+    background-image:
+
+        linear-gradient(
+            rgba(100,150,160,.045) 1px,
+            transparent 1px
+        ),
+
+        linear-gradient(
+            90deg,
+            rgba(100,150,160,.045) 1px,
+            transparent 1px
+        );
+
+    background-size:70px 70px;
+
+    transform:
+        perspective(800px)
+        rotateX(58deg)
+        translateY(-5%);
+
+    transform-origin:center top;
+
+    animation:gridMove 20s linear infinite;
+
+}
+
+
+@keyframes gridMove{
+
+    from{
+        background-position:0 0;
+    }
+
+    to{
+        background-position:0 70px;
+    }
+
+}
+
+
+.orb{
+
+    position:absolute;
+
+    width:420px;
+    height:420px;
+
+    border-radius:50%;
+
+    background:
+
+        radial-gradient(
+            circle,
+            rgba(0,230,195,.07),
+            transparent 68%
+        );
+
+    filter:blur(5px);
+
+    animation:orbFloat 12s ease-in-out infinite;
+
+}
+
+
+.orb.one{
+
+    top:-180px;
+    left:-120px;
+
+}
+
+
+.orb.two{
+
+    right:-180px;
+    bottom:-150px;
+
+    animation-delay:-5s;
+
+}
+
+
+@keyframes orbFloat{
+
+    0%,100%{
+
+        transform:
+            translate(0,0)
+            scale(1);
+
+    }
+
+    50%{
+
+        transform:
+            translate(35px,-25px)
+            scale(1.08);
+
+    }
+
+}
+
+
+.noise{
+
+    position:absolute;
+
+    inset:0;
+
+    opacity:.025;
+
+    background-image:
+
+        repeating-linear-gradient(
+            0deg,
+            #fff 0,
+            #fff 1px,
+            transparent 1px,
+            transparent 3px
+        );
+
+    mix-blend-mode:overlay;
+
+}
+
+
+/* =========================================================
+   NAVIGATION
+========================================================= */
+
+nav{
+
+    position:fixed;
+
+    top:0;
+    left:0;
+    right:0;
+
+    z-index:50;
+
+    display:flex;
+
+    justify-content:center;
+
+    padding:
+        18px
+        max(20px,env(safe-area-inset-left))
+        18px
+        max(20px,env(safe-area-inset-right));
+
+    pointer-events:none;
+
+}
+
+
+.nav-inner{
+
+    width:min(1100px,100%);
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    padding:12px 15px;
+
+    border:1px solid var(--line);
+
+    border-radius:18px;
+
+    background:rgba(5,10,12,.72);
+
+    backdrop-filter:blur(18px);
+
+    -webkit-backdrop-filter:blur(18px);
+
+    box-shadow:
+        0 15px 50px rgba(0,0,0,.25);
+
+    pointer-events:auto;
+
+}
+
+
+.logo{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+
+    text-decoration:none;
+
+}
+
+
+.logo-mark{
+
+    width:35px;
+    height:35px;
+
+    display:flex;
+
+    align-items:center;
+    justify-content:center;
+
+    border:1px solid var(--line-strong);
+
+    border-radius:10px;
+
+    color:var(--accent);
+
+    font-family:monospace;
+
+    font-weight:bold;
+
+    background:var(--accent-soft);
+
+}
+
+
+.logo-text{
+
+    font-size:14px;
+
+    letter-spacing:2px;
+
+    font-weight:600;
+
+}
+
+
+.nav-links{
+
+    display:flex;
+
+    gap:5px;
+
+}
+
+
+.nav-links a{
+
+    padding:9px 12px;
+
+    border-radius:10px;
+
+    color:var(--muted);
+
+    text-decoration:none;
+
+    font-size:12px;
+
+    letter-spacing:1px;
+
+    transition:.25s ease;
+
+}
+
+
+.nav-links a:hover{
+
+    color:var(--text);
+
+    background:rgba(255,255,255,.05);
+
+}
+
+
+@media(max-width:650px){
+
+    .nav-links a{
+        display:none;
+    }
+
+    .nav-links a:last-child{
+        display:block;
+    }
+
+    .logo-text{
+        font-size:12px;
+    }
+
+}
+
+
+/* =========================================================
+   SECTIONS
+========================================================= */
+
+main{
+
+    position:relative;
+
+    z-index:1;
+
+}
+
+
+section{
+
+    min-height:100svh;
+
+    width:100%;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    padding:
+        110px
+        clamp(18px,5vw,80px);
+
+    position:relative;
+
+}
+
+
+/* =========================================================
+   HERO
+========================================================= */
+
+.hero{
+
+    text-align:center;
+
+    flex-direction:column;
+
+}
+
+
+.status{
+
+    display:inline-flex;
+
+    align-items:center;
+
+    gap:9px;
+
+    padding:9px 15px;
+
+    border:1px solid var(--line);
+
+    border-radius:100px;
+
+    color:var(--muted);
+
+    background:rgba(255,255,255,.025);
+
+    font-family:monospace;
+
+    font-size:11px;
+
+    letter-spacing:2px;
+
+    margin-bottom:30px;
+
+    animation:appear .8s ease both;
+
+}
+
+
+.status-dot{
+
+    width:7px;
+    height:7px;
+
+    border-radius:50%;
+
+    background:var(--accent);
+
+    box-shadow:0 0 15px var(--accent);
+
+    animation:pulseDot 2s ease-in-out infinite;
+
+}
+
+
+@keyframes pulseDot{
+
+    0%,100%{
+        opacity:.35;
+    }
+
+    50%{
+        opacity:1;
+    }
+
+}
+
+
+.hero h1{
+
+    margin:0;
+
+    max-width:1100px;
+
+    font-size:
+        clamp(
+            48px,
+            10vw,
+            145px
+        );
+
+    line-height:.88;
+
+    font-weight:700;
+
+    letter-spacing:-5px;
+
+    animation:appear 1s .1s ease both;
+
+}
+
+
+.hero h1 .accent{
+
+    color:var(--accent);
+
+    text-shadow:
+        0 0 40px rgba(0,230,195,.15);
+
+}
+
+
+.hero-sub{
+
+    max-width:720px;
+
+    margin-top:38px;
+
+    color:var(--muted);
+
+    font-size:
+        clamp(
+            17px,
+            2.3vw,
+            27px
+        );
+
+    line-height:1.6;
+
+    animation:appear 1s .2s ease both;
+
+}
+
+
+.hero-sub strong{
+
+    color:var(--text);
+
+    font-weight:500;
+
+}
+
+
+.scroll-indicator{
+
+    position:absolute;
+
+    bottom:30px;
+
+    left:50%;
+
+    transform:translateX(-50%);
+
+    color:#66777d;
+
+    font-family:monospace;
+
+    font-size:10px;
+
+    letter-spacing:6px;
+
+    animation:scrollPulse 2.4s ease-in-out infinite;
+
+}
+
+
+@keyframes scrollPulse{
+
+    0%,100%{
+
+        opacity:.25;
+
+        transform:
+            translateX(-50%)
+            translateY(0);
+
+    }
+
+    50%{
+
+        opacity:.9;
+
+        transform:
+            translateX(-50%)
+            translateY(7px);
+
+    }
+
+}
+
+
+@keyframes appear{
+
+    from{
+
+        opacity:0;
+
+        transform:translateY(25px);
+
+    }
+
+    to{
+
+        opacity:1;
+
+        transform:translateY(0);
+
+    }
+
+}
+
+
+/* =========================================================
+   ABOUT
+========================================================= */
+
+.about{
+
+    flex-direction:column;
+
+    text-align:center;
+
+}
+
+
+.section-label{
+
+    color:var(--accent);
+
+    font-family:monospace;
+
+    font-size:11px;
+
+    letter-spacing:4px;
+
+    margin-bottom:18px;
+
+    text-transform:uppercase;
+
+}
+
+
+.section-title{
+
+    margin:0;
+
+    font-size:
+        clamp(
+            34px,
+            6vw,
+            72px
+        );
+
+    font-weight:600;
+
+    letter-spacing:-2px;
+
+}
+
+
+.about-grid{
+
+    width:min(1050px,100%);
+
+    display:grid;
+
+    grid-template-columns:
+        repeat(3,1fr);
+
+    gap:18px;
+
+    margin-top:55px;
+
+}
+
+
+.info-card{
+
+    padding:28px;
+
+    min-height:220px;
+
+    border:1px solid var(--line);
+
+    border-radius:22px;
+
+    background:
+
+        linear-gradient(
+            145deg,
+            rgba(14,26,30,.75),
+            rgba(6,12,15,.72)
+        );
+
+    box-shadow:var(--shadow);
+
+    text-align:left;
+
+    transition:
+        transform .35s ease,
+        border-color .35s ease;
+
+    position:relative;
+
+    overflow:hidden;
+
+}
+
+
+.info-card::before{
+
+    content:"";
+
+    position:absolute;
+
+    width:130px;
+    height:130px;
+
+    top:-70px;
+    right:-50px;
+
+    border-radius:50%;
+
+    background:rgba(0,230,195,.08);
+
+    filter:blur(25px);
+
+}
+
+
+.info-card:hover{
+
+    transform:translateY(-7px);
+
+    border-color:var(--line-strong);
+
+}
+
+
+.card-icon{
+
+    color:var(--accent);
+
+    font-family:monospace;
+
+    font-size:25px;
+
+    margin-bottom:25px;
+
+}
+
+
+.info-card h3{
+
+    margin:0 0 12px;
+
+    font-size:20px;
+
+    font-weight:500;
+
+}
+
+
+.info-card p{
+
+    margin:0;
+
+    color:var(--muted);
+
+    line-height:1.7;
+
+    font-size:15px;
+
+}
+
+
+@media(max-width:800px){
+
+    .about-grid{
+
+        grid-template-columns:1fr;
+
+    }
+
+    .info-card{
+
+        min-height:auto;
+
+    }
+
+}
+
+
+/* =========================================================
+   SKILLS
+========================================================= */
+
+.skills{
+
+    flex-direction:column;
+
+    text-align:center;
+
+}
+
+
+.skills-wrap{
+
+    width:min(950px,100%);
+
+    margin-top:48px;
+
+    display:flex;
+
+    justify-content:center;
+
+    flex-wrap:wrap;
+
+    gap:12px;
+
+}
+
+
+.skill{
+
+    padding:14px 19px;
+
+    border:1px solid var(--line);
+
+    border-radius:12px;
+
+    background:rgba(255,255,255,.025);
+
+    color:#b9c9cc;
+
+    font-family:monospace;
+
+    font-size:13px;
+
+    letter-spacing:1px;
+
+    transition:.3s ease;
+
+}
+
+
+.skill:hover{
+
+    color:var(--accent);
+
+    border-color:var(--line-strong);
+
+    background:var(--accent-soft);
+
+    transform:translateY(-3px);
+
+}
+
+
+/* =========================================================
+   PROJEKTE
+========================================================= */
+
+.projects{
+
+    flex-direction:column;
+
+    text-align:center;
+
+}
+
+
+.projects-header{
+
+    max-width:800px;
+
+}
+
+
+.projects-header p{
+
+    color:var(--muted);
+
+    line-height:1.7;
+
+    margin-top:20px;
+
+}
+
+
+.project-grid{
+
+    width:min(1100px,100%);
+
+    display:grid;
+
+    grid-template-columns:
+        repeat(2,1fr);
+
+    gap:20px;
+
+    margin-top:50px;
+
+}
+
+
+/* =========================================================
+   STANDARD PROJECT
+========================================================= */
+
+.project{
+
+    position:relative;
+
+    display:flex;
+
+    flex-direction:column;
+
+    min-height:280px;
+
+    padding:30px;
+
+    border:1px solid var(--line);
+
+    border-radius:24px;
+
+    background:
+
+        linear-gradient(
+            145deg,
+            rgba(12,25,29,.88),
+            rgba(5,10,12,.92)
+        );
+
+    overflow:hidden;
+
+    text-decoration:none;
+
+    text-align:left;
+
+    box-shadow:
+        0 25px 70px rgba(0,0,0,.3);
+
+    transition:
+        transform .35s ease,
+        border-color .35s ease,
+        box-shadow .35s ease;
+
+}
+
+
+.project::before{
+
+    content:"";
+
+    position:absolute;
+
+    width:220px;
+    height:220px;
+
+    right:-90px;
+    top:-100px;
+
+    border-radius:50%;
+
+    background:
+
+        radial-gradient(
+            circle,
+            rgba(0,230,195,.12),
+            transparent 68%
+        );
+
+    transition:.5s ease;
+
+}
+
+
+.project:hover{
+
+    transform:translateY(-8px);
+
+    border-color:var(--line-strong);
+
+    box-shadow:
+        0 35px 90px rgba(0,0,0,.5);
+
+}
+
+
+.project:hover::before{
+
+    transform:scale(1.4);
+
+}
+
+
+.project-number{
+
+    color:var(--accent);
+
+    font-family:monospace;
+
+    font-size:11px;
+
+    letter-spacing:3px;
+
+}
+
+
+.project h3{
+
+    margin:
+        25px
+        0
+        10px;
+
+    font-size:27px;
+
+    font-weight:500;
+
+}
+
+
+.project p{
+
+    margin:0;
+
+    max-width:500px;
+
+    color:var(--muted);
+
+    line-height:1.65;
+
+    font-size:15px;
+
+}
+
+
+.project-bottom{
+
+    margin-top:auto;
+
+    padding-top:28px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    color:var(--muted2);
+
+    font-family:monospace;
+
+    font-size:11px;
+
+    letter-spacing:1px;
+
+}
+
+
+.project-arrow{
+
+    color:var(--accent);
+
+    font-size:20px;
+
+    transition:.3s ease;
+
+}
+
+
+.project:hover .project-arrow{
+
+    transform:translateX(7px);
+
+}
+
+
+/* =========================================================
+   NAVTOOL — PROJECT 01
+========================================================= */
+
+.project.navtool{
+
+    grid-column:1 / -1;
+
+    min-height:430px;
+
+    padding:
+        clamp(30px,5vw,55px);
+
+    border-color:
+        rgba(0,230,195,.30);
+
+    background:
+
+        radial-gradient(
+            circle at 85% 20%,
+            rgba(0,230,195,.12),
+            transparent 28%
+        ),
+
+        radial-gradient(
+            circle at 10% 90%,
+            rgba(0,130,150,.10),
+            transparent 32%
+        ),
+
+        linear-gradient(
+            145deg,
+            rgba(11,29,32,.96),
+            rgba(4,10,13,.97)
+        );
+
+    box-shadow:
+
+        0 35px 110px rgba(0,0,0,.5),
+
+        inset 0 1px 0 rgba(255,255,255,.035);
+
+}
+
+
+.project.navtool::after{
+
+    content:"";
+
+    position:absolute;
+
+    inset:1px;
+
+    border-radius:23px;
+
+    pointer-events:none;
+
+    background:
+
+        linear-gradient(
+            120deg,
+            transparent 0%,
+            rgba(0,230,195,.07) 45%,
+            transparent 70%
+        );
+
+    opacity:.6;
+
+}
+
+
+.navtool-top{
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    gap:20px;
+
+    position:relative;
+
+    z-index:2;
+
+}
+
+
+.navtool-badge{
+
+    display:inline-flex;
+
+    align-items:center;
+
+    gap:9px;
+
+    padding:8px 13px;
+
+    border-radius:100px;
+
+    border:1px solid var(--line-strong);
+
+    background:var(--accent-soft);
+
+    color:var(--accent);
+
+    font-family:monospace;
+
+    font-size:10px;
+
+    letter-spacing:2px;
+
+}
+
+
+.live-dot{
+
+    width:7px;
+    height:7px;
+
+    border-radius:50%;
+
+    background:var(--accent);
+
+    box-shadow:
+        0 0 12px var(--accent);
+
+    animation:pulseDot 2s infinite;
+
+}
+
+
+.navtool h3{
+
+    font-size:
+        clamp(
+            38px,
+            5vw,
+            58px
+        );
+
+    margin:
+        30px
+        0
+        15px;
+
+    letter-spacing:-2px;
+
+    position:relative;
+
+    z-index:2;
+
+}
+
+
+.navtool-description{
+
+    max-width:760px;
+
+    font-size:
+        clamp(
+            16px,
+            2vw,
+            20px
+        );
+
+    line-height:1.7;
+
+    color:#a8babc;
+
+    position:relative;
+
+    z-index:2;
+
+}
+
+
+.navtool-description strong{
+
+    color:var(--text);
+
+    font-weight:500;
+
+}
+
+
+.navtool-features{
+
+    display:grid;
+
+    grid-template-columns:
+        repeat(4,1fr);
+
+    gap:12px;
+
+    margin-top:35px;
+
+    position:relative;
+
+    z-index:2;
+
+}
+
+
+.navtool-feature{
+
+    padding:18px;
+
+    border:
+        1px solid
+        rgba(130,170,180,.13);
+
+    border-radius:15px;
+
+    background:
+        rgba(255,255,255,.025);
+
+    transition:.3s ease;
+
+}
+
+
+.navtool-feature:hover{
+
+    transform:translateY(-4px);
+
+    border-color:var(--line-strong);
+
+    background:rgba(0,230,195,.06);
+
+}
+
+
+.navtool-feature-icon{
+
+    color:var(--accent);
+
+    font-family:monospace;
+
+    font-size:18px;
+
+    margin-bottom:10px;
+
+}
+
+
+.navtool-feature strong{
+
+    display:block;
+
+    font-size:14px;
+
+    color:var(--text);
+
+    margin-bottom:5px;
+
+}
+
+
+.navtool-feature span{
+
+    display:block;
+
+    color:var(--muted2);
+
+    font-size:12px;
+
+    line-height:1.5;
+
+}
+
+
+.navtool-bottom{
+
+    margin-top:35px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    gap:20px;
+
+    position:relative;
+
+    z-index:3;
+
+}
+
+
+.navtool-link{
+
+    display:inline-flex;
+
+    align-items:center;
+
+    gap:12px;
+
+    padding:14px 20px;
+
+    border-radius:12px;
+
+    background:var(--accent);
+
+    color:#03100e;
+
+    font-family:monospace;
+
+    font-weight:bold;
+
+    text-decoration:none;
+
+    font-size:12px;
+
+    letter-spacing:1px;
+
+    transition:.3s ease;
+
+}
+
+
+.navtool-link:hover{
+
+    transform:translateY(-3px);
+
+    box-shadow:
+        0 12px 35px rgba(0,230,195,.22);
+
+}
+
+
+.navtool-url{
+
+    color:var(--muted2);
+
+    font-family:monospace;
+
+    font-size:11px;
+
+    letter-spacing:1px;
+
+}
+
+
+@media(max-width:850px){
+
+    .navtool-features{
+
+        grid-template-columns:
+            repeat(2,1fr);
+
+    }
+
+}
+
+
+@media(max-width:600px){
+
+    .project.navtool{
+
+        min-height:auto;
+
+        padding:25px;
+
+    }
+
+    .navtool-top{
+
+        align-items:flex-start;
+
+    }
+
+    .navtool-features{
+
+        grid-template-columns:1fr;
+
+    }
+
+    .navtool-bottom{
+
+        flex-direction:column;
+
+        align-items:flex-start;
+
+    }
+
+    .navtool-url{
+
+        display:none;
+
+    }
+
+}
+
+
+/* =========================================================
+   JENSEITS DER GLEICHUNG — PROJECT 02
+========================================================= */
+
+.project.book-feature{
+
+    grid-column:1 / -1;
+
+    min-height:350px;
+
+    padding:
+        clamp(30px,4vw,45px);
+
+    border-color:
+        rgba(130,170,180,.22);
+
+    background:
+
+        radial-gradient(
+            circle at 88% 18%,
+            rgba(0,230,195,.075),
+            transparent 30%
+        ),
+
+        linear-gradient(
+            145deg,
+            rgba(13,24,29,.94),
+            rgba(5,10,12,.96)
+        );
+
+    box-shadow:
+        0 30px 85px rgba(0,0,0,.38);
+
+}
+
+
+.project.book-feature::before{
+
+    width:280px;
+    height:280px;
+
+    right:-120px;
+    top:-130px;
+
+    background:
+
+        radial-gradient(
+            circle,
+            rgba(0,230,195,.09),
+            transparent 68%
+        );
+
+}
+
+
+.book-feature-top{
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    gap:20px;
+
+    position:relative;
+
+    z-index:2;
+
+}
+
+
+.book-label{
+
+    display:inline-flex;
+
+    align-items:center;
+
+    gap:9px;
+
+    padding:8px 13px;
+
+    border:1px solid var(--line);
+
+    border-radius:100px;
+
+    background:rgba(255,255,255,.025);
+
+    color:var(--muted);
+
+    font-family:monospace;
+
+    font-size:10px;
+
+    letter-spacing:2px;
+
+}
+
+
+.book-label-mark{
+
+    color:var(--accent);
+
+}
+
+
+.book-feature h3{
+
+    margin:
+        28px
+        0
+        14px;
+
+    font-size:
+        clamp(
+            32px,
+            4vw,
+            48px
+        );
+
+    font-weight:500;
+
+    letter-spacing:-1.5px;
+
+    position:relative;
+
+    z-index:2;
+
+}
+
+
+.book-description{
+
+    max-width:800px;
+
+    color:#a8babc;
+
+    font-size:
+        clamp(
+            15px,
+            1.8vw,
+            18px
+        );
+
+    line-height:1.75;
+
+    position:relative;
+
+    z-index:2;
+
+}
+
+
+.book-description strong{
+
+    color:var(--text);
+
+    font-weight:500;
+
+}
+
+
+.book-meta{
+
+    display:grid;
+
+    grid-template-columns:
+        repeat(3,1fr);
+
+    gap:12px;
+
+    margin-top:30px;
+
+    position:relative;
+
+    z-index:2;
+
+}
+
+
+.book-meta-item{
+
+    padding:16px 18px;
+
+    border:
+        1px solid
+        rgba(130,170,180,.12);
+
+    border-radius:14px;
+
+    background:
+        rgba(255,255,255,.022);
+
+}
+
+
+.book-meta-item strong{
+
+    display:block;
+
+    color:var(--text);
+
+    font-size:13px;
+
+    margin-bottom:5px;
+
+}
+
+
+.book-meta-item span{
+
+    display:block;
+
+    color:var(--muted2);
+
+    font-size:11px;
+
+    line-height:1.5;
+
+}
+
+
+.book-feature-bottom{
+
+    margin-top:30px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    gap:20px;
+
+    position:relative;
+
+    z-index:3;
+
+}
+
+
+.book-link{
+
+    display:inline-flex;
+
+    align-items:center;
+
+    gap:12px;
+
+    padding:13px 19px;
+
+    border:
+        1px solid
+        var(--line-strong);
+
+    border-radius:12px;
+
+    background:
+        var(--accent-soft);
+
+    color:var(--accent);
+
+    font-family:monospace;
+
+    font-size:11px;
+
+    font-weight:bold;
+
+    letter-spacing:1px;
+
+    transition:.3s ease;
+
+}
+
+
+.book-link:hover{
+
+    transform:translateY(-3px);
+
+    background:
+        rgba(0,230,195,.14);
+
+    box-shadow:
+        0 12px 35px rgba(0,230,195,.12);
+
+}
+
+
+.book-url{
+
+    color:var(--muted2);
+
+    font-family:monospace;
+
+    font-size:10px;
+
+    letter-spacing:1px;
+
+}
+
+
+@media(max-width:700px){
+
+    .project.book-feature{
+
+        grid-column:auto;
+
+        min-height:auto;
+
+        padding:25px;
+
+    }
+
+    .book-meta{
+
+        grid-template-columns:1fr;
+
+    }
+
+    .book-feature-bottom{
+
+        flex-direction:column;
+
+        align-items:flex-start;
+
+    }
+
+    .book-url{
+
+        display:none;
+
+    }
+
+}
+
+
+/* =========================================================
+   RESPONSIVE PROJEKTE
+========================================================= */
+
+@media(max-width:750px){
+
+    .project-grid{
+
+        grid-template-columns:1fr;
+
+    }
+
+    .project.navtool{
+
+        grid-column:auto;
+
+    }
+
+}
+
+
+/* =========================================================
+   SOCIAL
+========================================================= */
+
+.social{
+
+    flex-direction:column;
+
+    text-align:center;
+
+}
+
+
+.social-text{
+
+    max-width:700px;
+
+    color:var(--muted);
+
+    line-height:1.7;
+
+    margin:22px auto 40px;
+
+}
+
+
+.social-links{
+
+    display:flex;
+
+    gap:15px;
+
+    justify-content:center;
+
+    flex-wrap:wrap;
+
+}
+
+
+.social-link{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+
+    padding:15px 22px;
+
+    border:1px solid var(--line);
+
+    border-radius:14px;
+
+    background:rgba(255,255,255,.025);
+
+    text-decoration:none;
+
+    color:var(--text);
+
+    font-size:14px;
+
+    transition:.3s ease;
+
+}
+
+
+.social-link:hover{
+
+    border-color:var(--line-strong);
+
+    background:var(--accent-soft);
+
+    transform:translateY(-4px);
+
+}
+
+
+.social-icon{
+
+    width:25px;
+    height:25px;
+
+    display:flex;
+
+    align-items:center;
+    justify-content:center;
+
+    border-radius:7px;
+
+    color:var(--accent);
+
+    font-weight:bold;
+
+    font-family:Arial;
+
+}
+
+
+/* =========================================================
+   INSTAGRAM SVG
+========================================================= */
+
+.instagram-svg{
+
+    width:24px;
+    height:24px;
+
+    display:block;
+
+    fill:none;
+
+    stroke:currentColor;
+
+    stroke-width:1.8;
+
+    stroke-linecap:round;
+
+    stroke-linejoin:round;
+
+}
+
+
+/* =========================================================
+   CTA
+========================================================= */
+
+.cta{
+
+    min-height:70svh;
+
+    flex-direction:column;
+
+    text-align:center;
+
+}
+
+
+.cta-box{
+
+    width:min(850px,100%);
+
+    padding:
+        clamp(35px,6vw,70px);
+
+    border:1px solid var(--line-strong);
+
+    border-radius:28px;
+
+    background:
+
+        radial-gradient(
+            circle at 50% 0%,
+            rgba(0,230,195,.09),
+            transparent 50%
+        ),
+
+        rgba(7,15,18,.8);
+
+    box-shadow:
+        0 40px 120px rgba(0,0,0,.45);
+
+}
+
+
+.cta-box h2{
+
+    margin:0;
+
+    font-size:
+        clamp(
+            35px,
+            6vw,
+            70px
+        );
+
+    letter-spacing:-2px;
+
+}
+
+
+.cta-box p{
+
+    color:var(--muted);
+
+    line-height:1.7;
+
+    max-width:600px;
+
+    margin:25px auto 0;
+
+}
+
+
+/* =========================================================
+   FOOTER
+========================================================= */
+
+footer{
+
+    position:relative;
+
+    z-index:2;
+
+    text-align:center;
+
+    padding:
+        55px 20px
+        calc(
+            55px +
+            env(safe-area-inset-bottom)
+        );
+
+    border-top:1px solid var(--line);
+
+    background:rgba(3,7,9,.5);
+
+}
+
+
+.footer-social{
+
+    display:flex;
+
+    justify-content:center;
+
+    gap:10px;
+
+    margin-bottom:28px;
+
+}
+
+
+.footer-social a{
+
+    width:42px;
+    height:42px;
+
+    display:flex;
+
+    align-items:center;
+    justify-content:center;
+
+    border:1px solid var(--line);
+
+    border-radius:12px;
+
+    color:var(--muted);
+
+    text-decoration:none;
+
+    font-weight:bold;
+
+    transition:.3s ease;
+
+}
+
+
+.footer-social a:hover{
+
+    color:var(--accent);
+
+    border-color:var(--line-strong);
+
+    transform:translateY(-3px);
+
+}
+
+
+.footer-instagram{
+
+    width:21px;
+    height:21px;
+
+    fill:none;
+
+    stroke:currentColor;
+
+    stroke-width:1.8;
+
+    stroke-linecap:round;
+
+    stroke-linejoin:round;
+
+}
+
+
+.made{
+
+    color:var(--muted2);
+
+    font-family:monospace;
+
+    font-size:12px;
+
+    letter-spacing:2px;
+
+}
+
+
+.made a{
+
+    color:var(--text);
+
+    text-decoration:none;
+
+    transition:.25s ease;
+
+}
+
+
+.made a:hover{
+
+    color:var(--accent);
+
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media(max-width:600px){
+
+    section{
+
+        padding:
+            105px
+            17px
+            90px;
+
+    }
+
+
+    .hero{
+
+        min-height:100svh;
+
+    }
+
+
+    .hero h1{
+
+        font-size:
+            clamp(
+                48px,
+                15vw,
+                80px
+            );
+
+        letter-spacing:-2px;
+
+    }
+
+
+    .hero-sub{
+
+        font-size:17px;
+
+        line-height:1.55;
+
+        margin-top:28px;
+
+    }
+
+
+    .section-title{
+
+        letter-spacing:-1px;
+
+    }
+
+
+    .skills-wrap{
+
+        gap:8px;
+
+    }
+
+
+    .skill{
+
+        padding:12px 14px;
+
+        font-size:11px;
+
+    }
+
+
+    .project{
+
+        min-height:250px;
+
+        padding:24px;
+
+        border-radius:20px;
+
+    }
+
+
+    .project h3{
+
+        font-size:24px;
+
+    }
+
+
+    .social-links{
+
+        width:100%;
+
+    }
+
+
+    .social-link{
+
+        width:min(320px,100%);
+
+        justify-content:center;
+
+    }
+
+}
+
+
+/* =========================================================
+   REDUCED MOTION
+========================================================= */
+
+@media(prefers-reduced-motion:reduce){
+
+    html{
+
+        scroll-behavior:auto;
+
+    }
+
+
+    *,
+
+    *::before,
+
+    *::after{
+
+        animation-duration:.01ms !important;
+
+        animation-iteration-count:1 !important;
+
+        transition-duration:.01ms !important;
+
+    }
+
+}
+
+
+/* ===== NEU: Kompass, Meer, Icons, Quicklinks ===== */
+.rose{position:absolute;z-index:-1;right:max(2%,0px);top:50%;transform:translateY(-50%);width:min(34vw,440px);color:#8da1a7;opacity:.5;pointer-events:none}
+.rose .ring{transform-origin:200px 200px;animation:roseSpin 90s linear infinite}
+.rose .needle{transform-origin:200px 200px;transition:transform .6s cubic-bezier(.3,1.4,.5,1);animation:needleSway 6s ease-in-out infinite}
+@keyframes roseSpin{to{transform:rotate(360deg)}}
+@keyframes needleSway{50%{rotate:6deg}}
+.scroll-indicator{bottom:115px!important}
+.sea{position:absolute;left:0;right:0;bottom:0;height:110px;overflow:hidden;pointer-events:none}
+.sea svg.w{position:absolute;bottom:0;left:0;width:2400px;height:80px;color:var(--accent)}
+.sea .w1{opacity:.10;animation:waveDrift 14s linear infinite}
+.sea .w2{opacity:.22;height:56px;animation:waveDrift 9s linear infinite}
+@keyframes waveDrift{to{transform:translateX(-600px)}}
+.boat{position:absolute;bottom:34px;left:-80px;width:60px;color:var(--text);animation:boatCruise 30s linear infinite}
+.boat svg{width:60px;height:auto;transform-origin:center bottom;animation:boatBob 3s ease-in-out infinite}
+@keyframes boatCruise{to{left:calc(100% + 80px)}}
+@keyframes boatBob{50%{transform:rotate(-4deg) translateY(3px)}}
+.ico{width:34px;height:34px;fill:none;stroke:var(--accent);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:140;stroke-dashoffset:0}
+.navtool-feature .ico{margin-bottom:10px}
+.card-icon .ico{width:38px;height:38px}
+.pre{opacity:0;transform:translateY(12px)}
+.pre.in{opacity:1;transform:none}
+.pre .ico{stroke-dashoffset:140}
+.pre.in .ico{animation:icoDraw 1.4s .15s ease forwards}
+@keyframes icoDraw{to{stroke-dashoffset:0}}
+.navtool-features{grid-template-columns:repeat(4,1fr)}
+@media(max-width:800px){.navtool-features{grid-template-columns:repeat(2,1fr)}.rose{width:84vw;opacity:.16;right:50%;transform:translate(50%,-50%)}}
+.fab{position:fixed;z-index:60;right:max(18px,env(safe-area-inset-right));bottom:max(18px,env(safe-area-inset-bottom));display:flex;align-items:center;gap:8px;padding:13px 20px;border:1px solid var(--line-strong);border-radius:100px;background:rgba(5,10,12,.8);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);color:var(--accent);font:600 13px/1 monospace;letter-spacing:2px;cursor:pointer;box-shadow:0 10px 40px rgba(0,0,0,.4);transition:.25s ease}
+.fab:hover{background:var(--accent-soft);transform:translateY(-3px)}
+.fab svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}
+.sheet{position:fixed;inset:0;z-index:80;display:none;align-items:flex-end;justify-content:center;background:rgba(0,0,0,.6);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.sheet.open{display:flex}
+.panel{width:min(460px,100%);padding:24px 22px calc(24px + env(safe-area-inset-bottom));border:1px solid var(--line-strong);border-bottom:0;border-radius:26px 26px 0 0;background:var(--bg2);animation:panelUp .3s ease-out}
+@keyframes panelUp{from{transform:translateY(50px);opacity:0}}
+.panel h2{margin:0 0 4px;font-size:26px;font-weight:600;letter-spacing:-1px}
+.panel .x{float:right;background:none;border:0;color:var(--muted);font-size:30px;line-height:1;cursor:pointer}
+.ql{display:flex;align-items:center;gap:14px;margin-top:10px;padding:12px 14px;border:1px solid var(--line);border-radius:16px;background:rgba(255,255,255,.025);color:var(--text);text-decoration:none;font-weight:600;font-size:15px;transition:.25s ease}
+.ql:hover{border-color:var(--line-strong);background:var(--accent-soft);transform:translateX(4px)}
+.ql i{width:40px;height:40px;flex:none;display:grid;place-items:center;border:1px solid var(--line-strong);border-radius:12px;background:var(--accent-soft);color:var(--accent);font:700 13px monospace;font-style:normal}
+.ql small{display:block;margin-top:2px;color:var(--muted);font-weight:400;font-size:12px}
+</style>
+
+</head>
+
+
+<body>
+
+
+<div class="background" aria-hidden="true">
+
+    <div class="grid"></div>
+
+    <div class="orb one"></div>
+
+    <div class="orb two"></div>
+
+    <div class="noise"></div>
+
+</div>
+
+
+<!-- =======================================================
+     NAVIGATION
+======================================================= -->
+
+<nav>
+
+    <div class="nav-inner">
+
+        <a href="#home" class="logo">
+
+            <div class="logo-mark">
+                SF
+            </div>
+
+            <div class="logo-text">
+                SIMON FISCHER
+            </div>
+
+        </a>
+
+
+        <div class="nav-links">
+
+            <a href="#about">
+                ÜBER MICH
+            </a>
+
+            <a href="#skills">
+                SKILLS
+            </a>
+
+            <a href="#projects">
+                PROJEKTE
+            </a>
+
+            <a href="#contact">
+                KONTAKT
+            </a>
+
+        </div>
+
+    </div>
+
+</nav>
+
+
+<main>
+
+
+<!-- =======================================================
+     HERO
+======================================================= -->
+
+<section class="hero" id="home">
+<svg class="rose" viewBox="0 0 400 400" aria-hidden="true">
+<g class="ring" fill="none" stroke="currentColor"><circle cx="200" cy="200" r="186" stroke-width="1.5" opacity=".5"/><circle cx="200" cy="200" r="170" stroke-width="10" stroke-dasharray="1.5 13.4" opacity=".35"/></g>
+<circle cx="200" cy="200" r="140" fill="none" stroke="currentColor" stroke-width="1" opacity=".25"/>
+<g fill="currentColor" font-family="sans-serif" font-weight="700" font-size="22" text-anchor="middle"><text x="200" y="38" fill="#00e6c3">N</text><text x="200" y="378">S</text><text x="370" y="208">O</text><text x="30" y="208">W</text></g>
+<path d="M200 70 L214 186 L330 200 L214 214 L200 330 L186 214 L70 200 L186 186Z" fill="none" stroke="currentColor" stroke-width="1.5" opacity=".6"/>
+<g class="needle" id="needle"><path d="M200 60 L212 200 L188 200Z" fill="#00e6c3"/><path d="M200 340 L212 200 L188 200Z" fill="currentColor" opacity=".35"/></g>
+<circle cx="200" cy="200" r="7" fill="#050708" stroke="currentColor" stroke-width="2"/></svg>
+
+
+    <div class="status">
+
+        <span class="status-dot"></span>
+
+        NAUTIK · TECHNIK · ENTWICKLUNG
+
+    </div>
+
+
+    <h1>
+
+        SIMON<br>
+
+        <span class="accent">
+            FISCHER
+        </span>
+
+    </h1>
+
+
+    <div class="hero-sub">
+
+        Nautik Student.
+        Entwickler.
+        Technikbegeistert.
+
+        <br><br>
+
+        Ich verbinde
+
+        <strong>
+            Maritime Technologie
+        </strong>,
+
+        Programmierung und praktische Entwicklung,
+
+        um aus Ideen funktionierende Projekte zu machen.
+
+    </div>
+
+
+    <div class="sea" aria-hidden="true">
+<svg class="w w1" viewBox="0 0 2400 80" preserveAspectRatio="none"><path fill="currentColor" d="M0 40q150-40 300 0t300 0 300 0 300 0 300 0 300 0 300 0 300 0V80H0z"/></svg>
+<div class="boat"><svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"><path d="M32 6v40M32 8c10 8 16 20 18 34H32zM30 16C22 24 17 33 15 42h15zM8 48h48l-8 10H16z"/></svg></div>
+<svg class="w w2" viewBox="0 0 2400 80" preserveAspectRatio="none"><path fill="currentColor" d="M0 40q150 40 300 0t300 0 300 0 300 0 300 0 300 0 300 0 300 0V80H0z"/></svg>
+</div>
+<div class="scroll-indicator">
+        SCROLL ···
+    </div>
+
+</section>
+
+
+<!-- =======================================================
+     ABOUT
+======================================================= -->
+
+<section class="about" id="about">
+
+    <div class="section-label">
+        01 · ABOUT
+    </div>
+
+
+    <h2 class="section-title">
+
+        Zwischen Brücke<br>
+        und Code.
+
+    </h2>
+
+
+    <div class="about-grid">
+
+
+        <div class="info-card">
+
+            <div class="card-icon"><svg class="ico" viewBox="0 0 34 34"><path d="M17 4v22M10 12h14M6 20a11 11 0 0 0 22 0M17 4m-2 0a2 2 0 1 0 4 0a2 2 0 1 0-4 0"/></svg></div>
+
+            <h3>
+                Nautik
+            </h3>
+
+            <p>
+
+                Als Nautik Student beschäftige ich mich
+                mit Navigation, Schifffahrt und den
+                technischen Systemen, die moderne
+                maritime Anwendungen möglich machen.
+
+            </p>
+
+        </div>
+
+
+        <div class="info-card">
+
+            <div class="card-icon"><svg class="ico" viewBox="0 0 34 34"><path d="M13 4h8M15 4v10L7 28a2 2 0 0 0 2 3h16a2 2 0 0 0 2-3l-8-14V4M11 22h12"/></svg></div>
+
+            <h3>
+                Forschung
+            </h3>
+
+            <p>
+
+                Neben meinem Studium arbeite ich an der
+                Hochschule und bin in ein Forschungsprojekt
+                eingebunden. Dabei entstehen praktische
+                Lösungen und neue technische Ansätze.
+
+            </p>
+
+        </div>
+
+
+        <div class="info-card">
+
+            <div class="card-icon"><svg class="ico" viewBox="0 0 34 34"><path d="M12 10L5 17l7 7M22 10l7 7-7 7M19 6l-4 22"/></svg></div>
+
+            <h3>
+                Entwicklung
+            </h3>
+
+            <p>
+
+                Programmieren, 3D-Druck, Elektronik und
+                digitale Werkzeuge gehören zu meinen
+                persönlichen Projekten und meiner
+                täglichen Experimentierfläche.
+
+            </p>
+
+        </div>
+
+
+    </div>
+
+</section>
+
+
+<!-- =======================================================
+     SKILLS
+======================================================= -->
+
+<section class="skills" id="skills">
+
+    <div class="section-label">
+        02 · SKILLS
+    </div>
+
+
+    <h2 class="section-title">
+        Werkzeuge & Technologien
+    </h2>
+
+
+    <div class="skills-wrap">
+
+        <div class="skill">
+            HTML5
+        </div>
+
+        <div class="skill">
+            CSS3
+        </div>
+
+        <div class="skill">
+            JavaScript
+        </div>
+
+        <div class="skill">
+            Google
+        </div>
+
+        <div class="skill">
+            Arduino
+        </div>
+
+        <div class="skill">
+            FreeCAD
+        </div>
+
+        <div class="skill">
+            Creality Slicer
+        </div>
+
+        <div class="skill">
+            PrusaSlicer
+        </div>
+
+        <div class="skill">
+            OpenCPN
+        </div>
+
+        <div class="skill">
+            3D PRINTING
+        </div>
+
+        <div class="skill">
+            MARITIME TECHNOLOGY
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =======================================================
+     PROJEKTE
+======================================================= -->
+
+<section class="projects" id="projects">
+
+    <div class="projects-header">
+
+        <div class="section-label">
+            03 · PROJECTS
+        </div>
+
+        <h2 class="section-title">
+            Was gerade entsteht.
+        </h2>
+
+        <p>
+
+            Von kleinen Experimenten bis zu vollständigen
+            Webprojekten. Hier findest du eine Auswahl meiner
+            bisherigen Entwicklungen und persönlichen Projekte.
+
+        </p>
+
+    </div>
+
+
+    <div class="project-grid">
+
+
+        <!-- =================================================
+             PROJECT 01 — NAVTOOL
+        ================================================== -->
+
+        <a
+            class="project navtool"
+            href="http://navtool.de"
+            target="_blank"
+            rel="noopener noreferrer"
+        >
+
+            <div class="navtool-top">
+
+                <span class="navtool-badge">
+
+                    <span class="live-dot"></span>
+
+                    FEATURED PROJECT
+
+                </span>
+
+
+                <span class="project-number">
+                    PROJECT 01
+                </span>
+
+            </div>
+
+
+            <h3>
+                NavTool
+            </h3>
+
+
+            <p class="navtool-description">
+
+                Eine umfassende digitale Plattform für
+
+                <strong>
+                    maritime Navigation, Wetter und
+                    navigatorische Berechnungen
+                </strong>.
+
+                NavTool verbindet verschiedene praktische
+                Werkzeuge an einem Ort und soll damit
+                insbesondere für die maritime Anwendung
+                eine zentrale digitale Unterstützung bieten.
+
+            </p>
+
+
+            <div class="navtool-features">
+<div class="navtool-feature"><svg class="ico" viewBox="0 0 34 34"><path d="M5 12h16a4 4 0 1 0-4-4M5 18h22a4 4 0 1 1-4 4M5 24h10"/></svg><strong>Wetter &amp; Charts</strong><span>Aktuelles Wetter, wahrer Wind, Beaufort, Wellen.</span></div>
+<div class="navtool-feature"><svg class="ico" viewBox="0 0 34 34"><path d="M4 8l9-3 8 3 9-3v21l-9 3-8-3-9 3zM13 5v21M21 8v21"/></svg><strong>Karte &amp; Ice Charts</strong><span>Seekarte, Orientierung und Eisdaten.</span></div>
+<div class="navtool-feature"><svg class="ico" viewBox="0 0 34 34"><rect x="7" y="4" width="20" height="26" rx="3"/><path d="M11 10h12M12 17h2M17 17h2M22 17h1M12 23h2M17 23h2M22 23h1"/></svg><strong>Rechner</strong><span>Kompassfehler, Kimmtiefe und mehr, mit PDF.</span></div>
+<div class="navtool-feature"><svg class="ico" viewBox="0 0 34 34"><path d="M17 4l13 24H4zM17 14v7M17 25v.5"/></svg><strong>COLREG</strong><span>Regeln, Lichter, Tonnen, Schallsignale.</span></div>
+<div class="navtool-feature"><svg class="ico" viewBox="0 0 34 34"><path d="M17 17v13M12 30h10M9 11a11 11 0 0 1 16 0M13 14a6 6 0 0 1 8 0"/><circle cx="17" cy="17" r="1.5"/></svg><strong>NAVTEX</strong><span>Meldungen auf der Karte.</span></div>
+<div class="navtool-feature"><svg class="ico" viewBox="0 0 34 34"><circle cx="17" cy="17" r="5"/><circle cx="17" cy="17" r="13"/><path d="M17 4v8M17 22v8M4 17h8M22 17h8"/></svg><strong>Simulator</strong><span>Ruder, Kreiselkompass, Maschinentelegraf.</span></div>
+<div class="navtool-feature"><svg class="ico" viewBox="0 0 34 34"><path d="M6 6h9a3 3 0 0 1 3 3v19a3 3 0 0 0-3-3H6zM28 6h-9a3 3 0 0 0-1 .2M28 6v19h-10"/></svg><strong>Dictionary</strong><span>Nautik-Lexikon, Deutsch und Englisch.</span></div>
+<div class="navtool-feature"><svg class="ico" viewBox="0 0 34 34"><rect x="10" y="3" width="14" height="28" rx="3"/><path d="M15 27h4"/></svg><strong>Offline-App</strong><span>Für iPhone und iPad.</span></div>
+</div>
+
+<div class="navtool-bottom">
+
+                <span class="navtool-link">
+
+                    NAVTOOL ÖFFNEN
+
+                    <span>
+                        →
+                    </span>
+
+                </span>
+
+
+                <span class="navtool-url">
+                    NAVTOOL.DE
+                </span>
+
+            </div>
+
+        </a>
+
+
+        <!-- =================================================
+             PROJECT 02 — JENSEITS DER GLEICHUNG
+        ================================================== -->
+
+        <a
+            class="project book-feature"
+            href="https://simonfischer1.github.io/try/"
+            target="_blank"
+            rel="noopener noreferrer"
+        >
+
+            <div class="book-feature-top">
+
+                <span class="book-label">
+
+                    <span class="book-label-mark">
+                        ◇
+                    </span>
+
+                    LITERATUR · ROMAN · BIOGRAFISCHE ERZÄHLUNG
+
+                </span>
+
+
+                <span class="project-number">
+                    PROJECT 02
+                </span>
+
+            </div>
+
+
+            <h3>
+                Jenseits der Gleichung
+            </h3>
+
+
+            <p class="book-description">
+
+                <strong>
+                    Ein eigenes Romanprojekt, das Literatur
+                    und Biografische Erzählung miteinander verbindet.
+                </strong>
+
+                Eine biografisch inspirierte Erzählung über Autismus, Selbstfindung und den eigenen Lebensweg
+
+            </p>
+
+
+            <div class="book-meta">
+
+
+                <div class="book-meta-item">
+
+                    <strong>
+                        Roman
+                    </strong>
+
+                    <span>
+                        Eigene literarische Erzählung
+                        und fortlaufendes Buchprojekt.
+                    </span>
+
+                </div>
+
+
+                <div class="book-meta-item">
+
+                    <strong>
+                        Biografisch inspiriert
+                    </strong>
+
+                    <span>
+                        Es geruht auf einer wahren Geschichte!
+                    </span>
+
+                </div>
+
+
+            </div>
+
+
+            <div class="book-feature-bottom">
+
+                <span class="book-link">
+
+                    JENSEITS DER GLEICHUNG ÖFFNEN
+
+                    <span>
+                        →
+                    </span>
+
+                </span>
+
+
+                <span class="book-url">
+                    SIMONFISCHER1.GITHUB.IO/TRY/
+                </span>
+
+            </div>
+
+        </a>
+
+
+        <!-- =================================================
+             PROJECT 03 — KASSENSYSTEM
+        ================================================== -->
+
+        <a
+            class="project"
+            href="https://simonfischer1.github.io/cash/"
+            target="_blank"
+            rel="noopener noreferrer"
+        >
+
+            <span class="project-number">
+                PROJECT 03
+            </span>
+
+
+            <h3>
+                Kassensystem
+            </h3>
+
+
+            <p>
+
+                Ein webbasiertes Kassensystem mit einer
+                übersichtlichen Oberfläche und Fokus auf
+                einfache Bedienung.
+
+            </p>
+
+
+            <div class="project-bottom">
+
+                <span>
+                    WEB · JAVASCRIPT
+                </span>
+
+                <span class="project-arrow">
+                    →
+                </span>
+
+            </div>
+
+        </a>
+
+
+        <!-- =================================================
+             PROJECT 04 — GYM25
+        ================================================== -->
+
+        <a
+            class="project"
+            href="https://simonfischer1.github.io/gym1/"
+            target="_blank"
+            rel="noopener noreferrer"
+        >
+
+            <span class="project-number">
+                PROJECT 04
+            </span>
+
+
+            <h3>
+                Gym25
+            </h3>
+
+
+            <p>
+
+                Eine interaktive Website rund um Training,
+                Fitness und Organisation.
+
+            </p>
+
+
+            <div class="project-bottom">
+
+                <span>
+                    WEB · UI
+                </span>
+
+                <span class="project-arrow">
+                    →
+                </span>
+
+            </div>
+
+        </a>
+
+
+        <!-- =================================================
+             PROJECT 05 — DEPOT
+        ================================================== -->
+
+        <a
+            class="project"
+            href="https://simonfischer1.github.io/depot/"
+            target="_blank"
+            rel="noopener noreferrer"
+        >
+
+            <span class="project-number">
+                PROJECT 05
+            </span>
+
+
+            <h3>
+                Depot
+            </h3>
+
+
+            <p>
+
+                Eine interaktive Finanzübersicht mit
+                Portfolio-Tracking, Kursdaten, Charts
+                und Berechnungen.
+
+            </p>
+
+
+            <div class="project-bottom">
+
+                <span>
+                    FINANCE · DATA
+                </span>
+
+                <span class="project-arrow">
+                    →
+                </span>
+
+            </div>
+
+        </a>
+
+
+        <!-- =================================================
+             PROJECT 06 — STUDENTENWOHNHEIM
+        ================================================== -->
+
+        <a
+            class="project"
+            href="https://simonfischer1.github.io/flagge/"
+            target="_blank"
+            rel="noopener noreferrer"
+        >
+
+            <span class="project-number">
+                PROJECT 06
+            </span>
+
+
+            <h3>
+                Studentenwohnheim
+            </h3>
+
+
+            <p>
+
+                Eine interaktive Website für das
+                Studentenwohnheim FlaggeWest in Elsfleth
+                mit eigener visueller Identität.
+
+            </p>
+
+
+            <div class="project-bottom">
+
+                <span>
+                    WEBSITE · DESIGN
+                </span>
+
+                <span class="project-arrow">
+                    →
+                </span>
+
+            </div>
+
+        </a>
+
+
+        <!-- =================================================
+             PROJECT 07 — THRILLER
+        ================================================== -->
+
+        <a
+            class="project"
+            href="https://simonfischer1.github.io/book/"
+            target="_blank"
+            rel="noopener noreferrer"
+        >
+
+            <span class="project-number">
+                PROJECT 07
+            </span>
+
+
+            <h3>
+                Thriller · Buchprojekt
+            </h3>
+
+
+            <p>
+
+                Ein weiteres Buchprojekt, das sich aktuell
+                in Entwicklung befindet.
+
+                Eine digitale Präsentation für einen
+                geplanten Thriller und eine zukünftige
+                Veröffentlichung.
+
+            </p>
+
+
+            <div class="project-bottom">
+
+                <span>
+                    BOOK · DESIGN
+                </span>
+
+                <span class="project-arrow">
+                    →
+                </span>
+
+            </div>
+
+        </a>
+
+
+        <!-- =================================================
+             PROJECT 08 — WEITERE PROJEKTE
+        ================================================== -->
+
+        <div
+            class="project"
+            style="cursor:default;"
+        >
+
+            <span class="project-number">
+                PROJECT 08
+            </span>
+
+
+            <h3>
+                Weitere Projekte
+            </h3>
+
+
+            <p>
+
+                Das war erst der Anfang.
+
+                Weitere Ideen, Experimente und
+                Entwicklungen folgen.
+
+            </p>
+
+
+            <div class="project-bottom">
+
+                <span>
+                    IN DEVELOPMENT
+                </span>
+
+                <span class="project-arrow">
+                    +
+                </span>
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+</section>
+
+
+<!-- =======================================================
+     SOCIAL
+======================================================= -->
+
+<section class="social" id="contact">
+
+    <div class="section-label">
+        04 · CONNECT
+    </div>
+
+
+    <h2 class="section-title">
+        Lass uns verbunden bleiben.
+    </h2>
+
+
+    <p class="social-text">
+
+        Ob Nautik, Technik, Programmierung oder eines meiner
+        Projekte – wenn du sehen möchtest, woran ich gerade
+        arbeite, findest du mich auch auf meinen Profilen.
+
+    </p>
+
+
+    <div class="social-links">
+
+
+        <!-- INSTAGRAM -->
+
+        <a
+            class="social-link"
+            href="https://www.instagram.com/thesimonfischer"
+            target="_blank"
+            rel="noopener noreferrer"
+        >
+
+            <span class="social-icon">
+
+                <svg
+                    class="instagram-svg"
+                    viewBox="0 0 24 24"
+                    aria-hidden="true"
+                >
+
+                    <rect
+                        x="3"
+                        y="3"
+                        width="18"
+                        height="18"
+                        rx="5"
+                    />
+
+                    <circle
+                        cx="12"
+                        cy="12"
+                        r="4.2"
+                    />
+
+                    <circle
+                        cx="17.4"
+                        cy="6.7"
+                        r="1"
+                        fill="currentColor"
+                        stroke="none"
+                    />
+
+                </svg>
+
+            </span>
+
+            Instagram
+
+        </a>
+
+
+        <!-- LINKEDIN -->
+
+        <a
+            class="social-link"
+            href="https://www.linkedin.com/in/simon-luca-fischer-5b88013bb/"
+            target="_blank"
+            rel="noopener noreferrer"
+        >
+
+            <span class="social-icon">
+                in
+            </span>
+
+            LinkedIn
+
+        </a>
+
+
+    </div>
+
+</section>
+
+
+<!-- =======================================================
+     CTA
+======================================================= -->
+
+<section class="cta">
+
+    <div class="cta-box">
+
+        <div class="section-label">
+            NEXT PROJECT
+        </div>
+
+
+        <h2>
+
+            Die nächste Idee<br>
+            wartet schon.
+
+        </h2>
+
+
+        <p>
+
+            Diese Website wird mit jedem neuen Projekt
+            weiter wachsen.
+
+            Neue Entwicklungen, Experimente und Ideen
+            kommen hinzu.
+
+        </p>
+
+    </div>
+
+</section>
+
+
+</main>
+
+
+<!-- =======================================================
+     FOOTER
+======================================================= -->
+
+<footer>
+
+
+    <div class="footer-social">
+
+
+        <!-- INSTAGRAM -->
+
+        <a
+            href="https://www.instagram.com/thesimonfischer"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Instagram"
+        >
+
+            <svg
+                class="footer-instagram"
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+            >
+
+                <rect
+                    x="3"
+                    y="3"
+                    width="18"
+                    height="18"
+                    rx="5"
+                />
+
+                <circle
+                    cx="12"
+                    cy="12"
+                    r="4.2"
+                />
+
+                <circle
+                    cx="17.4"
+                    cy="6.7"
+                    r="1"
+                    fill="currentColor"
+                    stroke="none"
+                />
+
+            </svg>
+
+        </a>
+
+
+        <!-- LINKEDIN -->
+
+        <a
+            href="https://www.linkedin.com/in/simon-luca-fischer-5b88013bb/"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="LinkedIn"
+        >
+
+            in
+
+        </a>
+
+
+    </div>
+
+
+
+
+            <!-- MADE BY -->
+    <div class="made">
+
+        Made with ❤️ by
+
+        <a
+            href="https://www.instagram.com/thesimonfischer"
+            target="_blank"
+            rel="noopener noreferrer"
+        >
+            Simon Fischer
+        </a>
+
+        · © 2026
+
+    </div>
+
+
+</footer>
+
+
+<button class="fab" id="fabOpen" aria-haspopup="dialog"><svg viewBox="0 0 24 24"><path d="M10 14a4 4 0 0 0 6 0l3-3a4 4 0 0 0-6-6l-1 1M14 10a4 4 0 0 0-6 0l-3 3a4 4 0 0 0 6 6l1-1"/></svg>LINKS</button>
+<div class="sheet" id="links" role="dialog" aria-modal="true" aria-label="Quicklinks"><div class="panel">
+<button class="x" id="fabClose" aria-label="Schließen">×</button>
+<h2>Simon Fischer</h2>
+<a class="ql" href="https://navtool.de" target="_blank" rel="noopener noreferrer"><i>NT</i><span>NavTool<small>navtool.de</small></span></a>
+<a class="ql" href="https://www.linkedin.com/in/simon-luca-fischer-5b88013bb" target="_blank" rel="noopener noreferrer"><i>in</i><span>LinkedIn<small>Beruflich vernetzen</small></span></a>
+<a class="ql" href="https://www.instagram.com/thesimonfischer" target="_blank" rel="noopener noreferrer"><i>IG</i><span>Instagram<small>@thesimonfischer</small></span></a>
+<a class="ql" href="https://mc-host24.de/donate/thesimonfischer" target="_blank" rel="noopener noreferrer"><i>€</i><span>NavTool unterstützen<small>Spende für Server und Entwicklung</small></span></a>
+<a class="ql" href="mailto:simon@navtool.de"><i>@</i><span>NavTool-Mail<small>simon@navtool.de</small></span></a>
+</div></div>
+<script>
+
+
+/* =========================================================
+   MOUSE PARALLAX
+========================================================= */
+
+const grid =
+    document.querySelector(".grid");
+
+
+let mouseX = 0;
+let mouseY = 0;
+
+
+window.addEventListener(
+
+    "pointermove",
+
+    (event) => {
+
+
+        mouseX =
+            (event.clientX /
+            window.innerWidth - .5) * 2;
+
+
+        mouseY =
+            (event.clientY /
+            window.innerHeight - .5) * 2;
+
+
+        if(grid){
+
+            grid.style.transform =
+
+                `perspective(800px)
+                 rotateX(${58 + mouseY * 1.5}deg)
+                 translate(${mouseX * 8}px,-5%)`;
+
+        }
+
+
+    }
+
+);
+
+
+/* =========================================================
+   SECTION OBSERVER
+========================================================= */
+
+const sections =
+    document.querySelectorAll("section");
+
+
+const observer =
+
+    new IntersectionObserver(
+
+        entries => {
+
+
+            entries.forEach(entry => {
+
+
+                if(entry.isIntersecting){
+
+                    entry.target
+                        .classList
+                        .add("visible");
+
+                }
+
+
+            });
+
+
+        },
+
+        {
+            threshold:.12
+        }
+
+    );
+
+
+sections.forEach(section => {
+
+    observer.observe(section);
+
+});
+
+
+/* =========================================================
+   3D PROJEKT-KARTEN
+========================================================= */
+
+document
+    .querySelectorAll(".project")
+    .forEach(card => {
+
+
+        card.addEventListener(
+
+            "pointermove",
+
+            event => {
+
+
+                if(window.innerWidth < 800){
+
+                    return;
+
+                }
+
+
+                const rect =
+                    card.getBoundingClientRect();
+
+
+                const x =
+                    event.clientX -
+                    rect.left;
+
+
+                const y =
+                    event.clientY -
+                    rect.top;
+
+
+                const rotateY =
+                    ((x / rect.width) - .5) * 4;
+
+
+                const rotateX =
+                    ((y / rect.height) - .5) * -4;
+
+
+                card.style.transform =
+
+                    `translateY(-8px)
+                     perspective(700px)
+                     rotateX(${rotateX}deg)
+                     rotateY(${rotateY}deg)`;
+
+
+            }
+
+        );
+
+
+        card.addEventListener(
+
+            "pointerleave",
+
+            () => {
+
+                card.style.transform = "";
+
+            }
+
+        );
+
+
+    });
+
+
+/* =========================================================
+   RESIZE
+========================================================= */
+
+window.addEventListener(
+
+    "resize",
+
+    () => {
+
+
+        if(window.innerWidth < 800){
+
+
+            document
+                .querySelectorAll(".project")
+                .forEach(card => {
+
+                    card.style.transform = "";
+
+                });
+
+
+        }
+
+
+    }
+
+);
+
+
+
+/* ===== NEU: Kompassnadel, Icon-Animation, Quicklinks ===== */
+(function(){
+const needle=document.getElementById("needle");
+addEventListener("pointermove",e=>{const r=needle.getBoundingClientRect();const a=Math.atan2(e.clientX-(r.left+r.width/2),-(e.clientY-(r.top+r.height/2)))*180/Math.PI;needle.style.transform="rotate("+a.toFixed(1)+"deg)";});
+const io=new IntersectionObserver(es=>es.forEach(x=>{if(x.isIntersecting){const i=[...x.target.parentNode.children].indexOf(x.target);setTimeout(()=>x.target.classList.add("in"),i*90);io.unobserve(x.target);}}),{threshold:.2});
+document.querySelectorAll(".navtool-feature,.info-card").forEach(el=>{el.classList.add("pre");io.observe(el);});
+const sh=document.getElementById("links"),open=()=>sh.classList.add("open"),close=()=>sh.classList.remove("open");
+document.getElementById("fabOpen").onclick=open;document.getElementById("fabClose").onclick=close;
+sh.onclick=e=>{if(e.target===sh)close();};
+addEventListener("keydown",e=>{if(e.key==="Escape")close();});
+if(location.hash==="#links")open();
+})();
+</script>
+
+
+</body>
+
+</html>

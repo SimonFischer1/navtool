@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NavTool - Radar Simulator (Furuno FAR-2228 NXT BB)</title>
+<link rel="icon" type="image/png" href="/pic/allgemein/icon-192.png"><link rel="apple-touch-icon" href="/pic/allgemein/icon-180.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=VT323&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/furuno.css"><link rel="stylesheet" href="../assets/navtool-global.css">
+<style>
+.crow{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:13px;color:#b8cfd0;margin:7px 0}.nv{width:64px;padding:6px 8px;border-radius:9px;border:1px solid rgba(85,229,209,.38);background:#06100f;color:#55e5d1;font:700 15px Inter,sans-serif;text-align:right;-moz-appearance:textfield}.nv:focus{outline:2px solid #55e5d1}
+.crow input[type=range]{flex:1;max-width:150px;accent-color:#55e5d1}.crow input[type=checkbox]{width:17px;height:17px;accent-color:#55e5d1}.card .crow select{width:auto;margin:0;padding:5px 8px}.card .crow label{display:flex;align-items:center;gap:8px;cursor:pointer}
+/* Gerät: gleiche Kunststoff-Optik wie NX-700 / FELCOM */
+.rdev{position:relative;width:100%;max-width:1150px;margin:0 auto;padding:2.2% 2.4% 2.6%;border-radius:30px;background:linear-gradient(180deg,#34393e,#2a2e32 40%,#25292d);box-shadow:inset 0 2px 0 rgba(255,255,255,.12),inset 0 -3px 8px rgba(0,0,0,.4),0 30px 40px rgba(0,0,0,.55);border:1px solid #1c1f22}
+.plate{display:flex;justify-content:space-between;align-items:center;background:#202427;border-radius:10px;padding:9px 18px;margin-bottom:12px;box-shadow:inset 0 2px 6px rgba(0,0,0,.6),inset 0 0 0 1px #2c3136}
+.plate .lg{font:900 clamp(18px,2.6vw,30px)/1 Inter,sans-serif;letter-spacing:.3em;color:#cfd5d9;text-shadow:0 2px 0 #000}.plate span{font:600 clamp(11px,1.4vw,16px) Inter,sans-serif;color:#e6ecef;letter-spacing:.04em}.plate span small{font-weight:400;color:#99a4ab;font-size:.8em;margin-left:8px}
+.bz{background:#16191c;border-radius:14px;padding:10px;box-shadow:inset 0 6px 24px #000,inset 0 0 0 2px #23282c}
+.scr{display:flex;background:#06101d;border-radius:6px;overflow:hidden;aspect-ratio:16/9;container-type:size;box-shadow:inset 0 0 40px rgba(0,0,0,.75);position:relative}
+.scr:after{content:'';position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(0,0,0,.13) 0 1px,transparent 1px 3px),radial-gradient(120% 100% at 50% 0,rgba(255,255,255,.06),transparent 55%)}
+#ppi{height:100%;aspect-ratio:1;flex:none;touch-action:none;cursor:crosshair;display:block}
+#side{flex:1;min-width:0;padding:1.2cqh 1.3cqw;border-left:2px solid #12304a;font:400 3.3cqh/1.05 VT323,'Share Tech Mono',monospace;color:#d9f4ff;overflow:hidden;display:flex;flex-direction:column;gap:1.1cqh}
+#side .bx{border:1px solid #12304a;background:#081827;padding:0 0 .6cqh}#side h4{margin:0 0 .5cqh;padding:0 1cqw;background:#1d6fb0;color:#fff;font:400 3.2cqh VT323,monospace;letter-spacing:.08em}
+#side .bx>.r,#side .bx>div:not(.mn){padding-left:1cqw;padding-right:1cqw}#side .r{display:flex;justify-content:space-between;gap:1cqw}#side .r span{color:#6f9bb3}#side .r b{font-weight:400;color:#d9f4ff;white-space:nowrap}
+#side .nm{font-size:4cqh;color:#5dffa0}#side .mn .r{padding:0 1cqw}#side .mn .r.s{background:#d9f4ff}#side .mn .r.s span,#side .mn .r.s b{color:#06101d}
+#side .tg{display:flex;flex-wrap:wrap;gap:.6cqw}#side .tg i{font-style:normal;padding:0 1cqw;background:#12304a;color:#9fd4f5}#side .tg i.on{background:#1f8a5b;color:#eafff3}
+#side .al{background:#4a0f0b;border:1px solid #ff5a4d;color:#ffb3ab;text-align:center;padding:.5cqh 1cqw;animation:bl .8s steps(2) infinite}
+/* Bedienfeld */
+.rcu{margin-top:14px;display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr) minmax(0,.9fr);gap:16px;align-items:center;padding:12px;border-radius:14px;background:#202427;box-shadow:inset 0 2px 6px rgba(0,0,0,.55),inset 0 0 0 1px #2c3136}
+.kg{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}.kk{position:relative;height:44px;border-radius:10px;border:1px solid #0a0c0e;background:linear-gradient(#2e3337,#1f2327);color:#eef2f4;font:600 11px/1.1 Inter,sans-serif;letter-spacing:.03em;cursor:pointer;box-shadow:0 2px 0 #090b0c,inset 0 1px 0 rgba(255,255,255,.1);padding:0 3px;transition:box-shadow .12s,background .12s}
+.kk:hover{box-shadow:0 0 0 2px rgba(120,220,255,.6),0 0 14px rgba(120,220,255,.35)}.kk:active,.kk.dn{background:rgba(0,0,0,.4);transform:translateY(1px)}.kk.ac:after{content:'';position:absolute;top:5px;right:6px;width:6px;height:6px;border-radius:50%;background:#46ff9a;box-shadow:0 0 8px #46ff9a}
+.kg.ar{grid-template-columns:repeat(3,1fr);max-width:200px;margin:0 auto}.kg.ar .kk{height:42px}
+.kn{display:flex;flex-direction:column;align-items:center;gap:3px;font:600 10px Inter,sans-serif;letter-spacing:.08em;color:#c3ccd2}.kn output{font:400 17px VT323,monospace;color:#ffd24a}
+.kb{width:60px;height:60px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#52585e,#17191c 72%);border:2px solid #07090a;box-shadow:0 5px 10px #000,inset 0 1px 0 rgba(255,255,255,.18);position:relative;cursor:grab;touch-action:none}.kb:hover{box-shadow:0 0 0 2px rgba(120,220,255,.55),0 5px 10px #000}.kb i{position:absolute;left:50%;top:5px;width:4px;height:16px;margin-left:-2px;border-radius:2px;background:#f1f4f6}
+.knr{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.tb{width:70px;height:70px;margin:6px auto 0;border-radius:50%;background:radial-gradient(circle at 35% 30%,#5f6870,#101316 72%);box-shadow:0 7px 14px #000,inset 0 0 0 4px #0a0c0e}
+@media(max-width:700px){.rcu{grid-template-columns:1fr}}
+</style></head>
+<body class="simpage">
+<header class="sp-top"><a href="/"><img src="/pic/allgemein/logo.png" alt="NavTool"></a><b>RADAR · FURUNO FAR-2228 NXT BB</b>
+<nav><a href="/navtext/">NAVTEX</a><a href="/inmarsat/">Inmarsat-C</a><a class="on" href="/radar/">Radar</a><a href="/simulator/">Steering</a></nav></header>
+<main class="sp-main">
+<div class="rdev">
+<div class="plate"><span class="lg">FURUNO</span><span>MARINE RADAR<small>FAR-2228 NXT BB</small></span></div>
+<div class="bz"><div class="scr" id="scr"><canvas id="ppi"></canvas><div id="side"></div></div></div>
+<div class="rcu"><div class="kg" id="k1"></div><div class="knr" id="knobs"></div><div><div class="kg ar" id="ar"></div><div class="tb" title="Trackball (Zeiger über das Radarbild bewegen)"></div></div></div>
+</div>
+<aside class="sp-side">
+<div class="card"><h3>Objekte</h3>
+<div class="crow"><span>Schiffe</span><input type="range" id="nS" min="0" max="25" value="8"><input type="number" inputmode="numeric" class="nv" id="vS" min="0" max="25"></div>
+<div class="crow"><span>Tonnen</span><input type="range" id="nB" min="0" max="25" value="10"><input type="number" inputmode="numeric" class="nv" id="vB" min="0" max="25"></div>
+<div class="crow"><label><input type="checkbox" id="cS" checked>Schiffe zeigen</label></div><div class="crow"><label><input type="checkbox" id="cB" checked>Tonnen zeigen</label></div><div class="crow"><label><input type="checkbox" id="cL" checked>Land zeigen</label></div>
+<button id="roll" type="button">Neu würfeln</button></div>
+<div class="card"><h3>AIS &amp; Hilfen</h3>
+<div class="crow"><label><input type="checkbox" id="cA" checked>AIS einschalten</label></div>
+<div class="crow"><span>Anzeige</span><select id="aL"><option value="name">Name &amp; Daten</option><option value="br">nur Distanz &amp; Peilung</option></select></div>
+<div class="crow"><label><input type="checkbox" id="cP">Parallel Index</label></div></div>
+<div class="card"><h3>Eigenes Schiff</h3>
+<div class="crow"><span>Kurs</span><input type="range" id="oC" min="0" max="359" value="45"><input type="number" inputmode="numeric" class="nv" id="vC" min="0" max="359"></div>
+<div class="crow"><span>Fahrt (kn)</span><input type="range" id="oV" min="0" max="30" value="12"><input type="number" inputmode="numeric" class="nv" id="vV" min="0" max="30"></div>
+<div class="crow"><span>Zeit</span><select id="ts"><option value="1">1×</option><option value="5">5×</option><option value="15">15×</option></select></div></div>
+<div class="card"><h3>Tasten (Maus, Finger oder Tastatur)</h3><table>
+<tr><td>+ / −</td><td>Messbereich</td></tr><tr><td>G / S / R</td><td>Gain / Sea / Rain (Shift = leiser)</td></tr>
+<tr><td>← →  ↑ ↓</td><td>EBL · VRM</td></tr><tr><td>M</td><td>N-UP / H-UP / C-UP</td></tr>
+<tr><td>A · P · V · E</td><td>AIS · Parallel Index · Vektor · EBL/VRM</td></tr><tr><td>[ ]</td><td>Parallel-Index-Peilung</td></tr>
+<tr><td>Tab · Enter</td><td>Ziel wählen · erfassen</td></tr><tr><td>Entf · Leertaste</td><td>abwählen · Alarm quittieren</td></tr>
+<tr><td>H · Esc</td><td>STBY/TX · Menü zu</td></tr></table></div>
+<div class="card"><p>Auf ein Echo oder AIS-Ziel klicken oder tippen, die Daten erscheinen im Display. Simulation für Ausbildungszwecke, dem Furuno FAR-2228 NXT BB nachempfunden und kein Ersatz für ein zugelassenes Radar.</p></div>
+</aside></main>
+<script src="../assets/furuno.js"></script><script src="radar.js"></script></body></html>

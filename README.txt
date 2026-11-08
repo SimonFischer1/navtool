@@ -6,6 +6,7 @@ Konfiguration: /data/config.json (wird vom Admin-Tool geschrieben). Bei Dateiän
 Admin: GitHub-Token (Contents: Read & Write) unter Admin > GitHub eintragen, damit "Speichern" ins Repository schreibt.
 Besucherzähler: abacus.jasoncameron.dev, Namespace navtool.de.
 
+
 Neu in v6: Simulator mit Hebel-Maschinentelegraf, Logo im Handrad, grafische Obere Leiste · Cookie-Hinweis (alle Seiten außer Simulator und App; Besucherzähler nur nach Zustimmung) · App-Werbung statt Admin-Link und ohne Impressum · App geräteabhängig (Handy hoch/quer, iPad, Desktop). Das Admin-Tool bleibt unter /admin/ erreichbar, nur ohne Link.
 
 Neu in v7: Footer-Link "Ersteller" (neben Cookies und Status) führt zu /me/ (Über-mich-Website von Simon).
